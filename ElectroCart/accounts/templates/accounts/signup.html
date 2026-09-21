@@ -1,0 +1,2304 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Registration | ElectroCart</title>
+
+
+    <style>
+
+        /* =====================================================
+           ELECTROCART — HARDWARE ATELIER
+           REGISTRATION INTERFACE
+        ====================================================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        :root {
+
+            --paper: #f5f2e9;
+            --paper-light: #faf8f2;
+            --black: #11110f;
+            --gray: #77746b;
+            --gray-dark: #55524a;
+            --line: #d5d0c4;
+            --orange: #c95d3c;
+            --orange-light: #d97859;
+
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            background:
+                #f5f2e9;
+
+            color:
+                var(--black);
+
+            font-family:
+                "Courier New",
+                Courier,
+                monospace;
+
+            overflow-x: hidden;
+        }
+
+
+        /* =====================================================
+           TECHNICAL GRID
+        ====================================================== */
+
+        body::before {
+
+            content: "";
+
+            position: fixed;
+
+            inset: 0;
+
+            pointer-events: none;
+
+            z-index: 999;
+
+            opacity: 0.55;
+
+            background-image:
+
+                linear-gradient(
+                    rgba(70, 68, 60, 0.055) 1px,
+                    transparent 1px
+                ),
+
+                linear-gradient(
+                    90deg,
+                    rgba(70, 68, 60, 0.055) 1px,
+                    transparent 1px
+                );
+
+            background-size:
+                45px 45px;
+        }
+
+
+        /* =====================================================
+           MAIN FRAME
+        ====================================================== */
+
+        .site {
+
+            width:
+                calc(100% - 28px);
+
+            min-height:
+                calc(100vh - 28px);
+
+            margin:
+                14px;
+
+            border:
+                1px solid
+                var(--line);
+
+            position:
+                relative;
+
+            background:
+                rgba(250, 248, 241, 0.72);
+        }
+
+
+        /* =====================================================
+           CORNER MARKS
+        ====================================================== */
+
+        .corner {
+
+            position: absolute;
+
+            width: 13px;
+            height: 13px;
+
+            z-index: 20;
+        }
+
+
+        .corner::before,
+        .corner::after {
+
+            content: "";
+
+            position: absolute;
+
+            background:
+                #99958a;
+        }
+
+
+        .corner::before {
+
+            width: 13px;
+            height: 1px;
+        }
+
+
+        .corner::after {
+
+            width: 1px;
+            height: 13px;
+        }
+
+
+        .corner.tl {
+
+            top: 8px;
+            left: 8px;
+        }
+
+
+        .corner.tr {
+
+            top: 8px;
+            right: 8px;
+
+            transform:
+                rotate(90deg);
+        }
+
+
+        .corner.bl {
+
+            bottom: 8px;
+            left: 8px;
+
+            transform:
+                rotate(-90deg);
+        }
+
+
+        .corner.br {
+
+            bottom: 8px;
+            right: 8px;
+
+            transform:
+                rotate(180deg);
+        }
+
+
+        /* =====================================================
+           LOGIN PAGE STYLE HEADER
+           MATCHES SCREENSHOT 2
+        ====================================================== */
+
+        .atelier-header {
+
+            height:
+                102px;
+
+            margin:
+                0;
+
+            padding:
+                0 34px;
+
+            border-bottom:
+                1px solid
+                var(--line);
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            position:
+                relative;
+
+            background:
+                rgba(250, 248, 242, 0.82);
+        }
+
+
+        /* LEFT BRAND */
+
+        .header-brand {
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            gap:
+                18px;
+        }
+
+
+        .header-logo {
+
+            width:
+                47px;
+
+            height:
+                47px;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            background:
+                var(--black);
+
+            color:
+                var(--orange);
+
+            font-size:
+                26.5px;
+
+            border:
+                1px solid
+                #252522;
+
+            box-shadow:
+                2px 2px 0
+                rgba(201, 93, 60, 0.35);
+        }
+
+
+        .header-brand-name {
+
+            font-family:
+                Georgia,
+                "Times New Roman",
+                serif;
+
+            font-size:
+                24px;
+
+            font-weight:
+                700;
+
+            letter-spacing:
+                1.6px;
+
+            line-height:
+                1;
+
+            color:
+                var(--black);
+        }
+
+
+        .header-brand-sub {
+
+            margin-top:
+                7px;
+
+            color:
+                var(--orange);
+
+            font-size:
+                11.5px;
+
+            letter-spacing:
+                3.2px;
+
+            line-height:
+                1;
+        }
+
+
+        /* CENTER SYSTEM STATUS */
+
+        .system-status {
+
+            position:
+                absolute;
+
+            left:
+                50%;
+
+            transform:
+                translateX(-50%);
+
+            height:
+                48px;
+
+            min-width:
+                220px;
+
+            padding:
+                0 28px;
+
+            border:
+                1px solid
+                var(--line);
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            gap:
+                16px;
+
+            font-size:
+                12.5px;
+
+            letter-spacing:
+                2px;
+
+            color:
+                var(--black);
+
+            background:
+                rgba(250, 248, 241, 0.55);
+        }
+
+
+        .system-dot {
+
+            width:
+                10px;
+
+            height:
+                10px;
+
+            border-radius:
+                50%;
+
+            background:
+                var(--orange);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(201, 93, 60, 0.08);
+        }
+
+
+        /* RIGHT HEADER CODE */
+
+        .header-code {
+
+            font-size:
+                12.5px;
+
+            letter-spacing:
+                3px;
+
+            color:
+                #77736a;
+        }
+
+
+        /* =====================================================
+           REGISTRATION AREA
+        ====================================================== */
+
+        .registration {
+
+            min-height:
+                calc(100vh - 140px);
+
+            display:
+                grid;
+
+            grid-template-columns:
+                minmax(500px, 0.95fr)
+                minmax(650px, 1.05fr);
+
+            padding:
+                60px 65px 70px;
+
+            gap:
+                65px;
+
+            align-items:
+                center;
+        }
+
+
+        /* =====================================================
+           LEFT INTRO
+        ====================================================== */
+
+        .intro {
+
+            padding:
+                5px 0 0 5px;
+        }
+
+
+        .section-code {
+
+            color:
+                #77736a;
+
+            font-size:
+                13.8px;
+
+            letter-spacing:
+                1.2px;
+
+            margin-bottom:
+                32px;
+        }
+
+
+        .intro h1 {
+
+            font-family:
+                Georgia,
+                "Times New Roman",
+                serif;
+
+            font-size:
+                clamp(55px, 5.2vw, 82px);
+
+            font-weight:
+                400;
+
+            letter-spacing:
+                -4px;
+
+            line-height:
+                0.92;
+
+            margin-bottom:
+                34px;
+        }
+
+
+        .intro h1 span {
+
+            display:
+                block;
+
+            color:
+                var(--orange);
+        }
+
+
+        .intro-description {
+
+            max-width:
+                650px;
+
+            color:
+                #68655d;
+
+            font-family:
+                "Courier New",
+                monospace;
+
+            font-size:
+                15px;
+
+            line-height:
+                1.8;
+
+            margin-bottom:
+                38px;
+        }
+
+
+        /* =====================================================
+           WHY JOIN
+        ====================================================== */
+
+        .why {
+
+            border-top:
+                1px solid
+                var(--line);
+
+            max-width:
+                590px;
+
+            padding-top:
+                23px;
+        }
+
+
+        .why-title {
+
+            color:
+                var(--orange);
+
+            font-size:
+                12.5px;
+
+            font-weight:
+                bold;
+
+            letter-spacing:
+                1.3px;
+
+            margin-bottom:
+                17px;
+        }
+
+
+        .why-item {
+
+            display:
+                flex;
+
+            gap:
+                12px;
+
+            margin-bottom:
+                11px;
+
+            color:
+                #66635b;
+
+            font-size:
+                12.7px;
+
+            line-height:
+                1.5;
+        }
+
+
+        .why-item::before {
+
+            content:
+                "•";
+
+            color:
+                var(--orange);
+
+            font-weight:
+                bold;
+        }
+
+
+        /* =====================================================
+           REGISTRATION PANEL
+        ====================================================== */
+
+        .registration-panel {
+
+            border:
+                1px solid
+                var(--line);
+
+            padding:
+                12px;
+
+            display:
+                grid;
+
+            grid-template-columns:
+                minmax(0, 1fr)
+                180px;
+
+            gap:
+                10px;
+
+            background:
+                rgba(250, 248, 241, 0.5);
+
+            min-height:
+                630px;
+        }
+
+
+        /* =====================================================
+           FORM BOX
+        ====================================================== */
+
+        .form-box {
+
+            border:
+                1px solid
+                var(--line);
+
+            padding:
+                31px 31px 25px;
+        }
+
+
+        .form-title {
+
+            color:
+                var(--orange);
+
+            font-size:
+                12.7px;
+
+            font-weight:
+                bold;
+
+            letter-spacing:
+                0.7px;
+
+            margin-bottom:
+                28px;
+        }
+
+
+        /* =====================================================
+           FORM FIELDS
+        ====================================================== */
+
+        .field {
+
+            margin-bottom:
+                19px;
+        }
+
+
+        .field label {
+
+            display:
+                block;
+
+            font-size:
+                11.5px;
+
+            font-weight:
+                bold;
+
+            margin-bottom:
+                9px;
+
+            letter-spacing:
+                0.7px;
+        }
+
+
+        .input-wrap {
+
+            height:
+                47px;
+
+            border:
+                1px solid
+                #d1ccc0;
+
+            background:
+                rgba(255, 255, 255, 0.20);
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .input-wrap:focus-within {
+
+            border-color:
+                var(--orange);
+
+            box-shadow:
+                0 0 0 2px
+                rgba(201, 93, 60, 0.08);
+        }
+
+
+        .input-wrap input {
+
+            width:
+                100%;
+
+            height:
+                100%;
+
+            padding:
+                0 13px;
+
+            border:
+                none;
+
+            outline:
+                none;
+
+            background:
+                transparent;
+
+            color:
+                var(--black);
+
+            font-family:
+                "Courier New",
+                monospace;
+
+            font-size:
+                12.7px;
+        }
+
+
+        .input-wrap input::placeholder {
+
+            color:
+                #98948a;
+
+            font-size:
+                12.7px;
+        }
+
+
+        /* =====================================================
+           PASSWORD TOGGLE
+        ====================================================== */
+
+        .password-toggle {
+
+            width:
+                45px;
+
+            height:
+                100%;
+
+            border:
+                none;
+
+            border-left:
+                1px solid
+                #d7d2c7;
+
+            background:
+                transparent;
+
+            color:
+                #77736a;
+
+            cursor:
+                pointer;
+
+            font-family:
+                "Courier New",
+                monospace;
+
+            font-size:
+                11.5px;
+        }
+
+
+        .password-toggle:hover {
+
+            color:
+                var(--orange);
+        }
+
+
+        /* =====================================================
+           TERMS
+        ====================================================== */
+
+        .terms {
+
+            margin:
+                4px 0 20px;
+        }
+
+
+        .terms label {
+
+            display:
+                flex;
+
+            align-items:
+                flex-start;
+
+            gap:
+                9px;
+
+            color:
+                #716e65;
+
+            font-size:
+                10.4px;
+
+            line-height:
+                1.6;
+
+            cursor:
+                pointer;
+        }
+
+
+        .terms input {
+
+            width:
+                15px;
+
+            height:
+                15px;
+
+            margin-top:
+                1px;
+
+            accent-color:
+                var(--black);
+
+            flex-shrink:
+                0;
+        }
+
+
+        .terms a {
+
+            color:
+                var(--orange);
+
+            text-decoration:
+                none;
+        }
+
+
+        .terms a:hover {
+
+            text-decoration:
+                underline;
+        }
+
+
+        /* =====================================================
+           DJANGO MESSAGES
+        ====================================================== */
+
+        .message {
+
+            padding:
+                11px 12px;
+
+            margin-bottom:
+                15px;
+
+            border:
+                1px solid
+                rgba(201, 93, 60, 0.35);
+
+            background:
+                rgba(201, 93, 60, 0.05);
+
+            color:
+                var(--orange);
+
+            font-size:
+                10.4px;
+
+            line-height:
+                1.6;
+        }
+
+
+        /* =====================================================
+           INITIALIZE BUTTON
+        ====================================================== */
+
+        .initialize-button {
+
+            width:
+                100%;
+
+            height:
+                52px;
+
+            border:
+                none;
+
+            background:
+                var(--black);
+
+            color:
+                var(--paper);
+
+            cursor:
+                pointer;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                center;
+
+            gap:
+                20px;
+
+            font-family:
+                "Courier New",
+                monospace;
+
+            font-size:
+                12.7px;
+
+            font-weight:
+                bold;
+
+            letter-spacing:
+                1px;
+
+            position:
+                relative;
+
+            transition:
+                background 0.2s ease,
+                transform 0.2s ease;
+        }
+
+
+        .initialize-button::before,
+        .initialize-button::after {
+
+            content:
+                "";
+
+            position:
+                absolute;
+
+            width:
+                9px;
+
+            height:
+                9px;
+
+            border-color:
+                var(--orange);
+
+            border-style:
+                solid;
+        }
+
+
+        .initialize-button::before {
+
+            left:
+                6px;
+
+            top:
+                6px;
+
+            border-width:
+                1px 0 0 1px;
+        }
+
+
+        .initialize-button::after {
+
+            right:
+                6px;
+
+            bottom:
+                6px;
+
+            border-width:
+                0 1px 1px 0;
+        }
+
+
+        .initialize-button:hover {
+
+            background:
+                #292925;
+
+            transform:
+                translateY(-1px);
+        }
+
+
+        .initialize-button strong {
+
+            color:
+                var(--orange);
+
+            font-size:
+                18.4px;
+        }
+
+
+        /* =====================================================
+           LOGIN LINK
+        ====================================================== */
+
+        .login-link {
+
+            margin-top:
+                25px;
+
+            text-align:
+                center;
+
+            font-size:
+                10.4px;
+
+            color:
+                #88847a;
+
+            letter-spacing:
+                0.2px;
+        }
+
+
+        .login-link a {
+
+            color:
+                var(--orange);
+
+            text-decoration:
+                none;
+
+            font-weight:
+                bold;
+        }
+
+
+        .login-link a:hover {
+
+            text-decoration:
+                underline;
+        }
+
+
+        /* =====================================================
+           ACCOUNT STATUS
+        ====================================================== */
+
+        .status-box {
+
+            border:
+                1px solid
+                var(--line);
+
+            padding:
+                18px 15px;
+
+            display:
+                flex;
+
+            flex-direction:
+                column;
+
+            min-height:
+                100%;
+        }
+
+
+        .status-title {
+
+            font-size:
+                11.5px;
+
+            font-weight:
+                bold;
+
+            margin-bottom:
+                29px;
+
+            border-bottom:
+                1px solid
+                var(--line);
+
+            padding-bottom:
+                13px;
+        }
+
+
+        .status-row {
+
+            margin-bottom:
+                28px;
+        }
+
+
+        .status-label {
+
+            display:
+                block;
+
+            color:
+                #8a867d;
+
+            font-size:
+                10.4px;
+
+            margin-bottom:
+                7px;
+
+            letter-spacing:
+                0.6px;
+        }
+
+
+        .status-value {
+
+            display:
+                block;
+
+            color:
+                var(--orange);
+
+            font-size:
+                11.5px;
+
+            font-weight:
+                bold;
+
+            line-height:
+                1.4;
+        }
+
+
+        /* =====================================================
+           BARCODE
+        ====================================================== */
+
+        .barcode {
+
+            margin-top:
+                auto;
+
+            height:
+                47px;
+
+            display:
+                flex;
+
+            align-items:
+                stretch;
+
+            gap:
+                2px;
+
+            overflow:
+                hidden;
+        }
+
+
+        .barcode span {
+
+            display:
+                block;
+
+            background:
+                var(--black);
+        }
+
+
+        .barcode span:nth-child(1) {
+            width: 3px;
+        }
+
+        .barcode span:nth-child(2) {
+            width: 1px;
+        }
+
+        .barcode span:nth-child(3) {
+            width: 4px;
+        }
+
+        .barcode span:nth-child(4) {
+            width: 2px;
+        }
+
+        .barcode span:nth-child(5) {
+            width: 1px;
+        }
+
+        .barcode span:nth-child(6) {
+            width: 5px;
+        }
+
+        .barcode span:nth-child(7) {
+            width: 2px;
+        }
+
+        .barcode span:nth-child(8) {
+            width: 1px;
+        }
+
+        .barcode span:nth-child(9) {
+            width: 4px;
+        }
+
+        .barcode span:nth-child(10) {
+            width: 2px;
+        }
+
+        .barcode span:nth-child(11) {
+            width: 5px;
+        }
+
+        .barcode span:nth-child(12) {
+            width: 1px;
+        }
+
+        .barcode span:nth-child(13) {
+            width: 3px;
+        }
+
+        .barcode span:nth-child(14) {
+            width: 2px;
+        }
+
+
+        .barcode-label {
+
+            margin-top:
+                9px;
+
+            font-size:
+                8px;
+
+            color:
+                #858178;
+
+            line-height:
+                1.7;
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ====================================================== */
+
+        .footer {
+
+            border-top:
+                1px solid
+                var(--line);
+
+            min-height:
+                45px;
+
+            padding:
+                0 38px;
+
+            display:
+                flex;
+
+            align-items:
+                center;
+
+            justify-content:
+                space-between;
+
+            color:
+                #817d73;
+
+            font-size:
+                9.2px;
+
+            letter-spacing:
+                0.4px;
+        }
+
+
+        .footer strong {
+
+            color:
+                var(--black);
+        }
+
+
+        .footer-right {
+
+            color:
+                #69665e;
+
+            font-weight:
+                bold;
+
+            font-size:
+                9.2px;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ====================================================== */
+
+        @media (max-width: 1250px) {
+
+            .registration {
+
+                grid-template-columns:
+                    1fr;
+
+                gap:
+                    45px;
+
+                padding:
+                    50px 45px 60px;
+            }
+
+
+            .intro {
+
+                padding:
+                    0;
+            }
+
+
+            .registration-panel {
+
+                min-height:
+                    600px;
+            }
+
+        }
+
+
+        @media (max-width: 750px) {
+
+            .site {
+
+                width:
+                    calc(100% - 14px);
+
+                margin:
+                    7px;
+            }
+
+
+            .atelier-header {
+
+                height:
+                    88px;
+
+                padding:
+                    0 20px;
+            }
+
+
+            .header-logo {
+
+                width:
+                    40px;
+
+                height:
+                    40px;
+
+                font-size:
+                    23px;
+            }
+
+
+            .header-brand-name {
+
+                font-size:
+                    19.5px;
+            }
+
+
+            .header-brand-sub {
+
+                font-size:
+                    9.2px;
+            }
+
+
+            .system-status {
+
+                display:
+                    none;
+            }
+
+
+            .header-code {
+
+                font-size:
+                    9.2px;
+
+                letter-spacing:
+                    1px;
+            }
+
+
+            .registration {
+
+                padding:
+                    40px 20px 50px;
+            }
+
+
+            .intro h1 {
+
+                font-size:
+                    50px;
+
+                letter-spacing:
+                    -3px;
+            }
+
+
+            .section-code {
+
+                font-size:
+                    11.5px;
+            }
+
+
+            .intro-description {
+
+                font-size:
+                    12.7px;
+
+                line-height:
+                    1.75;
+            }
+
+
+            .why-title {
+
+                font-size:
+                    11.5px;
+            }
+
+
+            .why-item {
+
+                font-size:
+                    11.5px;
+            }
+
+
+            .registration-panel {
+
+                grid-template-columns:
+                    1fr;
+
+                min-height:
+                    auto;
+            }
+
+
+            .form-title {
+
+                font-size:
+                    11.5px;
+            }
+
+
+            .field label {
+
+                font-size:
+                    10.6px;
+            }
+
+
+            .input-wrap input {
+
+                font-size:
+                    11.5px;
+            }
+
+
+            .input-wrap input::placeholder {
+
+                font-size:
+                    11.5px;
+            }
+
+
+            .password-toggle {
+
+                font-size:
+                    10.6px;
+            }
+
+
+            .terms label {
+
+                font-size:
+                    9.7px;
+            }
+
+
+            .message {
+
+                font-size:
+                    9.7px;
+            }
+
+
+            .initialize-button {
+
+                font-size:
+                    11.5px;
+            }
+
+
+            .initialize-button strong {
+
+                font-size:
+                    16.5px;
+            }
+
+
+            .login-link {
+
+                font-size:
+                    9.7px;
+            }
+
+
+            .status-box {
+
+                min-height:
+                    260px;
+            }
+
+
+            .status-title {
+
+                font-size:
+                    10.6px;
+            }
+
+
+            .status-label {
+
+                font-size:
+                    9.7px;
+            }
+
+
+            .status-value {
+
+                font-size:
+                    10.6px;
+            }
+
+
+            .barcode-label {
+
+                font-size:
+                    7.4px;
+            }
+
+
+            .footer {
+
+                flex-direction:
+                    column;
+
+                justify-content:
+                    center;
+
+                gap:
+                    7px;
+
+                padding:
+                    12px;
+
+                font-size:
+                    8.5px;
+            }
+
+
+            .footer-right {
+
+                font-size:
+                    8.5px;
+            }
+
+        }
+
+
+        @media (max-width: 450px) {
+
+            .intro h1 {
+
+                font-size:
+                    39px;
+            }
+
+
+            .intro-description {
+
+                font-size:
+                    12.7px;
+            }
+
+
+            .section-code {
+
+                font-size:
+                    10.5px;
+            }
+
+
+            .form-box {
+
+                padding:
+                    23px 17px;
+            }
+
+
+            .registration {
+
+                padding:
+                    30px 13px 40px;
+            }
+
+
+            .input-wrap input {
+
+                font-size:
+                    11.5px;
+            }
+
+
+            .terms label {
+
+                font-size:
+                    9.7px;
+            }
+
+        }
+        /* =====================================================
+   ORANGE SCANNING LINE
+   MATCHES LOGIN PAGE ANIMATION
+===================================================== */
+
+.scan-line {
+
+    position: fixed;
+
+    left: 0;
+
+    top: -2px;
+
+    width: 100%;
+
+    height: 2px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(201, 93, 60, 0.15) 15%,
+            var(--orange) 50%,
+            rgba(201, 93, 60, 0.15) 85%,
+            transparent 100%
+        );
+
+    box-shadow:
+        0 0 8px rgba(201, 93, 60, 0.45),
+        0 0 18px rgba(201, 93, 60, 0.18);
+
+    z-index: 1000;
+
+    pointer-events: none;
+
+    animation:
+        scanDown 4.5s linear infinite;
+}
+
+
+@keyframes scanDown {
+
+    0% {
+        top: -2px;
+        opacity: 0;
+    }
+
+    8% {
+        opacity: 1;
+    }
+
+    92% {
+        opacity: 1;
+    }
+
+    100% {
+        top: 100vh;
+        opacity: 0;
+    }
+
+}
+
+    </style>
+
+</head>
+
+
+<body>
+
+<!-- ORANGE SCAN LINE -->
+<div class="scan-line"></div>
+
+<div class="site">
+
+
+    <!-- =====================================================
+         CORNERS
+    ====================================================== -->
+
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+
+
+    <!-- =====================================================
+         HEADER
+         SAME VISUAL STRUCTURE AS LOGIN SCREEN
+    ====================================================== -->
+
+    <header class="atelier-header">
+
+
+        <!-- BRAND -->
+
+        <div class="header-brand">
+
+            <div class="header-logo">
+                ⚡
+            </div>
+
+
+            <div>
+
+                <div class="header-brand-name">
+                    ELECTROCART
+                </div>
+
+                <div class="header-brand-sub">
+                    HARDWARE ATELIER
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- SYSTEM STATUS -->
+
+        <div class="system-status">
+
+            <span class="system-dot"></span>
+
+            <span>
+                SYSTEM ONLINE
+            </span>
+
+        </div>
+
+
+        <!-- HEADER CODE -->
+
+        <div class="header-code">
+            EC // AUTH-01
+        </div>
+
+
+    </header>
+
+
+    <!-- =====================================================
+         REGISTRATION CONTENT
+    ====================================================== -->
+
+    <main class="registration">
+
+
+        <!-- =================================================
+             LEFT SIDE
+        ================================================== -->
+
+        <section class="intro">
+
+
+            <div class="section-code">
+                // REGISTRATION 01
+            </div>
+
+
+            <h1>
+
+                CREATE YOUR
+
+                <span>
+                    ATELIER ACCESS.
+                </span>
+
+            </h1>
+
+
+            <p class="intro-description">
+
+                Build your ElectroCart account and join a
+                community of creators, builders and tech
+                enthusiasts. Get early access to new drops,
+                exclusive offers and advanced hardware
+                collections.
+
+            </p>
+
+
+            <!-- WHY JOIN -->
+
+            <div class="why">
+
+                <div class="why-title">
+                    • WHY JOIN?
+                </div>
+
+
+                <div class="why-item">
+                    Access to exclusive deals
+                </div>
+
+
+                <div class="why-item">
+                    Early product releases
+                </div>
+
+
+                <div class="why-item">
+                    Track your orders & build your wishlist
+                </div>
+
+
+                <div class="why-item">
+                    Be part of the ElectroCart community
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             RIGHT SIDE
+        ================================================== -->
+
+        <section class="registration-panel">
+
+
+            <!-- =================================================
+                 FORM
+            ================================================== -->
+
+            <div class="form-box">
+
+
+                <div class="form-title">
+                    // CREATE ACCOUNT
+                </div>
+
+
+                <form
+                    method="POST"
+                    action="{% url 'signup' %}"
+                >
+
+                    {% csrf_token %}
+
+
+                    <!-- FULL NAME -->
+
+                    <div class="field">
+
+                        <label>
+                            FULL NAME
+                        </label>
+
+                        <div class="input-wrap">
+
+                            <input
+                                type="text"
+                                name="name"
+                                placeholder="John Doe"
+                                autocomplete="name"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+
+                    <div class="field">
+
+                        <label>
+                            EMAIL ADDRESS
+                        </label>
+
+                        <div class="input-wrap">
+
+                            <input
+                                type="email"
+                                name="email"
+                                placeholder="you@example.com"
+                                autocomplete="email"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PHONE -->
+
+                    <div class="field">
+
+                        <label>
+                            PHONE NUMBER
+                        </label>
+
+                        <div class="input-wrap">
+
+                            <input
+                                type="tel"
+                                name="phone"
+                                placeholder="+91 98765 43210"
+                                autocomplete="tel"
+                                required
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PASSWORD -->
+
+                    <div class="field">
+
+                        <label>
+                            PASSWORD
+                        </label>
+
+                        <div class="input-wrap">
+
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Create a strong password"
+                                autocomplete="new-password"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="password-toggle"
+                                onclick="togglePassword('password')"
+                            >
+                                ◉
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- CONFIRM PASSWORD -->
+
+                    <div class="field">
+
+                        <label>
+                            CONFIRM PASSWORD
+                        </label>
+
+                        <div class="input-wrap">
+
+                            <input
+                                type="password"
+                                id="confirm_password"
+                                name="confirm_password"
+                                placeholder="Re-enter your password"
+                                autocomplete="new-password"
+                                required
+                            >
+
+                            <button
+                                type="button"
+                                class="password-toggle"
+                                onclick="togglePassword('confirm_password')"
+                            >
+                                ◉
+                            </button>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TERMS -->
+
+                    <div class="terms">
+
+                        <label>
+
+                            <input
+                                type="checkbox"
+                                required
+                            >
+
+                            <span>
+
+                                I agree to the
+
+                                <a href="#">
+                                    Terms of Service
+                                </a>
+
+                                and
+
+                                <a href="#">
+                                    Privacy Policy
+                                </a>
+
+                            </span>
+
+                        </label>
+
+                    </div>
+
+
+                    <!-- DJANGO MESSAGES -->
+
+                    {% if messages %}
+
+                        {% for message in messages %}
+
+                            <div class="message">
+                                {{ message }}
+                            </div>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+
+                    <!-- CREATE ACCOUNT -->
+
+                    <button
+                        type="submit"
+                        class="initialize-button"
+                    >
+
+                        <span>
+                            INITIALIZE ACCOUNT
+                        </span>
+
+                        <strong>
+                            →
+                        </strong>
+
+                    </button>
+
+
+                </form>
+
+
+                <!-- LOGIN -->
+
+                <div class="login-link">
+
+                    ALREADY HAVE ACCESS?
+
+                    <a href="{% url 'login' %}">
+                        ENTER ATELIER →
+                    </a>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- =================================================
+                 ACCOUNT STATUS
+            ================================================== -->
+
+            <aside class="status-box">
+
+
+                <div class="status-title">
+                    ACCOUNT STATUS
+                </div>
+
+
+                <div class="status-row">
+
+                    <span class="status-label">
+                        REGISTRATION
+                    </span>
+
+                    <span class="status-value">
+                        PENDING
+                    </span>
+
+                </div>
+
+
+                <div class="status-row">
+
+                    <span class="status-label">
+                        VERIFICATION
+                    </span>
+
+                    <span class="status-value">
+                        REQUIRED
+                    </span>
+
+                </div>
+
+
+                <div class="status-row">
+
+                    <span class="status-label">
+                        ACCESS LEVEL
+                    </span>
+
+                    <span class="status-value">
+                        BASIC
+                    </span>
+
+                </div>
+
+
+                <!-- BARCODE -->
+
+                <div class="barcode">
+
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+
+                </div>
+
+
+                <div class="barcode-label">
+
+                    YOUR ATELIER
+                    <br>
+
+                    <span style="color:#c95d3c;">
+                        ●
+                    </span>
+
+                    AWAITS.
+
+                </div>
+
+
+            </aside>
+
+
+        </section>
+
+
+    </main>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer class="footer">
+
+        <div>
+
+            © 2026 ELECTROCART HARDWARE LABS PVT LTD.
+            ZERO THIRD-PARTY RUNTIME OVERHEAD.
+
+        </div>
+
+
+        <div class="footer-right">
+
+            ENGINEERED FOR PRODUCTION DEPLOYMENT
+
+        </div>
+
+    </footer>
+
+
+</div>
+
+
+<script>
+
+
+    function togglePassword(id) {
+
+        const input =
+            document.getElementById(id);
+
+        if (input.type === "password") {
+
+            input.type = "text";
+
+        } else {
+
+            input.type = "password";
+
+        }
+
+    }
+
+
+</script>
+
+
+</body>
+
+</html>

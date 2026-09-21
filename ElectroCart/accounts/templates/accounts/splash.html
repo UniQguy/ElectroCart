@@ -1,0 +1,226 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ELECTROCART // SYSTEM BOOT</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Italiana&family=JetBrains+Mono:wght@300;400;500;700&family=Syne:wght@700;800;900&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #FAF7F2;
+            color: #1D1916;
+            height: 100vh;
+            overflow: hidden;
+            font-family: "JetBrains Mono", monospace;
+        }
+
+        .splash {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 35px 5vw;
+            position: relative;
+        }
+
+        .top {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(29,25,22,.12);
+            padding-bottom: 18px;
+            font-size: 11px;
+            letter-spacing: 2px;
+        }
+
+        .brand {
+            font-family: "Syne", sans-serif;
+            font-weight: 900;
+            font-size: 18px;
+        }
+
+        .status {
+            color: #C25E3E;
+        }
+
+        .center {
+            text-align: center;
+            position: relative;
+        }
+
+        .bolt {
+            width: 70px;
+            height: 70px;
+            background: #1D1916;
+            color: #FAF7F2;
+            margin: 0 auto 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 32px;
+
+            animation: pulse 1.5s infinite;
+        }
+
+        .logo {
+            font-family: "Italiana", serif;
+            font-size: clamp(70px, 13vw, 190px);
+            line-height: .8;
+            letter-spacing: 3px;
+        }
+
+        .tagline {
+            margin-top: 25px;
+            font-size: 11px;
+            letter-spacing: 5px;
+            color: #7A7269;
+        }
+
+        .loader {
+            width: min(700px, 80vw);
+            height: 2px;
+            background: rgba(29,25,22,.12);
+            margin: 35px auto 15px;
+            overflow: hidden;
+        }
+
+        .loader-bar {
+            width: 0%;
+            height: 100%;
+            background: #C25E3E;
+            animation: loading 2.8s linear forwards;
+        }
+
+        .boot-text {
+            font-size: 10px;
+            color: #7A7269;
+            min-height: 20px;
+        }
+
+        .bottom {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid rgba(29,25,22,.12);
+            padding-top: 18px;
+            font-size: 9px;
+            color: #7A7269;
+        }
+
+        @keyframes loading {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.08);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="splash">
+
+    <div class="top">
+        <div class="brand">
+            ELECTROCART // HEAVEN ATELIER
+        </div>
+
+        <div class="status">
+            SYSTEM INITIALIZING
+        </div>
+    </div>
+
+
+    <div class="center">
+
+        <div class="bolt">
+            ⚡
+        </div>
+
+        <div class="logo">
+            ELECTROCART
+        </div>
+
+        <div class="tagline">
+            CELESTIAL HARDWARE · PRECISION TECHNOLOGY
+        </div>
+
+        <div class="loader">
+            <div class="loader-bar"></div>
+        </div>
+
+        <div class="boot-text" id="bootText">
+            &gt; INITIALIZING ELECTROCART SYSTEM...
+        </div>
+
+    </div>
+
+
+    <div class="bottom">
+
+        <span>
+            ELECTROCART // SYSTEM 2026.09
+        </span>
+
+        <span>
+            AHMEDABAD // INDIA
+        </span>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const messages = [
+    "> INITIALIZING ELECTROCART SYSTEM...",
+    "> CALIBRATING HARDWARE MATRIX...",
+    "> LOADING PRODUCT REPOSITORY...",
+    "> SECURING CUSTOMER SESSION...",
+    "> ACCESS GATE READY..."
+];
+
+let index = 0;
+
+const bootText = document.getElementById("bootText");
+
+const interval = setInterval(() => {
+
+    index++;
+
+    if (index < messages.length) {
+        bootText.textContent = messages[index];
+    }
+
+}, 550);
+
+
+// After splash → LOGIN
+setTimeout(function () {
+
+    window.location.href = "{% url 'login' %}";
+
+}, 3500);
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,328 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Orders | ElectroCart</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        vellum: "#f5f3ee",
+                        ink: "#181818",
+                        silt: "#77736c",
+                        suture: "#d6d0c6",
+                        electric: "#2563eb",
+                        cyanGlow: "#06b6d4",
+                        oxide: "#e4572e"
+                    },
+                    fontFamily: {
+                        mono: ["Courier New", "monospace"],
+                        display: ["Arial", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f5f3ee;
+            color: #181818;
+            font-family: Arial, sans-serif;
+        }
+
+        .technical-label {
+            font-family: "Courier New", monospace;
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            font-weight: bold;
+        }
+
+        .corner-mark {
+            position: relative;
+        }
+
+        .corner-mark::before,
+        .corner-mark::after {
+            content: "";
+            position: absolute;
+            width: 9px;
+            height: 9px;
+            border-color: #2563eb;
+            pointer-events: none;
+        }
+
+        .corner-mark::before {
+            top: -1px;
+            left: -1px;
+            border-top: 2px solid;
+            border-left: 2px solid;
+        }
+
+        .corner-mark::after {
+            bottom: -1px;
+            right: -1px;
+            border-bottom: 2px solid;
+            border-right: 2px solid;
+        }
+
+        .order-card {
+            border: 1px solid #d6d0c6;
+            background: #ffffff;
+            padding: 30px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .order-card:hover {
+            border-color: #2563eb;
+            box-shadow: 8px 8px 0 rgba(37, 99, 235, 0.08);
+        }
+
+        .shopping-button {
+            background: #181818;
+            color: white;
+            border: 1px solid #181818;
+            transition: all 0.3s ease;
+        }
+
+        .shopping-button:hover {
+            background: #2563eb;
+            border-color: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .back-button {
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            color: #2563eb;
+        }
+
+        .grid-pattern {
+            background-image:
+                linear-gradient(rgba(24, 24, 24, 0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(24, 24, 24, 0.035) 1px, transparent 1px);
+            background-size: 25px 25px;
+        }
+    </style>
+</head>
+
+<body class="grid-pattern min-h-screen">
+
+    <!-- TOP BENEFITS BAR -->
+    <div class="bg-[#181818] text-white px-6 py-3">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between gap-3 technical-label">
+            <span>FREE DELIVERY ON ORDERS OVER ₹999</span>
+            <span class="text-cyan-300">7 DAYS EASY RETURNS</span>
+            <span>100% ORIGINAL PRODUCTS</span>
+        </div>
+    </div>
+
+    <!-- HEADER -->
+    <header class="bg-vellum border-b border-suture px-6 py-6">
+        <div class="max-w-7xl mx-auto flex justify-between items-center gap-5">
+
+            <a href="{% url 'home' %}"
+               class="text-xl md:text-2xl font-black tracking-widest flex items-center gap-2">
+                <span class="text-electric">⚡</span>
+                ELECTROCART
+            </a>
+
+            <a href="{% url 'home' %}"
+               class="back-button technical-label flex items-center gap-2">
+                <span>←</span>
+                BACK HOME
+            </a>
+
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-7xl mx-auto px-6 py-12 md:py-20">
+
+        <!-- PAGE LABEL -->
+        <div class="flex items-center gap-3 mb-5">
+            <span class="w-8 h-px bg-electric"></span>
+
+            <p class="technical-label text-electric">
+                // ACCOUNT DOSSIER 02
+            </p>
+
+            <span class="text-xs font-mono text-silt">
+                [ ORDERS ]
+            </span>
+        </div>
+
+        <!-- TITLE -->
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+
+            <div>
+                <h1 class="text-5xl md:text-7xl font-black tracking-tight leading-none">
+                    YOUR
+                    <span class="text-electric">ORDERS.</span>
+                </h1>
+
+                <p class="mt-5 text-sm md:text-base text-silt max-w-xl leading-relaxed">
+                    Review your acquisition history and track your ElectroCart purchases.
+                    Every order, organized in one place.
+                </p>
+            </div>
+
+            <div class="technical-label text-silt">
+                EC / ORDER SYSTEM
+            </div>
+
+        </div>
+
+        <!-- ORDER CARD -->
+        <section class="order-card corner-mark">
+
+            <!-- CARD HEADER -->
+            <div class="flex flex-col md:flex-row md:items-center
+                        md:justify-between gap-4 mb-8">
+
+                <div>
+                    <p class="technical-label text-electric mb-3">
+                        STATUS / EMPTY
+                    </p>
+
+                    <h2 class="text-2xl md:text-3xl font-black tracking-tight">
+                        ORDER HISTORY
+                    </h2>
+                </div>
+
+                <div class="border border-suture px-4 py-3">
+                    <p class="technical-label text-silt">
+                        TOTAL ORDERS
+                    </p>
+
+                    <p class="text-2xl font-black mt-1">
+                        00
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- DIVIDER -->
+            <div class="border-t border-suture mb-8"></div>
+
+            <!-- EMPTY STATE -->
+            <div class="py-8 md:py-14 text-center">
+
+                <div class="text-6xl md:text-7xl text-electric mb-6">
+                    ◫
+                </div>
+
+                <h3 class="text-xl md:text-2xl font-black tracking-wide mb-3">
+                    NO ORDERS YET
+                </h3>
+
+                <p class="text-sm text-silt max-w-md mx-auto leading-relaxed">
+                    Your order history is currently empty.
+                    Explore our collection and begin building your technology setup.
+                </p>
+
+                <a href="{% url 'home' %}"
+                   class="shopping-button inline-flex items-center
+                          justify-center gap-8 mt-8 px-7 py-4
+                          technical-label">
+                    <span>START SHOPPING</span>
+                    <span class="text-cyan-300">→</span>
+                </a>
+
+            </div>
+
+            <!-- CARD FOOTER -->
+            <div class="border-t border-suture pt-5 mt-5
+                        flex flex-wrap justify-between gap-3
+                        technical-label text-silt">
+
+                <span>EC // ATELIER</span>
+
+                <span class="text-electric">
+                    SECURE ORDER SYSTEM
+                </span>
+
+            </div>
+
+        </section>
+
+        <!-- BOTTOM INFORMATION -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+
+            <div class="border border-suture bg-white px-5 py-6">
+                <p class="technical-label text-electric mb-3">
+                    01 / DISCOVER
+                </p>
+
+                <h3 class="font-bold text-lg">
+                    Explore Products
+                </h3>
+
+                <p class="text-sm text-silt mt-2">
+                    Discover curated technology and accessories.
+                </p>
+            </div>
+
+            <div class="border border-suture bg-white px-5 py-6">
+                <p class="technical-label text-electric mb-3">
+                    02 / SELECT
+                </p>
+
+                <h3 class="font-bold text-lg">
+                    Build Your Cart
+                </h3>
+
+                <p class="text-sm text-silt mt-2">
+                    Choose the products that fit your setup.
+                </p>
+            </div>
+
+            <div class="border border-suture bg-white px-5 py-6">
+                <p class="technical-label text-electric mb-3">
+                    03 / ACQUIRE
+                </p>
+
+                <h3 class="font-bold text-lg">
+                    Track Your Orders
+                </h3>
+
+                <p class="text-sm text-silt mt-2">
+                    Your purchases will appear here after checkout.
+                </p>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-suture px-6 py-8 mt-10">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row
+                    justify-between gap-4 technical-label text-silt">
+
+            <span>© 2026 ELECTROCART</span>
+
+            <span>SMART TECH. SMARTER YOU.</span>
+
+            <span class="text-electric">SYSTEM ONLINE //</span>
+
+        </div>
+    </footer>
+
+</body>
+</html>
