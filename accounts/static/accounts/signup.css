@@ -1,0 +1,1141 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+body {
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background: #020408;
+
+    color: white;
+
+    min-height: 100vh;
+
+}
+
+
+/* =========================
+   PAGE
+========================= */
+
+.page {
+
+    min-height: 92vh;
+
+    display: flex;
+
+    overflow: hidden;
+
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.hero-section {
+
+    width: 50%;
+
+    min-height: 100vh;
+
+    position: relative;
+
+    overflow: hidden;
+
+    background:
+
+        radial-gradient(
+            circle at 70% 60%,
+            rgba(0, 110, 255, .20),
+            transparent 35%
+        ),
+
+        linear-gradient(
+            135deg,
+            #020305,
+            #070d16 55%,
+            #020305
+        );
+
+    border-right:
+        1px solid
+        rgba(0, 140, 255, .25);
+
+}
+
+
+/* BLUE GLOW */
+
+.hero-section::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 500px;
+
+    height: 500px;
+
+    background: #006eff;
+
+    filter: blur(180px);
+
+    opacity: .15;
+
+    bottom: -250px;
+
+    left: 20%;
+
+}
+
+
+/* CYAN GLOW */
+
+.hero-section::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 400px;
+
+    height: 400px;
+
+    background: #00c8ff;
+
+    filter: blur(180px);
+
+    opacity: .12;
+
+    top: -200px;
+
+    right: -100px;
+
+}
+
+
+/* =========================
+   BRAND
+========================= */
+
+.brand {
+
+    position: relative;
+
+    z-index: 5;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    padding: 45px 55px;
+
+}
+
+
+.cart-logo {
+
+    width: 55px;
+
+    height: 55px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 15px;
+
+    font-size: 28px;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #006eff,
+            #00c8ff
+        );
+
+    box-shadow:
+
+        0 0 20px
+        rgba(0, 140, 255, .6);
+
+}
+
+
+.brand h1 {
+
+    font-size: 28px;
+
+    font-style: italic;
+
+    letter-spacing: 1px;
+
+}
+
+
+.brand h1 span {
+
+    color: #009dff;
+
+}
+
+
+.brand p {
+
+    color: #8996a6;
+
+    margin-top: 4px;
+
+    font-size: 13px;
+
+}
+
+
+/* =========================
+   HERO CONTENT
+========================= */
+
+.hero-content {
+
+    position: relative;
+
+    z-index: 5;
+
+    padding: 70px 55px 0;
+
+    max-width: 620px;
+
+}
+
+
+.small-title {
+
+    color: #00aaff;
+
+    font-weight: bold;
+
+    letter-spacing: 4px;
+
+    font-size: 13px;
+
+    margin-bottom: 20px;
+
+}
+
+
+.hero-content h2 {
+
+    font-size:
+        clamp(
+            45px,
+            5vw,
+            76px
+        );
+
+    line-height: .92;
+
+    font-style: italic;
+
+    font-weight: 900;
+
+}
+
+
+.hero-content h2 span {
+
+    color: #008cff;
+
+    text-shadow:
+
+        0 0 25px
+        rgba(0, 140, 255, .45);
+
+}
+
+
+.description {
+
+    color: #a5afbb;
+
+    line-height: 1.7;
+
+    max-width: 500px;
+
+    margin-top: 28px;
+
+    font-size: 16px;
+
+}
+
+
+/* =========================
+   FEATURES
+========================= */
+
+.features {
+
+    display: flex;
+
+    gap: 15px;
+
+    margin-top: 40px;
+
+}
+
+
+.feature {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    padding: 13px 16px;
+
+    background:
+
+        rgba(255,255,255,.025);
+
+    border:
+
+        1px solid
+        rgba(0,140,255,.12);
+
+    border-radius: 12px;
+
+    backdrop-filter: blur(10px);
+
+}
+
+
+.feature span {
+
+    color: #00aaff;
+
+    font-size: 22px;
+
+}
+
+
+.feature strong {
+
+    display: block;
+
+    font-size: 13px;
+
+}
+
+
+.feature small {
+
+    color: #6f7b89;
+
+    font-size: 10px;
+
+}
+
+
+/* =========================
+   TECH SHOWCASE
+========================= */
+
+.tech-showcase {
+
+    position: absolute;
+
+    bottom: 0;
+
+    left: 0;
+
+    width: 100%;
+
+    height: 38%;
+
+    z-index: 2;
+
+}
+
+
+.tech-showcase::after {
+
+    content: "";
+
+    position: absolute;
+
+    bottom: 20px;
+
+    left: 10%;
+
+    width: 80%;
+
+    height: 3px;
+
+    background:
+
+        linear-gradient(
+            90deg,
+            transparent,
+            #006eff,
+            #00c8ff,
+            #006eff,
+            transparent
+        );
+
+    box-shadow:
+
+        0 0 25px
+        #008cff;
+
+}
+
+
+.device {
+
+    position: absolute;
+
+    font-size: 75px;
+
+    filter:
+
+        drop-shadow(
+            0 0 18px
+            rgba(0,140,255,.5)
+        );
+
+    animation:
+
+        float 4s
+        ease-in-out
+        infinite;
+
+}
+
+
+.device-1 {
+
+    left: 8%;
+    bottom: 50px;
+
+}
+
+
+.device-2 {
+
+    left: 35%;
+    bottom: 90px;
+
+    animation-delay: .7s;
+
+}
+
+
+.device-3 {
+
+    left: 57%;
+    bottom: 40px;
+
+    animation-delay: 1.2s;
+
+}
+
+
+.device-4 {
+
+    right: 15%;
+    bottom: 110px;
+
+    animation-delay: 1.8s;
+
+}
+
+
+.device-5 {
+
+    right: 3%;
+    bottom: 30px;
+
+    animation-delay: 2.3s;
+
+}
+
+
+@keyframes float {
+
+    0%,
+    100% {
+
+        transform:
+            translateY(0);
+
+    }
+
+    50% {
+
+        transform:
+            translateY(-15px);
+
+    }
+
+}
+
+
+.lightning {
+
+    position: absolute;
+
+    left: 48%;
+
+    bottom: 20%;
+
+    color: #009dff;
+
+    font-size: 120px;
+
+    opacity: .18;
+
+    transform: rotate(-10deg);
+
+}
+
+
+/* =========================
+   SIGNUP SECTION
+========================= */
+
+.signup-section {
+
+    width: 50%;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 35px;
+
+    background:
+
+        radial-gradient(
+            circle at 50% 40%,
+            rgba(0,100,255,.09),
+            transparent 40%
+        ),
+
+        #05080d;
+
+}
+
+
+/* =========================
+   CARD
+========================= */
+
+.signup-card {
+
+    width: 100%;
+
+    max-width: 520px;
+
+    padding: 38px;
+
+    border-radius: 25px;
+
+    background:
+
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.045),
+            rgba(255,255,255,.012)
+        );
+
+    border:
+
+        1px solid
+        rgba(0,140,255,.15);
+
+    box-shadow:
+
+        0 30px 80px
+        rgba(0,0,0,.6),
+
+        inset 0 1px 0
+        rgba(255,255,255,.05);
+
+    backdrop-filter: blur(20px);
+
+}
+
+
+/* =========================
+   HEADING
+========================= */
+
+.signup-heading {
+
+    text-align: center;
+
+    margin-bottom: 25px;
+
+}
+
+
+.signup-heading h2 {
+
+    font-size: 32px;
+
+}
+
+
+.signup-heading p {
+
+    color: #858f9d;
+
+    margin-top: 8px;
+
+}
+
+
+.signup-heading span {
+
+    color: #009dff;
+
+}
+
+
+/* =========================
+   TABS
+========================= */
+
+.tabs {
+
+    display: flex;
+
+    border:
+
+        1px solid
+        #202b36;
+
+    border-radius: 13px;
+
+    overflow: hidden;
+
+    margin-bottom: 25px;
+
+}
+
+
+.tab {
+
+    width: 50%;
+
+    padding: 14px;
+
+    text-align: center;
+
+    text-decoration: none;
+
+    border: none;
+
+    background: transparent;
+
+    color: #8993a0;
+
+    font-size: 14px;
+
+    cursor: pointer;
+
+}
+
+
+.tab.active {
+
+    color: #009dff;
+
+    background:
+
+        rgba(0,130,255,.08);
+
+    box-shadow:
+
+        inset 0 -2px
+        #008cff;
+
+}
+
+
+/* =========================
+   INPUT
+========================= */
+
+.input-group {
+
+    margin-bottom: 14px;
+
+}
+
+
+.input-group label {
+
+    display: block;
+
+    margin-bottom: 7px;
+
+    color: #aab3bf;
+
+    font-size: 12px;
+
+}
+
+
+.input-box {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    border:
+
+        1px solid
+        #202a35;
+
+    background: #080d13;
+
+    border-radius: 11px;
+
+    padding: 0 14px;
+
+    transition: .3s;
+
+}
+
+
+.input-box:focus-within {
+
+    border-color: #008cff;
+
+    box-shadow:
+
+        0 0 0 3px
+        rgba(0,140,255,.08),
+
+        0 0 20px
+        rgba(0,140,255,.08);
+
+}
+
+
+.input-box span {
+
+    color: #009dff;
+
+}
+
+
+.input-box input {
+
+    width: 100%;
+
+    padding: 14px 0;
+
+    background: transparent;
+
+    border: none;
+
+    outline: none;
+
+    color: white;
+
+    font-size: 13px;
+
+}
+
+
+.input-box input::placeholder {
+
+    color: #515c68;
+
+}
+
+
+.show-password {
+
+    background: none;
+
+    border: none;
+
+    color: #66717d;
+
+    cursor: pointer;
+
+}
+
+
+/* =========================
+   TERMS
+========================= */
+
+.terms {
+
+    margin: 12px 0;
+
+    color: #737e8b;
+
+    font-size: 11px;
+
+}
+
+
+.terms label {
+
+    display: flex;
+
+    align-items: flex-start;
+
+    gap: 8px;
+
+}
+
+
+.terms input {
+
+    margin-top: 2px;
+
+    accent-color: #008cff;
+
+}
+
+
+.terms a {
+
+    color: #009dff;
+
+    text-decoration: none;
+
+}
+
+
+/* =========================
+   ERROR
+========================= */
+
+.error-message {
+
+    color: #ff5f65;
+
+    background:
+
+        rgba(255,0,0,.07);
+
+    border:
+
+        1px solid
+        rgba(255,0,0,.15);
+
+    padding: 10px;
+
+    border-radius: 8px;
+
+    font-size: 11px;
+
+    margin-bottom: 12px;
+
+}
+
+
+/* =========================
+   BUTTON
+========================= */
+
+.signup-button {
+
+    width: 100%;
+
+    border: none;
+
+    padding: 15px;
+
+    border-radius: 12px;
+
+    cursor: pointer;
+
+    color: white;
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 20px;
+
+    background:
+
+        linear-gradient(
+            100deg,
+            #0055ff,
+            #008cff,
+            #00c8ff
+        );
+
+    box-shadow:
+
+        0 8px 25px
+        rgba(0,120,255,.25);
+
+    transition: .3s;
+
+}
+
+
+.signup-button:hover {
+
+    transform:
+        translateY(-3px);
+
+    box-shadow:
+
+        0 12px 35px
+        rgba(0,130,255,.45);
+
+}
+
+
+.signup-button strong {
+
+    font-size: 21px;
+
+}
+
+
+/* =========================
+   SECURITY
+========================= */
+
+.secure-message {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    margin-top: 20px;
+
+    padding: 14px;
+
+    border-radius: 12px;
+
+    background:
+
+        rgba(0,130,255,.035);
+
+    border:
+
+        1px solid
+        rgba(0,130,255,.08);
+
+}
+
+
+.shield {
+
+    width: 38px;
+
+    height: 38px;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    border-radius: 50%;
+
+    color: #00aaff;
+
+    border:
+
+        1px solid
+        #008cff;
+
+}
+
+
+.secure-message strong {
+
+    font-size: 12px;
+
+}
+
+
+.secure-message p {
+
+    color: #687482;
+
+    font-size: 10px;
+
+    margin-top: 3px;
+
+}
+
+
+/* =========================
+   LOGIN LINK
+========================= */
+
+.login-text {
+
+    text-align: center;
+
+    color: #707b88;
+
+    font-size: 12px;
+
+    margin-top: 20px;
+
+}
+
+
+.login-text a {
+
+    color: #009dff;
+
+    text-decoration: none;
+
+    font-weight: bold;
+
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+footer {
+
+    min-height: 8vh;
+
+    background: #020408;
+
+    border-top:
+
+        1px solid
+        #111a23;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 35px;
+
+    flex-wrap: wrap;
+
+    padding: 15px;
+
+    color: #626d79;
+
+    font-size: 11px;
+
+}
+
+
+footer strong {
+
+    color: #009dff;
+
+}
+
+
+footer p {
+
+    width: 100%;
+
+    text-align: center;
+
+}
+
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 1000px) {
+
+    .page {
+
+        flex-direction: column;
+
+    }
+
+    .hero-section,
+    .signup-section {
+
+        width: 100%;
+
+    }
+
+    .hero-section {
+
+        min-height: 650px;
+
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .hero-content {
+
+        padding: 40px 25px;
+
+    }
+
+    .brand {
+
+        padding: 25px;
+
+    }
+
+    .features {
+
+        flex-wrap: wrap;
+
+    }
+
+    .signup-card {
+
+        padding: 25px 20px;
+
+    }
+
+    .hero-content h2 {
+
+        font-size: 45px;
+
+    }
+
+}

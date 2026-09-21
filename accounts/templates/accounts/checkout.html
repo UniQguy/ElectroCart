@@ -1,0 +1,2072 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ElectroCart | Finalize Acquisition</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --paper: #f4f1e8;
+            --paper-light: #faf8f1;
+            --ink: #151515;
+            --muted: #77736a;
+            --line: #d8d2c5;
+            --orange: #c95d3c;
+            --orange-light: #e0714f;
+            --green: #47764f;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                linear-gradient(rgba(0,0,0,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,0,0,0.025) 1px, transparent 1px),
+                var(--paper);
+
+            background-size: 32px 32px;
+            color: var(--ink);
+
+            font-family: "Courier New", monospace;
+
+            overflow-x: hidden;
+        }
+
+        /* =========================================
+           SCANNING ORANGE LINE
+        ========================================= */
+
+        .scan-line {
+            position: fixed;
+            left: 0;
+            top: -2px;
+
+            width: 100%;
+            height: 2px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent 0%,
+                    rgba(201, 93, 60, 0.15) 15%,
+                    var(--orange) 50%,
+                    rgba(201, 93, 60, 0.15) 85%,
+                    transparent 100%
+                );
+
+            box-shadow:
+                0 0 8px rgba(201, 93, 60, 0.45),
+                0 0 18px rgba(201, 93, 60, 0.18);
+
+            z-index: 9999;
+            pointer-events: none;
+
+            animation: scanDown 4.5s linear infinite;
+        }
+
+        @keyframes scanDown {
+
+            0% {
+                top: -2px;
+                opacity: 0;
+            }
+
+            8% {
+                opacity: 1;
+            }
+
+            92% {
+                opacity: 1;
+            }
+
+            100% {
+                top: 100vh;
+                opacity: 0;
+            }
+        }
+
+
+        /* =========================================
+           MAIN FRAME
+        ========================================= */
+
+        .site {
+            width: calc(100% - 28px);
+            min-height: calc(100vh - 28px);
+
+            margin: 14px;
+
+            border: 1px solid #bcb6aa;
+
+            position: relative;
+
+            background:
+                linear-gradient(
+                    rgba(255,255,255,0.18),
+                    rgba(255,255,255,0.18)
+                );
+
+            padding-bottom: 30px;
+        }
+
+
+        /* =========================================
+           CORNER MARKS
+        ========================================= */
+
+        .corner {
+            position: absolute;
+            width: 9px;
+            height: 9px;
+            border-color: #8e887e;
+            border-style: solid;
+            z-index: 10;
+        }
+
+        .corner.tl {
+            top: -1px;
+            left: -1px;
+            border-width: 1px 0 0 1px;
+        }
+
+        .corner.tr {
+            top: -1px;
+            right: -1px;
+            border-width: 1px 1px 0 0;
+        }
+
+        .corner.bl {
+            bottom: -1px;
+            left: -1px;
+            border-width: 0 0 1px 1px;
+        }
+
+        .corner.br {
+            bottom: -1px;
+            right: -1px;
+            border-width: 0 1px 1px 0;
+        }
+
+
+        /* =========================================
+           HEADER
+        ========================================= */
+
+        .header {
+            height: 66px;
+
+            border-bottom: 1px solid var(--line);
+
+            display: flex;
+            align-items: center;
+
+            padding: 0 30px;
+
+            gap: 18px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+
+            min-width: 230px;
+        }
+
+        .brand-icon {
+            width: 25px;
+            height: 25px;
+
+            background: var(--ink);
+            color: var(--orange);
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            font-size: 15px;
+            font-weight: bold;
+
+            margin-right: 10px;
+
+            border: 1px solid #343434;
+        }
+
+        .brand-name {
+            font-family: Arial, sans-serif;
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+        }
+
+        .brand-sub {
+            display: block;
+
+            font-size: 8px;
+            letter-spacing: 1px;
+
+            color: #77736a;
+
+            margin-top: 2px;
+        }
+
+
+        /* =========================================
+           HEADER MODULES
+        ========================================= */
+
+        .header-module {
+
+            height: 38px;
+
+            border: 1px solid var(--line);
+
+            padding: 5px 17px;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            min-width: 100px;
+
+            text-align: center;
+        }
+
+        .module-title {
+
+            font-size: 8px;
+
+            color: var(--muted);
+
+            letter-spacing: 1px;
+        }
+
+        .module-value {
+
+            font-size: 9px;
+
+            font-weight: bold;
+
+            margin-top: 2px;
+        }
+
+        .module-value.orange {
+            color: var(--orange);
+        }
+
+        .currency {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+        }
+
+        .currency span {
+            font-size: 8px;
+            color: #888;
+        }
+
+        .currency .active {
+            color: var(--ink);
+            font-weight: bold;
+        }
+
+
+        /* =========================================
+           BAG
+        ========================================= */
+
+        .bag {
+
+            margin-left: auto;
+
+            background: var(--ink);
+
+            color: white;
+
+            border: none;
+
+            height: 34px;
+
+            padding: 0 18px;
+
+            font-family: "Courier New", monospace;
+
+            font-size: 10px;
+
+            font-weight: bold;
+
+            letter-spacing: 1px;
+        }
+
+        .bag-count {
+
+            display: inline-flex;
+
+            width: 17px;
+            height: 17px;
+
+            border-radius: 50%;
+
+            background: var(--orange);
+
+            align-items: center;
+            justify-content: center;
+
+            margin-left: 5px;
+
+            font-size: 8px;
+        }
+
+
+        /* =========================================
+           CHECKOUT AREA
+        ========================================= */
+
+        .checkout {
+
+            display: grid;
+
+            grid-template-columns: 1fr 1.08fr;
+
+            gap: 40px;
+
+            padding: 38px 45px 25px;
+        }
+
+
+        /* =========================================
+           LEFT SIDE
+        ========================================= */
+
+        .checkout-intro {
+
+            padding-right: 20px;
+        }
+
+        .section-code {
+
+            font-size: 10px;
+
+            color: #716c62;
+
+            letter-spacing: 1px;
+
+            margin-bottom: 10px;
+        }
+
+        .section-code::before {
+            content: "// ";
+        }
+
+        .checkout-intro h1 {
+
+            font-family: Georgia, "Times New Roman", serif;
+
+            font-weight: 400;
+
+            font-size: clamp(48px, 5vw, 72px);
+
+            line-height: 0.9;
+
+            letter-spacing: -3px;
+
+            max-width: 600px;
+
+            margin-bottom: 22px;
+        }
+
+        .checkout-intro h1 span {
+            color: var(--orange);
+        }
+
+        .description {
+
+            max-width: 470px;
+
+            font-family: Arial, sans-serif;
+
+            font-size: 13px;
+
+            line-height: 1.65;
+
+            color: #77736a;
+        }
+
+
+        /* =========================================
+           ORDER SUMMARY
+        ========================================= */
+
+        .order-summary {
+
+            margin-top: 35px;
+
+            border: 1px solid var(--line);
+
+            background: rgba(255,255,255,0.22);
+        }
+
+        .summary-header {
+
+            border-bottom: 1px solid var(--line);
+
+            padding: 10px 13px;
+
+            color: var(--orange);
+
+            font-size: 10px;
+
+            letter-spacing: 1px;
+        }
+
+        .summary-product {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 16px;
+
+            padding: 15px;
+
+            border-bottom: 1px solid var(--line);
+        }
+
+        .product-image {
+
+            width: 75px;
+            height: 65px;
+
+            border: 1px solid var(--line);
+
+            background: #ece9df;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            overflow: hidden;
+        }
+
+        .product-image img {
+
+            width: 100%;
+            height: 100%;
+
+            object-fit: contain;
+        }
+
+        .product-placeholder {
+
+            font-size: 25px;
+            color: #777;
+        }
+
+        .product-details {
+            flex: 1;
+        }
+
+        .product-name {
+
+            font-family: Arial, sans-serif;
+
+            font-size: 13px;
+
+            font-weight: bold;
+
+            margin-bottom: 5px;
+        }
+
+        .product-description {
+
+            font-size: 8px;
+
+            color: #77736a;
+
+            line-height: 1.5;
+        }
+
+        .product-price {
+
+            font-size: 11px;
+
+            font-weight: bold;
+        }
+
+        .summary-row {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            padding: 9px 14px;
+
+            font-size: 10px;
+        }
+
+        .summary-total {
+
+            border-top: 1px solid var(--line);
+
+            color: var(--orange);
+
+            font-size: 12px;
+
+            font-weight: bold;
+
+            padding-top: 12px;
+
+            padding-bottom: 12px;
+        }
+
+
+        /* =========================================
+           PAYMENT PANEL
+        ========================================= */
+
+        .payment-panel {
+
+            border: 1px solid #bdb7aa;
+
+            background: rgba(255,255,255,0.16);
+
+            padding: 18px;
+        }
+
+        .panel-code {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            border-bottom: 1px solid var(--line);
+
+            padding-bottom: 10px;
+
+            margin-bottom: 17px;
+
+            font-size: 10px;
+
+            letter-spacing: 1px;
+        }
+
+        .panel-code span {
+            color: var(--orange);
+        }
+
+
+        /* =========================================
+           PAYMENT METHODS
+        ========================================= */
+
+        .method-label {
+
+            font-size: 9px;
+
+            font-weight: bold;
+
+            letter-spacing: 1px;
+
+            margin-bottom: 8px;
+        }
+
+        .payment-methods {
+
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 8px;
+
+            margin-bottom: 20px;
+        }
+
+        .method {
+
+            border: 1px solid var(--line);
+
+            height: 38px;
+
+            background: transparent;
+
+            font-family: "Courier New", monospace;
+
+            font-size: 9px;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .method:hover {
+
+            border-color: var(--orange);
+        }
+
+        .method.active {
+
+            background: var(--ink);
+
+            color: white;
+
+            border-color: var(--ink);
+        }
+
+
+        /* =========================================
+           PAYMENT SECTIONS
+        ========================================= */
+
+        .payment-section {
+            display: none;
+        }
+
+        .payment-section.active {
+            display: block;
+        }
+
+
+        /* =========================================
+           FORM
+        ========================================= */
+
+        .field {
+            margin-bottom: 15px;
+        }
+
+        .field-row {
+
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 12px;
+        }
+
+        .field label {
+
+            display: block;
+
+            font-size: 9px;
+
+            font-weight: bold;
+
+            margin-bottom: 6px;
+
+            letter-spacing: 0.5px;
+        }
+
+        .input {
+
+            width: 100%;
+
+            height: 39px;
+
+            border: 1px solid #cec8bb;
+
+            background: rgba(255,255,255,0.38);
+
+            padding: 0 11px;
+
+            outline: none;
+
+            font-family: "Courier New", monospace;
+
+            font-size: 10px;
+
+            color: var(--ink);
+
+            transition: 0.2s;
+        }
+
+        .input:focus {
+
+            border-color: var(--orange);
+
+            box-shadow: 0 0 0 1px rgba(201,93,60,0.12);
+        }
+
+        .input::placeholder {
+            color: #99948b;
+        }
+
+
+        /* =========================================
+           UPI
+        ========================================= */
+
+        .upi-box {
+
+            border: 1px solid var(--line);
+
+            padding: 15px;
+
+            margin-bottom: 15px;
+        }
+
+        .upi-title {
+
+            font-size: 10px;
+
+            margin-bottom: 12px;
+
+            color: var(--orange);
+
+            font-weight: bold;
+        }
+
+        .upi-options {
+
+            display: flex;
+
+            gap: 8px;
+
+            flex-wrap: wrap;
+        }
+
+        .upi-option {
+
+            border: 1px solid var(--line);
+
+            padding: 10px 15px;
+
+            cursor: pointer;
+
+            font-size: 9px;
+
+            background: rgba(255,255,255,0.2);
+        }
+
+        .upi-option:hover {
+
+            border-color: var(--orange);
+        }
+
+
+        /* =========================================
+           NET BANKING
+        ========================================= */
+
+        .bank-grid {
+
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 8px;
+
+            margin-bottom: 15px;
+        }
+
+        .bank {
+
+            border: 1px solid var(--line);
+
+            padding: 13px;
+
+            font-size: 9px;
+
+            cursor: pointer;
+
+            background: transparent;
+        }
+
+        .bank:hover {
+
+            border-color: var(--orange);
+        }
+
+
+        /* =========================================
+           BILLING
+        ========================================= */
+
+        .billing-title {
+
+            border-top: 1px solid var(--line);
+
+            padding-top: 17px;
+
+            margin-top: 17px;
+
+            margin-bottom: 13px;
+
+            font-size: 10px;
+
+            color: var(--orange);
+
+            letter-spacing: 1px;
+        }
+
+
+        /* =========================================
+           SAVE CARD
+        ========================================= */
+
+        .save-card {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            font-size: 9px;
+
+            margin: 12px 0 15px;
+        }
+
+        .save-card input {
+
+            accent-color: var(--ink);
+        }
+
+
+        /* =========================================
+           AUTHORIZE BUTTON
+        ========================================= */
+
+        .authorize {
+
+            width: 100%;
+
+            height: 46px;
+
+            background: var(--ink);
+
+            color: white;
+
+            border: 2px solid var(--ink);
+
+            position: relative;
+
+            font-family: "Courier New", monospace;
+
+            font-size: 11px;
+
+            font-weight: bold;
+
+            letter-spacing: 1px;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+        .authorize::before,
+        .authorize::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 8px;
+            height: 8px;
+
+            border-color: var(--orange);
+
+            border-style: solid;
+        }
+
+        .authorize::before {
+
+            left: -2px;
+            top: -2px;
+
+            border-width: 2px 0 0 2px;
+        }
+
+        .authorize::after {
+
+            right: -2px;
+            bottom: -2px;
+
+            border-width: 0 2px 2px 0;
+        }
+
+        .authorize:hover {
+
+            background: var(--orange);
+
+            border-color: var(--orange);
+        }
+
+
+        /* =========================================
+           SECURITY
+        ========================================= */
+
+        .security {
+
+            text-align: center;
+
+            margin-top: 12px;
+
+            font-size: 8px;
+
+            color: var(--green);
+
+            letter-spacing: 0.7px;
+        }
+
+
+        /* =========================================
+           FOOTER
+        ========================================= */
+
+        .footer {
+
+            border-top: 1px solid var(--line);
+
+            margin: 0 30px;
+
+            padding-top: 12px;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            font-size: 8px;
+
+            color: #77736a;
+        }
+
+
+        /* =========================================
+           SUCCESS OVERLAY
+        ========================================= */
+
+        .success-overlay {
+
+            position: fixed;
+
+            inset: 0;
+
+            background: rgba(20,20,20,0.94);
+
+            display: none;
+
+            align-items: center;
+
+            justify-content: center;
+
+            z-index: 10000;
+        }
+
+        .success-overlay.show {
+
+            display: flex;
+        }
+
+        .success-box {
+
+            width: min(500px, 90%);
+
+            background: var(--paper);
+
+            border: 1px solid #aaa;
+
+            padding: 35px;
+
+            text-align: center;
+
+            position: relative;
+        }
+
+        .success-icon {
+
+            width: 55px;
+            height: 55px;
+
+            border: 1px solid var(--orange);
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            margin: 0 auto 20px;
+
+            font-size: 25px;
+
+            color: var(--orange);
+        }
+
+        .success-box h2 {
+
+            font-family: Georgia, "Times New Roman", serif;
+
+            font-weight: 400;
+
+            font-size: 32px;
+
+            margin-bottom: 10px;
+        }
+
+        .success-box h2 span {
+            color: var(--orange);
+        }
+
+        .success-box p {
+
+            font-size: 10px;
+
+            color: #77736a;
+
+            line-height: 1.7;
+
+            margin-bottom: 22px;
+        }
+
+        .return-home {
+
+            display: inline-block;
+
+            padding: 13px 24px;
+
+            background: var(--ink);
+
+            color: white;
+
+            text-decoration: none;
+
+            font-family: "Courier New", monospace;
+
+            font-size: 10px;
+
+            letter-spacing: 1px;
+        }
+
+
+        /* =========================================
+           MOBILE
+        ========================================= */
+
+        @media (max-width: 900px) {
+
+            .header {
+
+                height: auto;
+
+                padding: 15px;
+
+                flex-wrap: wrap;
+            }
+
+            .brand {
+                width: 100%;
+            }
+
+            .header-module {
+                display: none;
+            }
+
+            .bag {
+                margin-left: auto;
+            }
+
+            .checkout {
+
+                grid-template-columns: 1fr;
+
+                padding: 30px 22px;
+            }
+
+            .checkout-intro {
+
+                padding-right: 0;
+            }
+
+            .checkout-intro h1 {
+
+                font-size: 50px;
+            }
+
+        }
+
+
+        @media (max-width: 550px) {
+
+            .site {
+                width: calc(100% - 14px);
+                min-height: calc(100vh - 14px);
+                margin: 7px;
+            }
+
+            .checkout {
+                padding: 25px 15px;
+            }
+
+            .payment-methods {
+
+                grid-template-columns: 1fr;
+            }
+
+            .field-row {
+
+                grid-template-columns: 1fr;
+            }
+
+            .footer {
+
+                margin: 0 15px;
+
+                flex-direction: column;
+
+                gap: 8px;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+<div class="scan-line"></div>
+
+
+<div class="site">
+
+    <div class="corner tl"></div>
+    <div class="corner tr"></div>
+    <div class="corner bl"></div>
+    <div class="corner br"></div>
+
+
+    <!-- =====================================
+         HEADER
+    ====================================== -->
+
+    <header class="header">
+
+        <div class="brand">
+
+            <div class="brand-icon">⚡</div>
+
+            <div>
+                <div class="brand-name">
+                    ELECTROCART
+                </div>
+
+                <span class="brand-sub">
+                    HEAVEN ATELIER
+                </span>
+            </div>
+
+        </div>
+
+
+        <div class="header-module">
+
+            <span class="module-title">
+                REPOSITORY
+            </span>
+
+            <span class="module-value orange">
+                [24]
+            </span>
+
+        </div>
+
+
+        <div class="header-module">
+
+            <span class="module-title">
+                MODE:
+            </span>
+
+            <span class="module-value">
+                [STUDIO]
+            </span>
+
+        </div>
+
+
+        <div class="header-module">
+
+            <div class="currency">
+
+                <span class="active">₹ INR</span>
+                <span>$ USD</span>
+                <span>€ EUR</span>
+                <span>¥ JPY</span>
+
+            </div>
+
+        </div>
+
+
+        <div class="header-module">
+
+            <span class="module-title">
+                TACTILE AUDIO:
+            </span>
+
+            <span class="module-value">
+                OFF
+            </span>
+
+        </div>
+
+
+        <button class="bag">
+            BAG
+            <span class="bag-count">0</span>
+        </button>
+
+    </header>
+
+
+
+    <!-- =====================================
+         CHECKOUT
+    ====================================== -->
+
+    <main class="checkout">
+
+
+        <!-- =================================
+             LEFT
+        ================================== -->
+
+        <section class="checkout-intro">
+
+            <div class="section-code">
+                CHECKOUT 01
+            </div>
+
+
+            <h1>
+                FINALIZE<br>
+                <span>ACQUISITION.</span>
+            </h1>
+
+
+            <p class="description">
+
+                Secure payment gateway for your
+                ElectroCart order. Your payment
+                information is encrypted and protected.
+
+            </p>
+
+
+
+            <!-- ORDER SUMMARY -->
+
+            <div class="order-summary">
+                <div class="summary-header">
+                    ORDER SUMMARY
+                </div>
+
+                <div id="checkout-items"></div>
+
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span id="checkout-subtotal">₹ 0</span>
+                </div>
+
+                <div class="summary-row">
+                    <span>Shipping</span>
+                    <span>₹ 0 (Free)</span>
+                </div>
+
+                <div class="summary-row summary-total">
+                    <span>Total</span>
+                    <span id="checkout-total">₹ 0</span>
+                </div>
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================
+             PAYMENT PANEL
+        ================================== -->
+
+        <section class="payment-panel">
+
+
+            <div class="panel-code">
+
+                <strong>
+                    // PAYMENT METHOD
+                </strong>
+
+                <span>
+                    [SECURE]
+                </span>
+
+            </div>
+
+
+            <div class="method-label">
+                SELECT PAYMENT METHOD
+            </div>
+
+
+            <div class="payment-methods">
+
+                <button
+                    type="button"
+                    class="method active"
+                    onclick="selectMethod('card', this)"
+                >
+                    ▣ CARD
+                </button>
+
+                <button
+                    type="button"
+                    class="method"
+                    onclick="selectMethod('upi', this)"
+                >
+                    ◇ UPI
+                </button>
+
+                <button
+                    type="button"
+                    class="method"
+                    onclick="selectMethod('bank', this)"
+                >
+                    ▥ NET BANKING
+                </button>
+
+            </div>
+
+
+
+            <!-- =================================
+                 CARD
+            ================================== -->
+
+            <div
+                id="card"
+                class="payment-section active"
+            >
+
+                <div class="field">
+
+                    <label>
+                        CARD NUMBER
+                    </label>
+
+                    <input
+                        type="text"
+                        class="input"
+                        placeholder="1234 5678 9012 3456"
+                        maxlength="19"
+                        oninput="formatCard(this)"
+                    >
+
+                </div>
+
+
+                <div class="field-row">
+
+                    <div class="field">
+
+                        <label>
+                            EXPIRY DATE
+                        </label>
+
+                        <input
+                            type="text"
+                            class="input"
+                            placeholder="MM / YY"
+                            maxlength="7"
+                        >
+
+                    </div>
+
+
+                    <div class="field">
+
+                        <label>
+                            CVV
+                        </label>
+
+                        <input
+                            type="password"
+                            class="input"
+                            placeholder="123"
+                            maxlength="3"
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================
+                 UPI
+            ================================== -->
+
+            <div
+                id="upi"
+                class="payment-section"
+            >
+
+                <div class="upi-box">
+
+                    <div class="upi-title">
+                        PAY USING UPI
+                    </div>
+
+                    <div class="upi-options">
+
+                        <div class="upi-option">
+                            GPay
+                        </div>
+
+                        <div class="upi-option">
+                            PhonePe
+                        </div>
+
+                        <div class="upi-option">
+                            Paytm
+                        </div>
+
+                        <div class="upi-option">
+                            BHIM
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="field">
+
+                    <label>
+                        UPI ID
+                    </label>
+
+                    <input
+                        type="text"
+                        class="input"
+                        placeholder="yourname@upi"
+                    >
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================
+                 NET BANKING
+            ================================== -->
+
+            <div
+                id="bank"
+                class="payment-section"
+            >
+
+                <div class="upi-box">
+
+                    <div class="upi-title">
+                        SELECT YOUR BANK
+                    </div>
+
+                    <div class="bank-grid">
+
+                        <div class="bank">
+                            STATE BANK OF INDIA
+                        </div>
+
+                        <div class="bank">
+                            HDFC BANK
+                        </div>
+
+                        <div class="bank">
+                            ICICI BANK
+                        </div>
+
+                        <div class="bank">
+                            AXIS BANK
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =================================
+                 BILLING ADDRESS
+            ================================== -->
+
+            <div class="billing-title">
+                BILLING ADDRESS
+            </div>
+
+
+            <div class="field">
+
+                <input
+                    type="text"
+                    name="address"
+                    class="input"
+                    placeholder="123, Central Park Road"
+                    autocomplete="street-address"
+                    required
+                >
+
+            </div>
+
+
+            <!-- =================================
+     CUSTOMER DETAILS
+================================== -->
+
+<div class="billing-title">
+    CUSTOMER DETAILS
+</div>
+
+<div class="field">
+    <input
+        type="text"
+        name="customer_name"
+        class="input"
+        placeholder="FULL NAME"
+        autocomplete="name"
+        required
+    >
+</div>
+
+<div class="field-row">
+
+    <div class="field">
+        <input
+            type="email"
+            name="email"
+            class="input"
+            placeholder="EMAIL ADDRESS"
+            autocomplete="email"
+            required
+        >
+    </div>
+
+    <div class="field">
+        <input
+            type="tel"
+            name="phone"
+            class="input"
+            placeholder="PHONE NUMBER"
+            autocomplete="tel"
+            required
+        >
+    </div>
+
+</div>
+
+
+<!-- =================================
+     BILLING ADDRESS
+================================== -->
+
+<div class="billing-title">
+    BILLING ADDRESS
+</div>
+
+
+            <div class="field-row">
+
+                <div class="field">
+
+                    <input
+                        type="text"
+                        name="city"
+                        class="input"
+                        placeholder="Ahmedabad"
+                        autocomplete="address-level2"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <input
+                        type="text"
+                        name="state"
+                        class="input"
+                        placeholder="Gujarat"
+                        autocomplete="address-level1"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="field">
+
+                    <input
+                        type="text"
+                        name="pincode"
+                        class="input"
+                        placeholder="380009"
+                        autocomplete="postal-code"
+                        maxlength="6"
+                        inputmode="numeric"
+                        required
+                    >
+
+                </div>
+
+            </div>
+
+
+            <label class="save-card">
+
+                <input
+                    type="checkbox"
+                    checked
+                >
+
+                Save payment information for future orders
+
+            </label>
+
+
+
+            <!-- =================================
+                 AUTHORIZE
+            ================================== -->
+
+            {% csrf_token %}
+
+            <button
+                type="button"
+                class="authorize"
+                onclick="authorizePayment()"
+            >
+                AUTHORIZE PAYMENT →
+            </button>
+
+
+            <div class="security">
+
+                🔒 SECURE TRANSACTION &nbsp;|&nbsp;
+                SSL ENCRYPTED
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =====================================
+         FOOTER
+    ====================================== -->
+
+    <footer class="footer">
+
+        <span>
+            © 2026 ELECTROCART HARDWARE LABS PVT LTD.
+            ZERO THIRD-PARTY RUNTIME OVERHEAD.
+        </span>
+
+        <span>
+            ENGINEERED FOR PRODUCTION DEPLOYMENT
+        </span>
+
+    </footer>
+
+</div>
+
+
+
+<!-- =====================================
+     SUCCESS SCREEN
+====================================== -->
+
+<div
+    id="successOverlay"
+    class="success-overlay"
+>
+
+    <div class="success-box">
+
+        <div class="success-icon">
+            ✓
+        </div>
+
+        <h2>
+            ACQUISITION <span>AUTHORIZED.</span>
+        </h2>
+
+        <p>
+            Your order has been successfully initialized.
+            A confirmation reference will be generated
+            once the payment gateway is connected.
+        </p>
+
+        <a
+            href="{% url 'home' %}"
+            class="return-home"
+        >
+            RETURN TO ATELIER →
+        </a>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+    /* =====================================
+       PAYMENT METHOD SWITCH
+    ====================================== */
+
+    function selectMethod(method, button) {
+
+        document
+            .querySelectorAll(".method")
+            .forEach(btn => {
+                btn.classList.remove("active");
+            });
+
+        button.classList.add("active");
+
+
+        document
+            .querySelectorAll(".payment-section")
+            .forEach(section => {
+                section.classList.remove("active");
+            });
+
+
+        document
+            .getElementById(method)
+            .classList.add("active");
+    }
+
+
+
+    /* =====================================
+       CARD NUMBER FORMAT
+    ====================================== */
+
+    function formatCard(input) {
+
+        let value = input.value
+            .replace(/\D/g, "")
+            .substring(0, 16);
+
+        value = value.replace(
+            /(.{4})/g,
+            "$1 "
+        ).trim();
+
+        input.value = value;
+    }
+
+
+
+    /* =====================================
+       LOAD CART FROM BAG
+    ===================================== */
+
+    function loadCheckoutCart() {
+
+        const cart = JSON.parse(
+            localStorage.getItem("ec_cart") || "[]"
+        );
+
+        const container =
+            document.getElementById("checkout-items");
+
+        const subtotalEl =
+            document.getElementById("checkout-subtotal");
+
+        const totalEl =
+            document.getElementById("checkout-total");
+
+        if (!cart.length) {
+            container.innerHTML = `
+                <div style="padding:20px;font-size:10px;">
+                    YOUR BAG IS EMPTY.
+                </div>
+            `;
+
+            subtotalEl.textContent = "₹ 0";
+            totalEl.textContent = "₹ 0";
+            return;
+        }
+
+        let subtotal = 0;
+
+        container.innerHTML = cart.map(item => {
+
+            const itemTotal = item.price * item.qty;
+            subtotal += itemTotal;
+
+            return `
+                <div class="summary-product">
+
+                    <div class="product-image">
+                        <div class="product-placeholder">
+                            ⚡
+                        </div>
+                    </div>
+
+                    <div class="product-details">
+
+                        <div class="product-name">
+    ${item.name}
+</div>
+
+<div class="product-description">
+
+    ${item.variantName ? `
+        VARIANT: ${item.variantName}
+        <br>
+    ` : ""}
+
+    SKU: ${item.sku || "N/A"}
+    <br>
+    Qty: ${item.qty}
+    <br>
+    Unit Price: ₹ ${Number(item.price).toLocaleString("en-IN")}
+
+</div>
+                    </div>
+
+                    <div class="product-price">
+                        ₹ ${itemTotal.toLocaleString("en-IN")}
+                    </div>
+
+                </div>
+            `;
+
+        }).join("");
+
+        subtotalEl.textContent =
+            `₹ ${subtotal.toLocaleString("en-IN")}`;
+
+        totalEl.textContent =
+            `₹ ${subtotal.toLocaleString("en-IN")}`;
+    }
+
+
+    /* LOAD CHECKOUT CART */
+    loadCheckoutCart();
+
+
+    /* =====================================
+       PAYMENT BUTTON
+    ====================================== */
+
+   function validateCustomerDetails() {
+
+    const name = document.querySelector(
+        'input[name="customer_name"]'
+    );
+
+    const email = document.querySelector(
+        'input[name="email"]'
+    );
+
+    const phone = document.querySelector(
+        'input[name="phone"]'
+    );
+
+    const cleanName = name.value.trim();
+    const cleanEmail = email.value.trim();
+    const cleanPhone = phone.value.trim();
+
+    // NAME
+    if (!cleanName) {
+        name.focus();
+        alert("Please enter your full name.");
+        return false;
+    }
+
+    if (cleanName.length < 2) {
+        name.focus();
+        alert("Please enter a valid name.");
+        return false;
+    }
+
+    // EMAIL
+    if (!cleanEmail) {
+        email.focus();
+        alert("Please enter your email address.");
+        return false;
+    }
+
+    const emailPattern =
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailPattern.test(cleanEmail)) {
+        email.focus();
+        alert("Please enter a valid email address.");
+        return false;
+    }
+
+    // PHONE
+    if (!cleanPhone) {
+        phone.focus();
+        alert("Please enter your phone number.");
+        return false;
+    }
+
+    const phonePattern = /^\d{10}$/;
+
+    if (!phonePattern.test(cleanPhone)) {
+        phone.focus();
+        alert("Phone number must contain exactly 10 digits.");
+        return false;
+    }
+
+    return true;
+}
+
+
+   async function authorizePayment() {
+
+    if (!validateCustomerDetails()) {
+        return;
+    }
+
+    const address = document.querySelector(
+        'input[name="address"]'
+    );
+
+    const city = document.querySelector(
+        'input[name="city"]'
+    );
+
+    const state = document.querySelector(
+        'input[name="state"]'
+    );
+
+    const pincode = document.querySelector(
+        'input[name="pincode"]'
+    );
+
+    if (!address.value.trim()) {
+        address.focus();
+        alert("Please enter your address.");
+        return;
+    }
+
+    if (!city.value.trim()) {
+        city.focus();
+        alert("Please enter your city.");
+        return;
+    }
+
+    if (!state.value.trim()) {
+        state.focus();
+        alert("Please enter your state.");
+        return;
+    }
+
+    if (!/^\d{6}$/.test(pincode.value.trim())) {
+        pincode.focus();
+        alert("Pincode must contain exactly 6 digits.");
+        return;
+    }
+
+    const cart = JSON.parse(
+        localStorage.getItem("ec_cart") || "[]"
+    );
+
+    if (!cart.length) {
+        alert("Your bag is empty.");
+        return;
+    }
+
+    const csrfToken = document.querySelector(
+        '[name="csrfmiddlewaretoken"]'
+    ).value;
+
+    const data = {
+        cart: cart,
+
+        customer_name: document.querySelector(
+            'input[name="customer_name"]'
+        ).value.trim(),
+
+        email: document.querySelector(
+            'input[name="email"]'
+        ).value.trim(),
+
+        phone: document.querySelector(
+            'input[name="phone"]'
+        ).value.trim(),
+
+        address: address.value.trim(),
+        city: city.value.trim(),
+        state: state.value.trim(),
+        pincode: pincode.value.trim()
+    };
+
+    try {
+
+        const response = await fetch(
+            "{% url 'checkout' %}",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": csrfToken
+                },
+
+                body: JSON.stringify(data)
+            }
+        );
+
+        const result = await response.json();
+
+        if (!result.success) {
+            alert(result.message);
+            return;
+        }
+
+        // DB order created successfully
+        window.location.href =
+            "{% url 'order_confirmation' %}";
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Unable to create your order. Please try again."
+        );
+    }
+}
+</script>
+
+
+</body>
+</html>

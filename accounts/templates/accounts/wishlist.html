@@ -1,0 +1,1101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Wishlist | ElectroCart</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        vellum: "#f5f3ee",
+                        ink: "#181818",
+                        silt: "#77736c",
+                        suture: "#d6d0c6",
+                        electric: "#2563eb",
+                        cyanGlow: "#06b6d4"
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #f5f3ee;
+            color: #181818;
+            font-family: Arial, sans-serif;
+        }
+
+        .technical-label {
+            font-family: "Courier New", monospace;
+            font-size: 10px;
+            letter-spacing: 0.2em;
+            font-weight: bold;
+        }
+
+        .corner-mark {
+            position: relative;
+        }
+
+        .corner-mark::before,
+        .corner-mark::after {
+            content: "";
+            position: absolute;
+            width: 9px;
+            height: 9px;
+            border-color: #2563eb;
+            pointer-events: none;
+        }
+
+        .corner-mark::before {
+            top: -1px;
+            left: -1px;
+            border-top: 2px solid;
+            border-left: 2px solid;
+        }
+
+        .corner-mark::after {
+            bottom: -1px;
+            right: -1px;
+            border-bottom: 2px solid;
+            border-right: 2px solid;
+        }
+
+        .wishlist-card {
+            border: 1px solid #d6d0c6;
+            background: #ffffff;
+            padding: 30px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .wishlist-card:hover {
+            border-color: #2563eb;
+            box-shadow: 8px 8px 0 rgba(37, 99, 235, 0.08);
+        }
+
+        .explore-button {
+            background: #181818;
+            color: white;
+            border: 1px solid #181818;
+            transition: all 0.3s ease;
+        }
+
+        .explore-button:hover {
+            background: #2563eb;
+            border-color: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .back-button {
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            color: #2563eb;
+        }
+
+        .grid-pattern {
+            background-image:
+                linear-gradient(
+                    rgba(24, 24, 24, 0.035) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(24, 24, 24, 0.035) 1px,
+                    transparent 1px
+                );
+
+            background-size: 25px 25px;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 18px;
+        }
+
+        .remove-button {
+            transition: all 0.3s ease;
+        }
+
+        .remove-button:hover {
+            color: #2563eb;
+            border-color: #2563eb;
+        }
+
+        .remove-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+
+
+<body class="grid-pattern min-h-screen">
+
+
+    <!-- TOP BENEFITS BAR -->
+
+    <div class="bg-[#181818] text-white px-6 py-3">
+
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between gap-3 technical-label">
+
+            <span>
+                FREE DELIVERY ON ORDERS OVER ₹999
+            </span>
+
+            <span class="text-cyan-300">
+                7 DAYS EASY RETURNS
+            </span>
+
+            <span>
+                100% ORIGINAL PRODUCTS
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <!-- HEADER -->
+
+    <header class="bg-vellum border-b border-suture px-6 py-6">
+
+        <div class="max-w-7xl mx-auto flex justify-between items-center gap-5">
+
+            <a href="{% url 'home' %}"
+               class="text-xl md:text-2xl font-black tracking-widest
+                      flex items-center gap-2">
+
+                <span class="text-electric">
+                    ⚡
+                </span>
+
+                ELECTROCART
+
+            </a>
+
+
+            <a href="{% url 'home' %}"
+               class="back-button technical-label flex items-center gap-2">
+
+                <span>
+                    ←
+                </span>
+
+                BACK HOME
+
+            </a>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- MAIN -->
+
+    <main class="max-w-7xl mx-auto px-6 py-12 md:py-20">
+
+
+        <!-- PAGE LABEL -->
+
+        <div class="flex items-center gap-3 mb-5">
+
+            <span class="w-8 h-px bg-electric"></span>
+
+            <p class="technical-label text-electric">
+                // ACCOUNT DOSSIER 03
+            </p>
+
+            <span class="text-xs font-mono text-silt">
+                [ WISHLIST ]
+            </span>
+
+        </div>
+
+
+
+        <!-- TITLE -->
+
+        <div class="flex flex-col md:flex-row md:items-end
+                    md:justify-between gap-6 mb-12">
+
+            <div>
+
+                <h1 class="text-5xl md:text-7xl font-black
+                           tracking-tight leading-none">
+
+                    YOUR
+                    <span class="text-electric">
+                        WISHLIST.
+                    </span>
+
+                </h1>
+
+
+                <p class="mt-5 text-sm md:text-base text-silt
+                          max-w-xl leading-relaxed">
+
+                    Save the technology you love and create your
+                    personal collection of future upgrades.
+
+                </p>
+
+            </div>
+
+
+            <div class="technical-label text-silt">
+
+                EC / SAVED COLLECTION
+
+            </div>
+
+        </div>
+
+
+
+        <!-- WISHLIST CARD -->
+
+        <section class="wishlist-card corner-mark">
+
+
+            <!-- CARD HEADER -->
+
+            <div class="flex flex-col md:flex-row
+                        md:items-center md:justify-between
+                        gap-4 mb-8">
+
+
+                <div>
+
+                    <p id="wishlist-status"
+                       class="technical-label text-electric mb-3">
+
+                        STATUS / LOADING
+
+                    </p>
+
+
+                    <h2 class="text-2xl md:text-3xl font-black
+                               tracking-tight">
+
+                        SAVED PRODUCTS
+
+                    </h2>
+
+                </div>
+
+
+
+                <!-- COUNT -->
+
+                <div class="border border-suture px-4 py-3">
+
+                    <p class="technical-label text-silt">
+
+                        SAVED ITEMS
+
+                    </p>
+
+
+                    <p id="wishlist-count"
+                       class="text-2xl font-black mt-1">
+
+                        00
+
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- DIVIDER -->
+
+            <div class="border-t border-suture mb-8"></div>
+
+
+
+            <!-- WISHLIST CONTENT -->
+            <div id="wishlist-content"
+                 class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+
+                <div class="py-14 text-center text-silt col-span-full">
+                    LOADING SAVED PRODUCTS...
+                </div>
+
+            </div>
+
+
+
+            <!-- FOOTER -->
+
+            <div class="border-t border-suture pt-5 mt-5
+                        flex flex-wrap justify-between gap-3
+                        technical-label text-silt">
+
+                <span>
+                    EC // ATELIER
+                </span>
+
+                <span class="text-electric">
+                    PERSONAL COLLECTION SYSTEM
+                </span>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- INFORMATION CARDS -->
+
+        <div class="grid grid-cols-1 md:grid-cols-3
+                    gap-4 mt-6">
+
+
+            <div class="border border-suture bg-white px-5 py-6">
+
+                <p class="technical-label text-electric mb-3">
+                    01 / SAVE
+                </p>
+
+                <h3 class="font-bold text-lg">
+                    Save Your Favourites
+                </h3>
+
+                <p class="text-sm text-silt mt-2">
+                    Keep interesting products in one place.
+                </p>
+
+            </div>
+
+
+
+            <div class="border border-suture bg-white px-5 py-6">
+
+                <p class="technical-label text-electric mb-3">
+                    02 / COMPARE
+                </p>
+
+                <h3 class="font-bold text-lg">
+                    Plan Your Setup
+                </h3>
+
+                <p class="text-sm text-silt mt-2">
+                    Review your selected technology before buying.
+                </p>
+
+            </div>
+
+
+
+            <div class="border border-suture bg-white px-5 py-6">
+
+                <p class="technical-label text-electric mb-3">
+                    03 / ACQUIRE
+                </p>
+
+                <h3 class="font-bold text-lg">
+                    Upgrade Your Collection
+                </h3>
+
+                <p class="text-sm text-silt mt-2">
+                    Move your favourite products to your cart.
+                </p>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+
+    <!-- FOOTER -->
+
+    <footer class="border-t border-suture px-6 py-8 mt-10">
+
+        <div class="max-w-7xl mx-auto flex flex-col
+                    md:flex-row justify-between gap-4
+                    technical-label text-silt">
+
+            <span>
+                © 2026 ELECTROCART
+            </span>
+
+            <span>
+                SMART TECH. SMARTER YOU.
+            </span>
+
+            <span class="text-electric">
+                SYSTEM ONLINE //
+            </span>
+
+        </div>
+
+    </footer>
+
+
+
+    <!-- WISHLIST JAVASCRIPT -->
+
+    <script>
+
+        const wishlistContent =
+            document.getElementById("wishlist-content");
+
+        const wishlistCount =
+            document.getElementById("wishlist-count");
+
+        const wishlistStatus =
+            document.getElementById("wishlist-status");      
+              let wishlistItems = [];
+
+
+
+        /* ================================
+           ESCAPE HTML
+        ================================= */
+
+        function escapeHtml(value) {
+
+            const div =
+                document.createElement("div");
+
+            div.textContent =
+                value ?? "";
+
+            return div.innerHTML;
+
+        }
+
+
+
+        /* ================================
+           EMPTY WISHLIST
+        ================================= */
+
+        function renderEmptyWishlist() {
+
+            wishlistStatus.textContent =
+                "STATUS / EMPTY";
+
+            wishlistCount.textContent =
+                "00";
+
+
+            wishlistContent.innerHTML = `
+
+                <div class="py-8 md:py-14 text-center">
+
+
+                    <div class="text-6xl md:text-7xl
+                                text-electric mb-6">
+
+                        ♡
+
+                    </div>
+
+
+                    <h3 class="text-xl md:text-2xl
+                               font-black tracking-wide mb-3">
+
+                        YOUR WISHLIST IS EMPTY
+
+                    </h3>
+
+
+                    <p class="text-sm text-silt
+                              max-w-md mx-auto leading-relaxed">
+
+                        You haven't saved any products yet.
+                        Explore our collection and add your
+                        favourite technology to your personal wishlist.
+
+                    </p>
+
+
+                    <a href="{% url 'home' %}"
+                       class="explore-button inline-flex
+                              items-center justify-center gap-8
+                              mt-8 px-7 py-4 technical-label">
+
+                        <span>
+                            EXPLORE PRODUCTS
+                        </span>
+
+                        <span class="text-cyan-300">
+                            →
+                        </span>
+
+                    </a>
+
+
+                </div>
+
+            `;
+
+        }
+
+
+
+        /* ================================
+           RENDER PRODUCTS
+        ================================= */
+
+        function renderWishlist(items) {
+
+            wishlistStatus.textContent =
+                "STATUS / ACTIVE";
+
+
+            wishlistCount.textContent =
+                String(items.length).padStart(2, "0");
+
+
+            wishlistContent.innerHTML =
+
+                items.map((item, index) => `
+
+
+                    <article class="wishlist-card mb-4">
+
+
+                        <div class="flex flex-col gap-6">
+
+
+                            <!-- IMAGE -->
+
+                            <div class="w-full md:w-52 h-44
+                                        border border-suture
+                                        bg-[#f5f3ee]
+                                        flex items-center
+                                        justify-center
+                                        overflow-hidden">
+
+
+                                ${
+                                    item.image
+
+                                    ?
+
+                                    `<img
+                                        src="${escapeHtml(item.image)}"
+                                        alt="${escapeHtml(item.name)}"
+                                        class="product-image"
+                                    >`
+
+                                    :
+
+                                    `<span class="technical-label text-silt">
+                                        NO IMAGE
+                                    </span>`
+                                }
+
+
+                            </div>
+
+
+
+                            <!-- PRODUCT INFO -->
+
+                            <div class="flex-1 w-full">
+
+
+                                <p class="technical-label
+                                          text-electric mb-2">
+
+                                    SAVED MODEL
+                                    ${String(index + 1).padStart(2, "0")}
+
+                                </p>
+
+
+                                <h3 class="text-xl md:text-2xl
+                                           font-black">
+
+                                    ${escapeHtml(item.name)}
+
+                                </h3>
+
+
+                                <p class="text-sm text-silt
+                                          mt-2 leading-relaxed">
+
+                                    ${
+                                        escapeHtml(
+                                            item.description ||
+                                            "Premium ElectroCart hardware."
+                                        )
+                                    }
+
+                                </p>
+
+
+                                <!-- PRICE -->
+
+                                <div class="mt-4 flex
+                                            flex-wrap
+                                            items-center gap-4">
+
+
+                                    <strong class="text-xl font-black">
+
+                                        ₹${Number(
+                                            item.price || 0
+                                        ).toLocaleString("en-IN")}
+
+                                    </strong>
+
+
+                                    ${
+                                        Number(item.mrp || 0)
+                                        >
+                                        Number(item.price || 0)
+
+                                        ?
+
+                                        `<span class="text-sm text-silt line-through">
+
+                                            ₹${Number(
+                                                item.mrp
+                                            ).toLocaleString("en-IN")}
+
+                                        </span>`
+
+                                        :
+
+                                        ""
+                                    }
+
+
+                                </div>
+
+
+                            </div>
+
+
+
+                            <!-- ACTIONS -->
+                            <div class="flex flex-wrap gap-3 w-full">
+
+                                <!-- ADD TO CART -->
+                                <button
+                                    type="button"
+                                    class="add-cart-button technical-label
+                                           border border-ink px-5 py-3
+                                           bg-ink text-white hover:bg-electric
+                                           transition flex-1"
+                                    data-product-id="${Number(item.id)}">
+
+                                    ${Number(item.stock) > 0
+                                        ? (item.has_variants
+                                            ? "SELECT CONFIGURATION →"
+                                            : "ADD TO CART →")
+                                        : "OUT OF STOCK"
+                                    }
+
+                                </button>
+
+
+                                <!-- REMOVE -->
+                                <button
+                                    type="button"
+                                    class="remove-button technical-label
+                                           border border-suture px-5 py-3
+                                           flex-1"
+                                    data-product-id="${Number(item.id)}">
+
+                                    REMOVE ×
+
+                                </button>
+
+                            </div>
+
+
+                        </div>
+
+
+                    </article>
+
+
+                `).join("");
+
+
+
+            /* REMOVE BUTTON EVENTS */
+
+            document
+                .querySelectorAll(".remove-button")
+                .forEach(button => {
+
+                    button.addEventListener(
+                        "click",
+                        () => removeWishlistItem(button)
+                    );
+
+                });
+
+            document
+                .querySelectorAll(".add-cart-button")
+                .forEach(button => {
+
+                    button.addEventListener(
+                        "click",
+                        () => addWishlistToCart(button)
+                    );
+
+                });
+
+        }
+
+
+
+        /* ================================
+           LOAD WISHLIST FROM DJANGO
+        ================================= */
+
+        async function loadWishlist() {
+
+            try {
+
+                const response =
+                    await fetch(
+                        "{% url 'wishlist_data' %}"
+                    );
+
+
+                /* LOGIN CHECK */
+
+                if (
+                    response.status === 302 ||
+                    response.status === 403
+                ) {
+
+                    window.location.href =
+                        "{% url 'login' %}";
+
+                    return;
+
+                }
+
+
+                const data =
+                    await response.json();
+                    wishlistItems = data.items || [];
+
+
+                if (!data.success) {
+
+                    wishlistStatus.textContent =
+                        "STATUS / ERROR";
+
+                    wishlistContent.innerHTML = `
+
+                        <div class="py-12 text-center
+                                    text-silt">
+
+                            UNABLE TO LOAD WISHLIST.
+
+                        </div>
+
+                    `;
+
+                    return;
+
+                }
+
+
+                /* EMPTY */
+
+                if (!data.items ||
+                    data.items.length === 0) {
+
+                    renderEmptyWishlist();
+
+                }
+
+                /* PRODUCTS */
+
+                else {
+
+                    renderWishlist(data.items);
+
+                }
+
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Wishlist load error:",
+                    error
+                );
+
+
+                wishlistStatus.textContent =
+                    "STATUS / ERROR";
+
+
+                wishlistContent.innerHTML = `
+
+                    <div class="py-12 text-center
+                                text-silt">
+
+                        UNABLE TO LOAD WISHLIST.
+
+                    </div>
+
+                `;
+
+            }
+
+        }
+
+
+
+        async function addWishlistToCart(button) {
+
+            const productId =
+                Number(button.dataset.productId);
+
+            if (!productId) return;
+
+            const item =
+                wishlistItems.find(
+                    product => Number(product.id) === productId
+                );
+
+            if (!item) return;
+
+            if (Number(item.stock) <= 0) {
+
+                button.textContent = "OUT OF STOCK";
+
+                return;
+            }
+
+            /* VARIANT PRODUCT */
+            if (item.has_variants) {
+
+                window.location.href =
+                    "{% url 'product_details' %}?id=" + productId;
+
+                return;
+            }
+
+            /* NORMAL PRODUCT */
+
+            let cartBag =
+                JSON.parse(
+                    localStorage.getItem("ec_cart") || "[]"
+                );
+
+            const existing =
+                cartBag.find(
+                    cartItem =>
+                        Number(cartItem.id) === productId &&
+                        !cartItem.variantId
+                );
+
+            if (existing) {
+
+                if (existing.qty >= Number(item.stock)) {
+
+                    button.textContent =
+                        "MAX STOCK REACHED";
+
+                    setTimeout(() => {
+                        button.textContent = "ADD TO CART →";
+                    }, 1500);
+
+                    return;
+                }
+
+                existing.qty += 1;
+
+            } else {
+
+                cartBag.push({
+
+                    id: productId,
+
+                    name: item.name,
+
+                    price: Number(item.price),
+
+                    sku: item.sku,
+
+                    stock: Number(item.stock),
+
+                    qty: 1
+
+                });
+
+            }
+
+            localStorage.setItem(
+                "ec_cart",
+                JSON.stringify(cartBag)
+            );
+
+            button.textContent =
+                "ADDED TO CART ✓";
+
+            setTimeout(() => {
+
+                button.textContent =
+                    "ADD TO CART →";
+
+            }, 1500);
+
+        }
+
+
+        /* ================================
+           REMOVE WISHLIST ITEM
+        ================================= */
+
+        async function removeWishlistItem(button) {
+
+            const productId =
+                button.dataset.productId;
+
+
+            if (!productId) {
+
+                return;
+
+            }
+
+
+            button.disabled =
+                true;
+
+
+            try {
+
+                /* CSRF */
+
+                const csrfToken =
+                    document.cookie
+                        .split("; ")
+                        .find(
+                            row =>
+                                row.startsWith(
+                                    "csrftoken="
+                                )
+                        )
+                        ?.split("=")[1];
+
+
+                const response =
+                    await fetch(
+                        "{% url 'toggle_wishlist' %}",
+                        {
+
+                            method: "POST",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/x-www-form-urlencoded",
+
+                                "X-CSRFToken":
+                                    csrfToken || ""
+
+                            },
+
+                            body:
+                                `product_id=${encodeURIComponent(
+                                    productId
+                                )}`
+
+                        }
+                    );
+
+
+                /* LOGIN */
+
+                if (
+                    response.status === 302 ||
+                    response.status === 403
+                ) {
+
+                    window.location.href =
+                        "{% url 'login' %}";
+
+                    return;
+
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                if (data.success) {
+
+                    await loadWishlist();
+
+                }
+
+                else {
+
+                    button.disabled =
+                        false;
+
+                }
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Wishlist remove error:",
+                    error
+                );
+
+
+                button.disabled =
+                    false;
+
+            }
+
+        }
+
+
+
+        /* ================================
+           INITIAL LOAD
+        ================================= */
+
+        loadWishlist();
+
+    </script>
+
+
+</body>
+
+</html>
