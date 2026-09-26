@@ -16,13 +16,19 @@ def create_or_update_user_profile(sender, instance, created, **kwargs):
 
 @receiver(user_logged_in)
 def merge_guest_cart_on_login(sender, request, user, **kwargs):
-    session_key = request.session.session_key
-    if not session_key:
+    if not request or not hasattr(request, 'session'):
         return
 
-    try:
-        guest_cart = Cart.objects.get(session_key=session_key)
-    except Cart.DoesNotExist:
+    cart_id = request.session.get('cart_id')
+    guest_cart = None
+
+    if cart_id:
+        guest_cart = Cart.objects.filter(id=cart_id, user__isnull=True).first()
+
+    if not guest_cart and request.session.session_key:
+        guest_cart = Cart.objects.filter(session_key=request.session.session_key, user__isnull=True).first()
+
+    if not guest_cart:
         return
 
     user_cart, _ = Cart.objects.get_or_create(user=user)
@@ -38,3 +44,7 @@ def merge_guest_cart_on_login(sender, request, user, **kwargs):
             guest_item.save(update_fields=['cart'])
 
     guest_cart.delete()
+
+    if 'cart_id' in request.session:
+        del request.session['cart_id']
+        request.session.modified = True

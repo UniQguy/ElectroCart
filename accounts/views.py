@@ -18,15 +18,18 @@ from .models import (
     UserProfile,
     Wishlist,
     WishlistItem,
+    CompetitorPrice,
 )
 from .services import fetch_live_market_radar
 
 
 def splash(request):
+    """Fallback redirect to storefront catalog."""
     return redirect('home')
 
 
 def get_or_create_cart(request):
+    """Retrieves or creates a cart bound to either the authenticated User or Session key."""
     if request.user.is_authenticated:
         cart, _ = Cart.objects.get_or_create(user=request.user)
         return cart
@@ -34,11 +37,23 @@ def get_or_create_cart(request):
     if not request.session.session_key:
         request.session.create()
 
-    cart, _ = Cart.objects.get_or_create(session_key=request.session.session_key)
+    cart_id = request.session.get('cart_id')
+    if cart_id:
+        cart = Cart.objects.filter(id=cart_id, user__isnull=True).first()
+        if cart:
+            if cart.session_key != request.session.session_key:
+                cart.session_key = request.session.session_key
+                cart.save(update_fields=['session_key'])
+            return cart
+
+    cart, _ = Cart.objects.get_or_create(session_key=request.session.session_key, user__isnull=True)
+    request.session['cart_id'] = cart.id
+    request.session.modified = True
     return cart
 
 
 def home(request):
+    """Master Catalog view rendering all 62 products without mandatory login."""
     featured_products = Product.objects.filter(is_featured=True)[:6]
     all_products = Product.objects.all().order_by('-created_at')
     categories = Product.objects.values_list('category', flat=True).distinct()
@@ -54,6 +69,7 @@ def home(request):
 
 
 def category_view(request, category_name):
+    """Filters products by category with public access."""
     products = Product.objects.filter(category__iexact=category_name)
     categories = Product.objects.values_list('category', flat=True).distinct()
     cart = get_or_create_cart(request)
@@ -68,6 +84,10 @@ def category_view(request, category_name):
 
 
 def product_details(request, pk=None):
+    """
+    Renders product detail page.
+    Supports pk from URL route OR ?id=... query parameter from home.html.
+    """
     product_id = pk or request.GET.get('id') or request.GET.get('product_id')
     if not product_id:
         product = Product.objects.first()
@@ -80,16 +100,17 @@ def product_details(request, pk=None):
     specs = product.specifications.all()
     cart = get_or_create_cart(request)
 
-    # Market Radar Benchmark Calculation
+    in_wishlist = False
+    if request.user.is_authenticated:
+        in_wishlist = WishlistItem.objects.filter(wishlist__user=request.user, product=product).exists()
+
     market_benchmark = fetch_live_market_radar(product)
-    lowest_competitor = market_benchmark.first() if market_benchmark else None
+    lowest_competitor = market_benchmark.first() if market_benchmark.exists() else None
     savings_vs_market = None
     if lowest_competitor and lowest_competitor.price > product.price:
         savings_vs_market = lowest_competitor.price - product.price
 
-    in_wishlist = False
-    if request.user.is_authenticated:
-        in_wishlist = WishlistItem.objects.filter(wishlist__user=request.user, product=product).exists()
+    related_products = Product.objects.filter(category=product.category).exclude(id=product.id)[:4]
 
     context = {
         'product': product,
@@ -100,11 +121,13 @@ def product_details(request, pk=None):
         'market_benchmark': market_benchmark,
         'lowest_competitor': lowest_competitor,
         'savings_vs_market': savings_vs_market,
+        'related_products': related_products,
     }
     return render(request, 'accounts/product_details.html', context)
 
 
 def cart_view(request):
+    """Public Cart View with session-backed item persistence."""
     cart = get_or_create_cart(request)
     items = cart.items.select_related('product').all()
 
@@ -118,6 +141,7 @@ def cart_view(request):
 
 
 def add_to_cart(request, product_id=None):
+    """Adds product to cart via URL parameter, POST body, or JSON payload."""
     if not product_id:
         product_id = request.POST.get('product_id') or request.GET.get('product_id') or request.GET.get('id')
         if not product_id and request.body:
@@ -127,18 +151,10 @@ def add_to_cart(request, product_id=None):
             except Exception:
                 pass
 
-    if not product_id:
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse({'status': 'error', 'message': 'No product specified.'}, status=400)
-        messages.error(request, "No product specified.")
-        return redirect('home')
-
     product = get_object_or_404(Product, id=product_id)
     cart = get_or_create_cart(request)
 
     if product.stock <= 0:
-        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
-            return JsonResponse({'status': 'error', 'message': f'{product.name} is out of stock.'}, status=400)
         messages.error(request, f"{product.name} is out of stock.")
         return redirect(request.META.get('HTTP_REFERER', 'home'))
 
@@ -147,22 +163,19 @@ def add_to_cart(request, product_id=None):
         if cart_item.quantity < product.stock:
             cart_item.quantity += 1
             cart_item.save(update_fields=['quantity'])
-            msg = f"Updated quantity for {product.name}."
+            messages.success(request, f"Updated quantity for {product.name}.")
         else:
-            msg = f"Maximum available stock is {product.stock} units."
+            messages.warning(request, f"Cannot exceed available stock of {product.stock}.")
     else:
-        msg = f"Added {product.name} to bag."
+        messages.success(request, f"Added {product.name} to bag.")
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest':
         return JsonResponse({
             'status': 'success',
-            'message': msg,
             'cart_count': cart.total_items,
-            'cart_total': str(cart.total_price),
-            'product_name': product.name
+            'cart_total': str(cart.total_price)
         })
 
-    messages.success(request, msg)
     return redirect(request.META.get('HTTP_REFERER', 'cart_view'))
 
 
@@ -231,7 +244,7 @@ def toggle_wishlist(request, product_id=None):
     if not request.user.is_authenticated:
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return JsonResponse({'status': 'auth_required', 'redirect_url': '/login/'}, status=401)
-        messages.info(request, "Please sign in to manage your collection.")
+        messages.info(request, "Please sign in to manage your saved collection.")
         return redirect('login')
 
     if not product_id:
@@ -239,12 +252,9 @@ def toggle_wishlist(request, product_id=None):
         if not product_id and request.body:
             try:
                 data = json.loads(request.body)
-                product_id = data.get('product_id') or data.get('id')
+                product_id = data.get('product_id')
             except Exception:
                 pass
-
-    if not product_id:
-        return JsonResponse({'status': 'error', 'message': 'No product specified.'}, status=400)
 
     product = get_object_or_404(Product, id=product_id)
     wishlist, _ = Wishlist.objects.get_or_create(user=request.user)
@@ -253,11 +263,11 @@ def toggle_wishlist(request, product_id=None):
     if existing_item:
         existing_item.delete()
         is_saved = False
-        messages.info(request, f"Removed {product.name} from collection.")
+        messages.info(request, f"Removed {product.name} from your collection.")
     else:
         WishlistItem.objects.create(wishlist=wishlist, product=product)
         is_saved = True
-        messages.success(request, f"Saved {product.name} to collection.")
+        messages.success(request, f"Saved {product.name} to your collection.")
 
     if request.headers.get('x-requested-with') == 'XMLHttpRequest' or request.method == 'POST':
         return JsonResponse({
@@ -281,7 +291,7 @@ def addresses_view(request):
         profile.pincode = request.POST.get('pincode', profile.pincode).strip()
         profile.phone = request.POST.get('phone', profile.phone).strip()
         profile.save()
-        messages.success(request, "Delivery address updated.")
+        messages.success(request, "Delivery parameters updated.")
         return redirect('addresses')
 
     context = {
@@ -293,6 +303,10 @@ def addresses_view(request):
 
 @transaction.atomic
 def checkout_view(request):
+    """
+    Frictionless Checkout: Allows both authenticated users AND guest visitors to checkout.
+    Zero forced redirects to /login/.
+    """
     cart = get_or_create_cart(request)
     items = cart.items.select_related('product').all()
 
@@ -300,25 +314,28 @@ def checkout_view(request):
         messages.warning(request, "Your bag is empty.")
         return redirect('home')
 
-    if not request.user.is_authenticated:
-        return redirect('/login/?next=/checkout/')
-
-    profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    profile = None
+    if request.user.is_authenticated:
+        profile, _ = UserProfile.objects.get_or_create(user=request.user)
 
     if request.method == 'POST':
-        address = (request.POST.get('address') or request.POST.get('shipping_address') or profile.address or 'Standard Delivery Address').strip()
-        city = (request.POST.get('city') or profile.city or 'Ahmedabad').strip()
-        state = (request.POST.get('state') or profile.state or 'Gujarat').strip()
-        pincode = (request.POST.get('pincode') or request.POST.get('zip_code') or profile.pincode or '380009').strip()
-        phone = (request.POST.get('phone') or request.POST.get('contact_number') or profile.phone or '9999999999').strip()
+        name = (request.POST.get('name') or request.POST.get('customer_name') or '').strip()
+        email = (request.POST.get('email') or '').strip()
+        address = (request.POST.get('address') or request.POST.get('shipping_address') or (profile.address if profile else '') or 'Standard Delivery Address').strip()
+        city = (request.POST.get('city') or (profile.city if profile else '') or 'Ahmedabad').strip()
+        state = (request.POST.get('state') or (profile.state if profile else '') or 'Gujarat').strip()
+        pincode = (request.POST.get('pincode') or request.POST.get('zip_code') or (profile.pincode if profile else '') or '380009').strip()
+        phone = (request.POST.get('phone') or request.POST.get('contact_number') or (profile.phone if profile else '') or '9999999999').strip()
 
-        profile.address = address
-        profile.city = city
-        profile.state = state
-        profile.pincode = pincode
-        profile.phone = phone
-        profile.save()
+        if profile:
+            profile.address = address
+            profile.city = city
+            profile.state = state
+            profile.pincode = pincode
+            profile.phone = phone
+            profile.save()
 
+        # Database row-level locking concurrency guard
         for item in items:
             locked_product = Product.objects.select_for_update().get(id=item.product.id)
             if locked_product.stock < item.quantity:
@@ -327,8 +344,7 @@ def checkout_view(request):
                     'cart': cart,
                     'items': items,
                     'profile': profile,
-                    'total_price': cart.total_price,
-                    'cart_count': cart.total_items,
+                    'total_price': cart.total_price
                 })
 
             locked_product.stock -= item.quantity
@@ -336,7 +352,7 @@ def checkout_view(request):
 
         order_num = f"EC-{uuid.uuid4().hex[:8].upper()}"
         order = Order.objects.create(
-            user=request.user,
+            user=request.user if request.user.is_authenticated else None,
             order_number=order_num,
             total_amount=cart.total_price,
             shipping_address=address,
@@ -356,6 +372,10 @@ def checkout_view(request):
                 quantity=item.quantity
             )
 
+        if not request.user.is_authenticated:
+            request.session['guest_customer_name'] = name or 'Guest Patron'
+            request.session['guest_customer_email'] = email
+
         items.delete()
         request.session['last_order_number'] = order.order_number
         return redirect('order_confirmation', order_number=order.order_number)
@@ -364,12 +384,12 @@ def checkout_view(request):
         'cart': cart,
         'items': items,
         'profile': profile,
-        'total_price': cart.total_price,
-        'cart_count': cart.total_items,
+        'total_price': cart.total_price
     })
 
 
 def order_confirmation_view(request, order_number=None):
+    """Renders dynamic Order and OrderItem invoices with verified ownership checks."""
     if not order_number:
         order_number = request.session.get('last_order_number')
 
@@ -386,15 +406,20 @@ def order_confirmation_view(request, order_number=None):
         order_number=order_number
     )
 
-    if request.user.is_authenticated and order.user != request.user and not request.user.is_staff:
+    is_owner = (request.user.is_authenticated and order.user == request.user)
+    is_session_order = (request.session.get('last_order_number') == order.order_number)
+
+    if not (is_owner or is_session_order or (request.user.is_authenticated and request.user.is_staff)):
         messages.error(request, "Access unauthorized for this order invoice.")
         return redirect('home')
+
+    guest_name = request.session.get('guest_customer_name', 'Guest Patron')
 
     context = {
         'order': order,
         'order_items': order.items.all(),
         'subtotal': order.total_amount,
-        'cart_count': 0,
+        'guest_name': guest_name,
     }
     return render(request, 'accounts/order_confirmation.html', context)
 
@@ -402,23 +427,14 @@ def order_confirmation_view(request, order_number=None):
 @login_required
 def orders_history_view(request):
     orders = Order.objects.filter(user=request.user).prefetch_related('items__product')
-    cart = get_or_create_cart(request)
-    return render(request, 'accounts/orders.html', {
-        'orders': orders,
-        'cart_count': cart.total_items,
-    })
+    return render(request, 'accounts/orders.html', {'orders': orders})
 
 
 @login_required
 def account_hub(request):
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
     recent_orders = Order.objects.filter(user=request.user)[:3]
-    cart = get_or_create_cart(request)
-    return render(request, 'accounts/account_hub.html', {
-        'profile': profile,
-        'recent_orders': recent_orders,
-        'cart_count': cart.total_items,
-    })
+    return render(request, 'accounts/account_hub.html', {'profile': profile, 'recent_orders': recent_orders})
 
 
 def login_view(request):
@@ -428,15 +444,16 @@ def login_view(request):
     next_url = request.GET.get('next') or request.POST.get('next') or 'home'
 
     if request.method == 'POST':
-        u = request.POST.get('username', '').strip()
-        p = request.POST.get('password', '').strip()
+        # Accept username, identifier, email, or phone from the form
+        u = (request.POST.get('username') or request.POST.get('identifier') or request.POST.get('email') or '').strip()
+        p = (request.POST.get('password') or request.POST.get('access_key') or '').strip()
         user = authenticate(request, username=u, password=p)
         if user is not None:
             login(request, user)
             messages.success(request, f"Authenticated as {user.username}.")
             return redirect(next_url)
         else:
-            messages.error(request, "Invalid username or password.")
+            messages.error(request, "Invalid credentials or access key.")
 
     return render(request, 'accounts/login.html', {'next': next_url})
 

@@ -4,11 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Addresses | ElectroCart</title>
-
     <script src="https://cdn.tailwindcss.com"></script>
-
     <script>
         tailwind.config = {
             theme: {
@@ -26,168 +23,35 @@
             }
         }
     </script>
-
     <style>
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            background: #f5f3ee;
-            color: #181818;
-            font-family: Arial, sans-serif;
-        }
-
-        .technical-label {
-            font-family: "Courier New", monospace;
-            font-size: 10px;
-            letter-spacing: 0.2em;
-            font-weight: bold;
-        }
-
-        .corner-mark {
-            position: relative;
-        }
-
-        .corner-mark::before,
-        .corner-mark::after {
-            content: "";
-            position: absolute;
-            width: 9px;
-            height: 9px;
-            border-color: #2563eb;
-            pointer-events: none;
-        }
-
-        .corner-mark::before {
-            top: -1px;
-            left: -1px;
-            border-top: 2px solid;
-            border-left: 2px solid;
-        }
-
-        .corner-mark::after {
-            bottom: -1px;
-            right: -1px;
-            border-bottom: 2px solid;
-            border-right: 2px solid;
-        }
-
-        .address-card {
-            position: relative;
-            background: #ffffff;
-            border: 1px solid #d6d0c6;
-            padding: 30px;
-            transition: all 0.3s ease;
-        }
-
-        .address-card:hover {
-            border-color: #2563eb;
-            box-shadow: 8px 8px 0 rgba(37, 99, 235, 0.08);
-        }
-
-        .field-label {
-            display: block;
-            font-family: "Courier New", monospace;
-            font-size: 10px;
-            font-weight: bold;
-            letter-spacing: 0.15em;
-            margin-bottom: 8px;
-            color: #77736c;
-        }
-
-        .address-input {
-            width: 100%;
-            background: #f5f3ee;
-            border: 1px solid #d6d0c6;
-            padding: 13px 14px;
-            margin-bottom: 22px;
-            color: #181818;
-            font-size: 14px;
-            outline: none;
-            transition: all 0.3s ease;
-        }
-
-        .address-input:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.08);
-        }
-
-        .address-input::placeholder {
-            color: #99948b;
-        }
-
-        .save-button {
-            background: #181818;
-            color: white;
-            border: 1px solid #181818;
-            transition: all 0.3s ease;
-        }
-
-        .save-button:hover {
-            background: #2563eb;
-            border-color: #2563eb;
-            transform: translateY(-2px);
-        }
-
-        .back-button {
-            transition: all 0.3s ease;
-        }
-
-        .back-button:hover {
-            color: #2563eb;
-        }
-
-        .delete-button {
-            color: #e4572e;
-            border: 1px solid #e4572e;
-            padding: 7px 12px;
-            font-family: "Courier New", monospace;
-            font-size: 9px;
-            font-weight: bold;
-            letter-spacing: 0.1em;
-            transition: all 0.3s ease;
-        }
-
-        .delete-button:hover {
-            color: white;
-            background: #e4572e;
-        }
-
+        * { box-sizing: border-box; }
+        body { margin: 0; background: #f5f3ee; color: #181818; font-family: Arial, sans-serif; }
+        .technical-label { font-family: "Courier New", monospace; font-size: 10px; letter-spacing: 0.2em; font-weight: bold; }
+        .corner-mark { position: relative; }
+        .corner-mark::before, .corner-mark::after { content: ""; position: absolute; width: 9px; height: 9px; border-color: #2563eb; pointer-events: none; }
+        .corner-mark::before { top: -1px; left: -1px; border-top: 2px solid; border-left: 2px solid; }
+        .corner-mark::after { bottom: -1px; right: -1px; border-bottom: 2px solid; border-right: 2px solid; }
+        .address-card { position: relative; background: #ffffff; border: 1px solid #d6d0c6; padding: 30px; transition: all 0.3s ease; }
+        .address-card:hover { border-color: #2563eb; box-shadow: 8px 8px 0 rgba(37, 99, 235, 0.08); }
+        .field-label { display: block; font-family: "Courier New", monospace; font-size: 10px; font-weight: bold; letter-spacing: 0.15em; margin-bottom: 8px; color: #77736c; }
+        .address-input { width: 100%; background: #f5f3ee; border: 1px solid #d6d0c6; padding: 13px 14px; margin-bottom: 22px; color: #181818; font-size: 14px; outline: none; transition: all 0.3s ease; }
+        .address-input:focus { border-color: #2563eb; box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.08); }
+        .save-button { background: #181818; color: white; border: 1px solid #181818; transition: all 0.3s ease; }
+        .save-button:hover { background: #2563eb; border-color: #2563eb; transform: translateY(-2px); }
+        .back-button:hover { color: #2563eb; }
         .grid-pattern {
-            background-image:
-                linear-gradient(
-                    rgba(24, 24, 24, 0.035) 1px,
-                    transparent 1px
-                ),
-                linear-gradient(
-                    90deg,
-                    rgba(24, 24, 24, 0.035) 1px,
-                    transparent 1px
-                );
-
+            background-image: linear-gradient(rgba(24, 24, 24, 0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(24, 24, 24, 0.035) 1px, transparent 1px);
             background-size: 25px 25px;
-        }
-
-        .saved-address {
-            border-bottom: 1px solid #d6d0c6;
-            padding: 20px 0;
-        }
-
-        .saved-address:last-child {
-            border-bottom: none;
         }
     </style>
 </head>
 
 <body class="grid-pattern min-h-screen">
 
-    <!-- TOP BENEFITS BAR -->
     <div class="bg-[#181818] text-white px-6 py-3">
         <div class="max-w-7xl mx-auto flex flex-wrap justify-between gap-3 technical-label">
-            <span>FREE DELIVERY ON ORDERS OVER ₹999</span>
-            <span class="text-cyan-300">7 DAYS EASY RETURNS</span>
+            <span>FREE DELIVERY ACROSS INDIA</span>
+            <span class="text-cyan-300">24H DISPATCH VERIFIED</span>
             <span>100% ORIGINAL PRODUCTS</span>
         </div>
     </div>
@@ -195,24 +59,14 @@
     <!-- HEADER -->
     <header class="bg-vellum border-b border-suture px-6 py-6">
         <div class="max-w-7xl mx-auto flex justify-between items-center gap-5">
-
-            <a href="{% url 'home' %}"
-               class="text-xl md:text-2xl font-black tracking-widest
-                      flex items-center gap-2">
-
+            <a href="{% url 'home' %}" class="text-xl md:text-2xl font-black tracking-widest flex items-center gap-2">
                 <span class="text-electric">⚡</span>
                 ELECTROCART
-
             </a>
-
-            <a href="{% url 'home' %}"
-               class="back-button technical-label flex items-center gap-2">
-
+            <a href="{% url 'account_hub' %}" class="back-button technical-label flex items-center gap-2">
                 <span>←</span>
-                BACK HOME
-
+                ACCOUNT DOSSIER
             </a>
-
         </div>
     </header>
 
@@ -221,424 +75,127 @@
 
         <!-- PAGE LABEL -->
         <div class="flex items-center gap-3 mb-5">
-
             <span class="w-8 h-px bg-electric"></span>
-
-            <p class="technical-label text-electric">
-                // ACCOUNT DOSSIER 04
-            </p>
-
-            <span class="text-xs font-mono text-silt">
-                [ ADDRESSES ]
-            </span>
-
+            <p class="technical-label text-electric">// ACCOUNT DOSSIER 04</p>
+            <span class="text-xs font-mono text-silt">[ ADDRESSES ]</span>
         </div>
 
         <!-- TITLE -->
-        <div class="flex flex-col md:flex-row md:items-end
-                    md:justify-between gap-6 mb-12">
-
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
             <div>
-
-                <h1 class="text-5xl md:text-7xl font-black
-                           tracking-tight leading-none">
-
-                    YOUR
-                    <span class="text-electric">ADDRESSES.</span>
-
+                <h1 class="text-5xl md:text-7xl font-black tracking-tight leading-none">
+                    YOUR <span class="text-electric">ADDRESSES.</span>
                 </h1>
-
-                <p class="mt-5 text-sm md:text-base text-silt
-                          max-w-xl leading-relaxed">
-
-                    Manage your dispatch locations and keep your
-                    delivery information ready for your next acquisition.
-
+                <p class="mt-5 text-sm md:text-base text-silt max-w-xl leading-relaxed">
+                    Configure your physical dispatch coordinates. Saved attributes automatically synchronize to the checkout clearing protocol.
                 </p>
-
             </div>
-
-            <div class="technical-label text-silt">
-                EC / DELIVERY SYSTEM
-            </div>
-
+            <div class="technical-label text-silt">EC / DELIVERY SYSTEM</div>
         </div>
 
         <!-- TWO-COLUMN LAYOUT -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
-            <!-- ADD ADDRESS FORM -->
+            <!-- EDIT DISPATCH LOCATION FORM -->
             <section class="address-card corner-mark">
-
-                <div class="flex items-center justify-between
-                            gap-4 mb-8">
-
+                <div class="flex items-center justify-between gap-4 mb-8">
                     <div>
-
-                        <p class="technical-label text-electric mb-3">
-                            MODULE / 01
-                        </p>
-
-                        <h2 class="text-2xl md:text-3xl font-black
-                                   tracking-tight">
-
-                            ADD DISPATCH LOCATION
-
-                        </h2>
-
+                        <p class="technical-label text-electric mb-3">MODULE / 01</p>
+                        <h2 class="text-2xl md:text-3xl font-black tracking-tight">CONFIGURE COORDINATES</h2>
                     </div>
-
-                    <span class="text-3xl text-electric">
-                        ⌖
-                    </span>
-
+                    <span class="text-3xl text-electric">⌖</span>
                 </div>
 
                 <div class="border-t border-suture mb-8"></div>
 
-                <form id="addressForm">
+                <form method="POST" action="{% url 'addresses' %}">
+                    {% csrf_token %}
 
-                    <label for="address" class="field-label">
-                        FULL ADDRESS
-                    </label>
+                    <label for="address" class="field-label">FULL STREET ADDRESS / SUITE</label>
+                    <textarea id="address" name="address" rows="3" class="address-input resize-none" placeholder="Enter physical street address" required>{{ profile.address }}</textarea>
 
-                    <textarea
-                        id="address"
-                        rows="4"
-                        class="address-input resize-none"
-                        placeholder="Enter your complete address"
-                        required></textarea>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="city" class="field-label">CITY</label>
+                            <input type="text" id="city" name="city" value="{{ profile.city|default:'Ahmedabad' }}" class="address-input" placeholder="City" required />
+                        </div>
+                        <div>
+                            <label for="state" class="field-label">STATE</label>
+                            <input type="text" name="state" value="{{ profile.state|default:'Gujarat' }}" class="address-input" placeholder="State" required />
+                        </div>
+                    </div>
 
-                    <label for="city" class="field-label">
-                        CITY
-                    </label>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="pincode" class="field-label">PIN CODE</label>
+                            <input type="text" id="pincode" name="pincode" value="{{ profile.pincode|default:'380009' }}" class="address-input" maxlength="6" pattern="[0-9]{6}" placeholder="380009" required />
+                        </div>
+                        <div>
+                            <label for="phone" class="field-label">CONTACT PHONE</label>
+                            <input type="tel" id="phone" name="phone" value="{{ profile.phone|default:'9876543210' }}" class="address-input" placeholder="Phone" required />
+                        </div>
+                    </div>
 
-                    <input
-                        type="text"
-                        id="city"
-                        class="address-input"
-                        placeholder="Enter city"
-                        required>
-
-                    <label for="pincode" class="field-label">
-                        PIN CODE
-                    </label>
-
-                    <input
-                        type="text"
-                        id="pincode"
-                        class="address-input"
-                        placeholder="Enter 6-digit PIN code"
-                        maxlength="6"
-                        pattern="[0-9]{6}"
-                        inputmode="numeric"
-                        required>
-
-                    <button
-                        type="submit"
-                        class="save-button w-full px-6 py-4
-                               technical-label flex items-center
-                               justify-between">
-
-                        <span>SAVE ADDRESS</span>
-
-                        <span class="text-cyan-300">
-                            →
-                        </span>
-
+                    <button type="submit" class="save-button w-full px-6 py-4 technical-label flex items-center justify-between">
+                        <span>SAVE TO PROFILE DATABASE</span>
+                        <span class="text-cyan-300">→</span>
                     </button>
-
                 </form>
 
-                <div class="border-t border-suture mt-8 pt-5
-                            technical-label text-silt">
-
-                    <span>
-                        DATA STORAGE / LOCAL DEVICE
-                    </span>
-
+                <div class="border-t border-suture mt-8 pt-5 technical-label text-silt">
+                    <span>PERSISTENT DATABASE RECORD</span>
                 </div>
-
             </section>
 
-            <!-- SAVED ADDRESSES -->
+            <!-- CURRENT ACTIVE ADDRESS ON FILE -->
             <section class="address-card corner-mark">
-
-                <div class="flex items-center justify-between
-                            gap-4 mb-8">
-
+                <div class="flex items-center justify-between gap-4 mb-8">
                     <div>
-
-                        <p class="technical-label text-electric mb-3">
-                            MODULE / 02
-                        </p>
-
-                        <h2 class="text-2xl md:text-3xl font-black
-                                   tracking-tight">
-
-                            SAVED ADDRESSES
-
-                        </h2>
-
+                        <p class="technical-label text-electric mb-3">MODULE / 02</p>
+                        <h2 class="text-2xl md:text-3xl font-black tracking-tight">ACTIVE DISPATCH NODE</h2>
                     </div>
-
                     <div class="border border-suture px-4 py-3">
-
-                        <p class="technical-label text-silt">
-                            LOCATIONS
+                        <p class="technical-label text-silt">NODE STATUS</p>
+                        <p class="text-xs font-mono font-black text-electric mt-1">
+                            {% if profile.address %}RECORDED{% else %}UNSET{% endif %}
                         </p>
-
-                        <p id="addressCount"
-                           class="text-2xl font-black mt-1">
-
-                            00
-
-                        </p>
-
                     </div>
-
                 </div>
 
                 <div class="border-t border-suture mb-4"></div>
 
-                <div id="savedAddresses"></div>
-
-                <div class="border-t border-suture mt-6 pt-5
-                            technical-label text-silt">
-
-                    <span>
-                        EC // DISPATCH DIRECTORY
-                    </span>
-
+                <div class="py-4">
+                    {% if profile.address %}
+                        <div class="p-6 bg-[#f5f3ee] border border-suture space-y-2 font-mono">
+                            <span class="technical-label text-electric block">PRIMARY DESTINATION</span>
+                            <p class="text-base font-bold text-ink">{{ profile.address }}</p>
+                            <p class="text-sm text-silt">{{ profile.city }}, {{ profile.state }} - {{ profile.pincode }}</p>
+                            <p class="text-xs text-silt">TEL: {{ profile.phone }}</p>
+                        </div>
+                    {% else %}
+                        <div class="py-12 text-center">
+                            <div class="text-5xl text-electric mb-5">⌖</div>
+                            <h3 class="font-black text-lg mb-3">NO ADDRESS REGISTERED</h3>
+                            <p class="text-sm text-silt">Save your delivery coordinates in Module 01 to pre-fill future checkouts.</p>
+                        </div>
+                    {% endif %}
                 </div>
 
+                <div class="border-t border-suture mt-6 pt-5 technical-label text-silt">
+                    <span>EC // DISPATCH DIRECTORY ATTESTED</span>
+                </div>
             </section>
 
         </div>
-
-        <!-- INFORMATION CARDS -->
-        <div class="grid grid-cols-1 md:grid-cols-3
-                    gap-4 mt-6">
-
-            <div class="border border-suture bg-white px-5 py-6">
-
-                <p class="technical-label text-electric mb-3">
-                    01 / ENTER
-                </p>
-
-                <h3 class="font-bold text-lg">
-                    Add Your Location
-                </h3>
-
-                <p class="text-sm text-silt mt-2">
-                    Enter your complete delivery information.
-                </p>
-
-            </div>
-
-            <div class="border border-suture bg-white px-5 py-6">
-
-                <p class="technical-label text-electric mb-3">
-                    02 / SAVE
-                </p>
-
-                <h3 class="font-bold text-lg">
-                    Store Locally
-                </h3>
-
-                <p class="text-sm text-silt mt-2">
-                    Your saved addresses remain on this browser.
-                </p>
-
-            </div>
-
-            <div class="border border-suture bg-white px-5 py-6">
-
-                <p class="technical-label text-electric mb-3">
-                    03 / MANAGE
-                </p>
-
-                <h3 class="font-bold text-lg">
-                    Update Your List
-                </h3>
-
-                <p class="text-sm text-silt mt-2">
-                    Remove old or unused dispatch locations anytime.
-                </p>
-
-            </div>
-
-        </div>
-
     </main>
 
-    <!-- FOOTER -->
     <footer class="border-t border-suture px-6 py-8 mt-10">
-
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row
-                    justify-between gap-4 technical-label text-silt">
-
-            <span>
-                © 2026 ELECTROCART
-            </span>
-
-            <span>
-                SMART TECH. SMARTER YOU.
-            </span>
-
-            <span class="text-electric">
-                SYSTEM ONLINE //
-            </span>
-
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-4 technical-label text-silt">
+            <span>© 2026 ELECTROCART</span>
+            <span>SMART TECH. SMARTER YOU.</span>
+            <span class="text-electric">SYSTEM ONLINE //</span>
         </div>
-
     </footer>
-
-    <!-- ADDRESS FUNCTIONALITY -->
-    <script>
-        const form = document.getElementById("addressForm");
-        const savedAddresses = document.getElementById("savedAddresses");
-        const addressCount = document.getElementById("addressCount");
-
-        function escapeHTML(value) {
-            return String(value)
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
-
-        function displayAddresses() {
-            const addresses = JSON.parse(
-                localStorage.getItem("ec_addresses") || "[]"
-            );
-
-            addressCount.textContent =
-                String(addresses.length).padStart(2, "0");
-
-            if (addresses.length === 0) {
-                savedAddresses.innerHTML = `
-                    <div class="py-12 text-center">
-
-                        <div class="text-5xl text-electric mb-5">
-                            ⌖
-                        </div>
-
-                        <h3 class="font-black text-lg mb-3">
-                            NO SAVED LOCATIONS
-                        </h3>
-
-                        <p class="text-sm text-silt">
-                            Your saved addresses will appear here.
-                        </p>
-
-                    </div>
-                `;
-
-                return;
-            }
-
-            savedAddresses.innerHTML = addresses.map(
-                (address, index) => `
-                    <div class="saved-address">
-
-                        <div class="flex items-start gap-4">
-
-                            <span class="text-electric text-xl">
-                                ⌖
-                            </span>
-
-                            <div class="flex-1 min-w-0">
-
-                                <p class="technical-label
-                                          text-electric mb-2">
-
-                                    LOCATION ${String(index + 1)
-                                        .padStart(2, "0")}
-
-                                </p>
-
-                                <p class="text-sm leading-relaxed
-                                          break-words">
-
-                                    ${escapeHTML(address)}
-
-                                </p>
-
-                            </div>
-
-                        </div>
-
-                        <div class="flex justify-end mt-4">
-
-                            <button
-                                type="button"
-                                onclick="deleteAddress(${index})"
-                                class="delete-button">
-
-                                DELETE LOCATION ×
-
-                            </button>
-
-                        </div>
-
-                    </div>
-                `
-            ).join("");
-        }
-
-        form.addEventListener("submit", function(event) {
-            event.preventDefault();
-
-            const address = document.getElementById("address")
-                .value.trim();
-
-            const city = document.getElementById("city")
-                .value.trim();
-
-            const pincode = document.getElementById("pincode")
-                .value.trim();
-
-            if (!/^\d{6}$/.test(pincode)) {
-                alert("Please enter a valid 6-digit PIN code.");
-                return;
-            }
-
-            const addresses = JSON.parse(
-                localStorage.getItem("ec_addresses") || "[]"
-            );
-
-            addresses.push(`${address}, ${city} - ${pincode}`);
-
-            localStorage.setItem(
-                "ec_addresses",
-                JSON.stringify(addresses)
-            );
-
-            form.reset();
-            displayAddresses();
-
-            alert("Address saved successfully!");
-        });
-
-        function deleteAddress(index) {
-            const addresses = JSON.parse(
-                localStorage.getItem("ec_addresses") || "[]"
-            );
-
-            addresses.splice(index, 1);
-
-            localStorage.setItem(
-                "ec_addresses",
-                JSON.stringify(addresses)
-            );
-
-            displayAddresses();
-        }
-
-        displayAddresses();
-    </script>
 
 </body>
 </html>

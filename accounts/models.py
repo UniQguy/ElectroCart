@@ -203,4 +203,4 @@ class CompetitorPrice(models.Model):
         ordering = ['price']
 
     def __str__(self):
-        return f"{self.merchant_name}: ₹{self.price:,.2f} for {self.product.name}"
+        return f"{self.merchant_name}: ₹{self.price} for {self.product.name}"

@@ -89,19 +89,6 @@
       transition: background-color 0.4s ease, color 0.4s ease;
     }
 
-    .celestial-grid {
-      background-size: 72px 72px;
-      background-image: 
-        linear-gradient(to right, var(--border-suture) 0.5px, transparent 0.5px),
-        linear-gradient(to bottom, var(--border-suture) 0.5px, transparent 0.5px);
-      pointer-events: none;
-    }
-
-    .vellum-grain {
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.028'/%3E%3C/svg%3E");
-      pointer-events: none;
-    }
-
     .corner-mark {
       position: relative;
     }
@@ -176,21 +163,66 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      opacity: 0.7;
+      opacity: 0.45;
       z-index: 0;
     }
 
-    .horizontal-slider-track {
-      display: flex;
-      width: max-content;
-      will-change: transform;
+    /* METAMORPHOSIS HEADER SYSTEM */
+    #metamorphic-header {
+      transition: all 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: width, padding, top, border-radius, background, backdrop-filter;
+    }
+    #metamorphic-header.scrolled {
+      top: 14px;
+      width: 90%;
+      max-width: 980px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 0.65rem 1.8rem;
+      border-radius: 4px;
+      background: rgba(250, 247, 242, 0.88);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border-suture);
+      box-shadow: 0 16px 36px -12px rgba(29, 25, 22, 0.15);
+    }
+    body.mode-overclock #metamorphic-header.scrolled {
+      background: rgba(14, 12, 10, 0.88);
+      box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.6);
     }
 
-    .tape-filter-btn.active {
-      background-color: var(--ink-umber);
-      color: var(--bg-vellum);
-      border-color: var(--accent-oxide);
-      box-shadow: 0 4px 12px rgba(194, 94, 62, 0.25);
+    .header-full-text { transition: opacity 0.3s, width 0.3s; opacity: 1; width: auto; display: inline-block; overflow: hidden; }
+    .header-compact-text { transition: opacity 0.3s, width 0.3s; opacity: 0; width: 0; display: inline-block; overflow: hidden; }
+    .scrolled .header-full-text { opacity: 0; width: 0; }
+    .scrolled .header-compact-text { opacity: 1; width: auto; }
+
+    .nav-label { transition: opacity 0.3s; }
+    .nav-rune { display: none; font-size: 1.15rem; }
+    .scrolled .nav-label { display: none; }
+    .scrolled .nav-rune { display: inline-block; }
+    .galaxy-nav-link.active .nav-rune { color: var(--accent-oxide); }
+
+    /* X-Ray Slider Component */
+    .xray-slider-container { position: relative; width: 100%; height: 100%; overflow: hidden; touch-action: none; }
+    .xray-layer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+    .xray-layer-top { clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%); z-index: 10; }
+    .xray-wiper { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; background: var(--accent-oxide); z-index: 20; transform: translateX(-50%); cursor: ew-resize !important; }
+    .xray-wiper::after {
+      content: '↕';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(90deg);
+      width: 22px;
+      height: 22px;
+      background: var(--bg-vellum);
+      color: var(--ink-umber);
+      border: 1px solid var(--accent-oxide);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+      font-family: monospace;
     }
 
     .ec-drawer-link {
@@ -237,7 +269,7 @@
 <body class="relative selection:bg-solarOxide selection:text-white">
 
   <!-- ================================================================
-       ACCOUNT SLIDE-OUT DRAWER
+       ACCOUNT SLIDE-OUT COMMAND SUITE
   ================================================================ -->
   <div id="account-drawer-scrim" class="fixed inset-0 z-[65] bg-umber/30 opacity-0 pointer-events-none transition-opacity duration-300"></div>
 
@@ -258,7 +290,7 @@
           <span class="font-mono text-[9px] font-bold text-green-700">ONLINE</span>
         </div>
         <div class="grid grid-cols-2 gap-3 pt-3 font-mono text-[8px]">
-          <div><span class="text-silt block">ACCESS LEVEL</span><strong>AUTHENTICATED</strong></div>
+          <div><span class="text-silt block">ACCESS LEVEL</span><strong>{% if user.is_authenticated %}{{ user.username|upper }}{% else %}GUEST DISCOVERY{% endif %}</strong></div>
           <div><span class="text-silt block">CATALOG INVENTORY</span><strong class="text-solarOxide">{{ products|length }} MODELS</strong></div>
         </div>
       </div>
@@ -303,10 +335,17 @@
     </nav>
 
     <div class="mt-auto border-t border-suture p-5 space-y-4">
+      {% if user.is_authenticated %}
       <a href="{% url 'logout' %}" class="flex items-center justify-between w-full px-4 py-3 border border-solarOxide bg-solarOxide text-white hover:bg-umber hover:border-umber transition-all duration-300 font-mono text-[10px] font-bold tracking-widest uppercase">
         <span>↪ SEAL SESSION / LOGOUT</span>
         <span>→</span>
       </a>
+      {% else %}
+      <a href="{% url 'login' %}" class="flex items-center justify-between w-full px-4 py-3 border border-solarOxide bg-solarOxide text-white hover:bg-umber hover:border-umber transition-all duration-300 font-mono text-[10px] font-bold tracking-widest uppercase">
+        <span>AUTHENTICATE / SIGN IN</span>
+        <span>→</span>
+      </a>
+      {% endif %}
       <div class="flex justify-between font-mono text-[8px] text-silt">
         <span>ELECTROCART // ATELIER</span>
         <span class="text-solarOxide font-bold">TLS-1.3 ATTESTED</span>
@@ -354,31 +393,57 @@
     </div>
   </div>
 
-  <!-- NAVIGATION BAR -->
-  <header id="metamorphic-header" class="fixed top-0 left-0 w-full z-40 px-6 md:px-14 py-5 flex justify-between items-center transition-all duration-500 border-b border-suture bg-vellum/90 backdrop-blur-md">
-    <div class="flex items-center space-x-7">
+  <!-- ========================================================================= -->
+  <!-- METAMORPHOSIS HEADER BEAM                                                 -->
+  <!-- ========================================================================= -->
+  <header id="metamorphic-header" class="fixed top-0 left-0 w-full z-40 px-6 md:px-14 py-5 flex justify-between items-center border-b border-suture bg-vellum/90 backdrop-blur-md">
+    <div class="flex items-center space-x-6">
       <button id="account-drawer-trigger" type="button" class="w-8 h-8 border border-suture bg-porcelain text-umber hover:bg-umber hover:text-vellum transition-all rounded-sm flex items-center justify-center font-mono text-sm" title="Atelier Account">☰</button>
-      <a href="{% url 'home' %}" class="flex items-center space-x-3 group">
+      <a href="{% url 'home' %}" class="flex items-center space-x-2.5 group">
         <span class="w-7 h-7 rounded-sm bg-umber text-vellum flex items-center justify-center font-syne text-xs font-bold group-hover:bg-solarOxide transition-colors">⚡</span>
-        <div class="leading-none">
-          <span class="header-brand-full font-syne font-black text-sm tracking-wider uppercase block text-umber">ELECTROCART</span>
-          <span class="header-brand-compact hidden font-mono text-xs font-bold text-solarOxide uppercase tracking-widest">EC // ATELIER</span>
-          <span class="header-sublabel font-mono text-[9px] tracking-widest text-silt uppercase block mt-0.5">HEAVEN ATELIER</span>
-        </div>
+        <span class="font-syne font-black text-sm tracking-wider uppercase whitespace-nowrap text-umber">
+          <span class="header-full-text">ELECTROCART</span>
+          <span class="header-compact-text">EC // ATELIER</span>
+        </span>
       </a>
 
+      <!-- Jump Navigation Links with Runes -->
       <nav class="hidden xl:flex items-center space-x-6 font-mono text-xs uppercase tracking-wider text-silt">
-        <a href="#galaxy-laptops" class="galaxy-nav-link hover:text-umber transition-colors text-solarOxide font-bold">Laptops</a>
-        <a href="#galaxy-smartphones" class="galaxy-nav-link hover:text-umber transition-colors text-solarOxide font-bold">Smartphones</a>
-        <a href="#galaxy-keyboards" class="galaxy-nav-link hover:text-umber transition-colors">Keyboards</a>
-        <a href="#galaxy-soundbars" class="galaxy-nav-link hover:text-umber transition-colors">Soundbars</a>
-        <a href="#galaxy-accessories" class="galaxy-nav-link hover:text-umber transition-colors">Peripherals</a>
+        <a href="#galaxy-laptops" class="galaxy-nav-link hover:text-solarOxide transition-colors" data-target="galaxy-laptops">
+          <span class="nav-label">01. Laptops</span>
+          <span class="nav-rune">💻</span>
+        </a>
+        <a href="#galaxy-smartphones" class="galaxy-nav-link hover:text-solarOxide transition-colors" data-target="galaxy-smartphones">
+          <span class="nav-label">02. Phones</span>
+          <span class="nav-rune">📱</span>
+        </a>
+        <a href="#galaxy-keyboards" class="galaxy-nav-link hover:text-solarOxide transition-colors" data-target="galaxy-keyboards">
+          <span class="nav-label">03. Keyboards</span>
+          <span class="nav-rune">⌨</span>
+        </a>
+        <a href="#galaxy-soundbars" class="galaxy-nav-link hover:text-solarOxide transition-colors" data-target="galaxy-soundbars">
+          <span class="nav-label">04. Acoustics</span>
+          <span class="nav-rune">∿</span>
+        </a>
+        <a href="#galaxy-accessories" class="galaxy-nav-link hover:text-solarOxide transition-colors" data-target="galaxy-accessories">
+          <span class="nav-label">05. Peripherals</span>
+          <span class="nav-rune">⚡</span>
+        </a>
+        <a href="#galaxy-tablets" class="galaxy-nav-link hover:text-solarOxide transition-colors" data-target="galaxy-tablets">
+          <span class="nav-label">06. Tablets</span>
+          <span class="nav-rune">▥</span>
+        </a>
       </nav>
     </div>
 
     <div class="flex items-center space-x-3 sm:space-x-4 font-mono">
       <button onclick="openMasterRepository()" class="px-3 py-1.5 border border-solarOxide/60 bg-solarOxide/10 rounded-sm text-[10px] text-solarOxide hover:bg-solarOxide hover:text-white transition-all font-bold tracking-wider uppercase hidden sm:block">
         REPOSITORY [{{ products|length }}]
+      </button>
+
+      <button id="theme-mode-toggle" class="px-3 py-1.5 border border-suture bg-porcelain rounded-sm text-[10px] text-umber hover:border-solarOxide transition-all flex items-center space-x-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-solarOxide"></span>
+        <span id="theme-mode-label">MODE: [STUDIO]</span>
       </button>
 
       <div class="flex border border-suture bg-porcelain rounded-sm text-[10px] overflow-hidden">
@@ -404,7 +469,7 @@
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         <div class="lg:col-span-8 space-y-5">
           <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-sm border border-suture bg-porcelain font-mono text-[10px] text-solarOxide tracking-widest uppercase">
-            <span class="w-1.5 h-1.5 rounded-full bg-solarOxide"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-solarOxide animate-pulse"></span>
             <span>SYSTEM 2026.09 // 6-GALAXY KINETIC MATRICES</span>
           </div>
 
@@ -417,11 +482,11 @@
           </div>
 
           <p class="font-sans text-base md:text-lg text-silt leading-relaxed font-normal max-w-xl pt-2">
-            A comprehensive physical and digital convergence: Six nested category galaxies engineered with viewport-constrained CAD decks, seamless Bezier ribbons, and dedicated physical switch simulators.
+            A comprehensive physical and digital convergence: Six nested category galaxies engineered with calibrated Indian INR benchmarks, interactive metrology simulators, and instant session checkout.
           </p>
 
           <div class="flex flex-wrap items-center gap-4 pt-4 font-mono text-xs">
-            <a href="#galaxy-laptops" class="px-8 py-3.5 bg-umber text-vellum hover:bg-solarOxide font-bold uppercase tracking-widest transition-all rounded-sm shadow-md">
+            <a href="#galaxy-laptops" class="galaxy-nav-link px-8 py-3.5 bg-umber text-vellum hover:bg-solarOxide font-bold uppercase tracking-widest transition-all rounded-sm shadow-md">
               INITIALIZE GALAXY SUITE ↓
             </a>
             <button onclick="openMasterRepository()" class="px-6 py-3.5 border border-solarOxide bg-porcelain text-solarOxide hover:bg-solarOxide hover:text-vellum uppercase tracking-wider font-bold transition-all rounded-sm">
@@ -442,8 +507,8 @@
               <strong class="text-solarOxide font-bold">{{ products|length }} Engineering Models</strong>
             </div>
             <div class="flex justify-between py-1 border-b border-suture/50">
-              <span class="text-silt">MACBOOK &amp; XPS UNITS:</span>
-              <strong class="text-umber font-bold">100% INR Calibrated</strong>
+              <span class="text-silt">CURRENCY SYSTEM:</span>
+              <strong class="text-umber font-bold">100% Indian INR Calibrated</strong>
             </div>
             <div class="flex justify-between py-1 border-b border-suture/50">
               <span class="text-silt">POLLING ENGINE:</span>
@@ -458,33 +523,65 @@
       </div>
     </section>
 
-    <!-- MARQUEE RUNNER -->
+    <!-- MARQUEE VORTEX RUNNER -->
     <section id="vortex-marques" class="w-full border-b border-suture bg-porcelain py-5 overflow-hidden relative select-none font-mono">
       <div class="track-vortex-l text-xs uppercase tracking-[0.25em] text-umber/80 border-b border-suture/40 pb-2 whitespace-nowrap">
         <span>GALAXY 01: WORKSTATIONS</span><span class="text-solarOxide font-bold px-4">///</span>
         <span>GALAXY 02: SMARTPHONES</span><span class="text-solarOxide font-bold px-4">///</span>
         <span>GALAXY 03: KEYBOARDS</span><span class="text-solarOxide font-bold px-4">///</span>
         <span>GALAXY 04: ACOUSTICS</span><span class="text-solarOxide font-bold px-4">///</span>
-        <span>GALAXY 05: SOLID-STATE ACCESSORIES</span>
+        <span>GALAXY 05: PERIPHERALS &amp; POWER</span><span class="text-solarOxide font-bold px-4">///</span>
+        <span>GALAXY 06: TABLETS</span>
       </div>
       <div class="track-vortex-r text-[11px] uppercase tracking-[0.18em] text-silt py-2 whitespace-nowrap">
         <span>APPLE MACBOOK PRO 14"</span><span class="text-celestialGold font-bold px-3">·</span>
         <span>DELL XPS 13 9300</span><span class="text-celestialGold font-bold px-3">·</span>
         <span>HUAWEI MATEBOOK X PRO</span><span class="text-celestialGold font-bold px-3">·</span>
         <span>IPHONE 13 PRO</span><span class="text-celestialGold font-bold px-3">·</span>
-        <span>SAMSUNG GALAXY TAB S8</span>
+        <span>SAMSUNG GALAXY TAB S8 PLUS</span>
       </div>
     </section>
+
+    <!-- FLOATING TAPE-DECK CATEGORY ISOLATOR RIBBON -->
+    <nav id="tape-deck-ribbon" class="sticky top-0 z-30 border-b border-suture bg-vellum/95 px-6 md:px-14 py-2.5 flex items-center justify-between overflow-x-auto shadow-sm">
+      <div class="flex items-center space-x-3 shrink-0">
+        <span class="w-2 h-2 rounded-full bg-solarOxide animate-ping"></span>
+        <span class="font-mono text-[10px] tracking-widest uppercase font-bold text-umber">ISOLATOR:</span>
+      </div>
+      <div class="flex items-center space-x-2 shrink-0 font-mono text-xs pl-4">
+        <button class="tape-filter-btn active px-3 py-1 border border-suture bg-porcelain text-umber rounded-sm text-[10px] uppercase tracking-wider font-bold" data-target-galaxy="all">
+          [ALL GALAXIES (06)]
+        </button>
+        <button class="tape-filter-btn px-3 py-1 border border-suture bg-porcelain text-silt hover:text-umber rounded-sm text-[10px] uppercase tracking-wider font-bold" data-target-galaxy="galaxy-laptops">
+          [01: LAPTOPS]
+        </button>
+        <button class="tape-filter-btn px-3 py-1 border border-suture bg-porcelain text-silt hover:text-umber rounded-sm text-[10px] uppercase tracking-wider font-bold" data-target-galaxy="galaxy-smartphones">
+          [02: PHONES]
+        </button>
+        <button class="tape-filter-btn px-3 py-1 border border-suture bg-porcelain text-silt hover:text-umber rounded-sm text-[10px] uppercase tracking-wider font-bold" data-target-galaxy="galaxy-keyboards">
+          [03: KEYBOARDS]
+        </button>
+        <button class="tape-filter-btn px-3 py-1 border border-suture bg-porcelain text-silt hover:text-umber rounded-sm text-[10px] uppercase tracking-wider font-bold" data-target-galaxy="galaxy-soundbars">
+          [04: SOUNDBARS]
+        </button>
+        <button class="tape-filter-btn px-3 py-1 border border-suture bg-porcelain text-silt hover:text-umber rounded-sm text-[10px] uppercase tracking-wider font-bold" data-target-galaxy="galaxy-accessories">
+          [05: PERIPHERALS]
+        </button>
+        <button class="tape-filter-btn px-3 py-1 border border-suture bg-porcelain text-silt hover:text-umber rounded-sm text-[10px] uppercase tracking-wider font-bold" data-target-galaxy="galaxy-tablets">
+          [06: TABLETS]
+        </button>
+      </div>
+    </nav>
 
     <!-- ======================================================================= -->
     <!-- GALAXY 01: LAPTOPS & WORKSTATIONS                                       -->
     <!-- ======================================================================= -->
-    <section id="galaxy-laptops" class="py-20 px-6 md:px-14 bg-vellum border-b border-suture relative overflow-hidden">
-      <svg class="galaxy-watermark"><text x="5%" y="60%">COMPUTING</text></svg>
+    <section id="galaxy-laptops" class="galaxy-section py-20 px-6 md:px-14 bg-vellum border-b border-suture relative overflow-hidden">
+      <svg class="galaxy-watermark"><text x="5%" y="60%">LAPTOPS</text></svg>
       <div class="max-w-7xl mx-auto space-y-8 relative z-10">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-end border-b border-suture pb-4">
           <div>
-            <span class="font-mono text-xs text-solarOxide font-bold uppercase tracking-widest block mb-1">GALAXY 01 // WORKSTATIONS</span>
+            <span class="font-mono text-xs text-solarOxide font-bold uppercase tracking-widest block mb-1">GALAXY 01 // COMPUTING WORKSTATIONS</span>
             <h2 class="font-serif text-3xl md:text-5xl text-umber">High-Performance Laptops</h2>
           </div>
           <span class="font-mono text-xs text-silt">BILLET ALLOY CHASSIS · RECALIBRATED INDIAN MRP</span>
@@ -493,7 +590,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {% for product in products %}
             {% if product.category == "Laptops" %}
-            <div class="galaxy-card corner-mark bg-porcelain border border-suture p-6 rounded-sm flex flex-col justify-between">
+            <div class="galaxy-card corner-mark bg-porcelain border border-suture p-6 rounded-sm flex flex-col justify-between" data-card>
               <div>
                 <div class="flex justify-between items-center border-b border-suture pb-2 font-mono text-xs">
                   <span class="text-solarOxide font-bold">{{ product.product_code }}</span>
@@ -517,7 +614,7 @@
                   <span class="text-xl font-bold text-umber">₹{{ product.price|floatformat:2 }}</span>
                 </div>
                 <div class="grid grid-cols-2 gap-2 mt-2">
-                  <a href="{% url 'product_details' %}?id={{ product.id }}" class="py-2.5 bg-porcelain border border-suture hover:border-umber text-center font-mono font-bold text-xs uppercase tracking-wider rounded-sm transition-colors">
+                  <a href="{% url 'product_details' product.id %}" class="py-2.5 bg-porcelain border border-suture hover:border-umber text-center font-mono font-bold text-xs uppercase tracking-wider rounded-sm transition-colors">
                     INSPECT ↗
                   </a>
                   <a href="{% url 'add_to_cart' product.id %}" class="py-2.5 bg-umber hover:bg-solarOxide text-vellum text-center font-mono font-bold text-xs uppercase tracking-wider rounded-sm transition-colors shadow-sm">
@@ -533,27 +630,27 @@
     </section>
 
     <!-- ======================================================================= -->
-    <!-- GALAXY 02: SMARTPHONES & TABLETS                                        -->
+    <!-- GALAXY 02: SMARTPHONES                                                  -->
     <!-- ======================================================================= -->
-    <section id="galaxy-smartphones" class="py-20 px-6 md:px-14 bg-porcelain border-b border-suture relative overflow-hidden">
+    <section id="galaxy-smartphones" class="galaxy-section py-20 px-6 md:px-14 bg-porcelain border-b border-suture relative overflow-hidden">
       <svg class="galaxy-watermark"><text x="5%" y="60%">CELLULAR</text></svg>
       <div class="max-w-7xl mx-auto space-y-8 relative z-10">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-end border-b border-suture pb-4">
           <div>
             <span class="font-mono text-xs text-solarOxide font-bold uppercase tracking-widest block mb-1">GALAXY 02 // CELLULAR ENCLAVES</span>
-            <h2 class="font-serif text-3xl md:text-5xl text-umber">Smartphones &amp; Tablets</h2>
+            <h2 class="font-serif text-3xl md:text-5xl text-umber">Smartphones &amp; Flagships</h2>
           </div>
           <span class="font-mono text-xs text-silt">HIGH REFRESH MATRICES · IMMEDIATE 24H EXPRESS</span>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {% for product in products %}
-            {% if product.category == "Smartphones" or product.category == "Tablets" %}
-            <div class="galaxy-card corner-mark bg-vellum border border-suture p-5 rounded-sm flex flex-col justify-between">
+            {% if product.category == "Smartphones" %}
+            <div class="galaxy-card corner-mark bg-vellum border border-suture p-5 rounded-sm flex flex-col justify-between" data-card>
               <div>
                 <div class="flex justify-between items-center border-b border-suture pb-2 font-mono text-xs">
                   <span class="text-solarOxide font-bold">{{ product.product_code }}</span>
-                  <span class="px-2 py-0.5 bg-porcelain text-silt text-[10px] border border-suture rounded-sm">{{ product.category }}</span>
+                  <span class="px-2 py-0.5 bg-porcelain text-silt text-[10px] border border-suture rounded-sm">★ {{ product.rating }}</span>
                 </div>
                 <h3 class="font-serif text-xl text-umber mt-3 font-bold truncate">{{ product.name }}</h3>
                 <p class="font-sans text-xs text-silt mt-1 leading-relaxed line-clamp-2">{{ product.description }}</p>
@@ -573,7 +670,7 @@
                   <span class="text-base font-bold text-umber">₹{{ product.price|floatformat:2 }}</span>
                 </div>
                 <div class="grid grid-cols-2 gap-2 mt-2 font-mono text-xs">
-                  <a href="{% url 'product_details' %}?id={{ product.id }}" class="py-2 bg-vellum border border-suture hover:border-umber text-center font-bold uppercase rounded-sm">
+                  <a href="{% url 'product_details' product.id %}" class="py-2 bg-vellum border border-suture hover:border-umber text-center font-bold uppercase rounded-sm">
                     INSPECT
                   </a>
                   <a href="{% url 'add_to_cart' product.id %}" class="py-2 bg-umber hover:bg-solarOxide text-vellum text-center font-bold uppercase rounded-sm">
@@ -589,29 +686,217 @@
     </section>
 
     <!-- ======================================================================= -->
-    <!-- GALAXY 03 & 04: KEYBOARDS, SOUNDBARS & WEARABLES                        -->
+    <!-- GALAXY 03: MECHANICAL KEYBOARD DECK (TEARDOWN X-RAY & FORCE CURVE)      -->
     <!-- ======================================================================= -->
-    <section id="galaxy-keyboards" class="py-20 px-6 md:px-14 bg-vellum border-b border-suture relative overflow-hidden">
+    <section id="galaxy-keyboards" class="galaxy-section py-20 px-6 md:px-14 bg-vellum border-b border-suture relative overflow-hidden">
+      <svg class="galaxy-watermark"><text x="5%" y="60%">KEYBOARDS</text></svg>
+      <div class="max-w-7xl mx-auto space-y-8 relative z-10">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end border-b border-suture pb-4">
+          <div>
+            <span class="font-mono text-xs text-solarOxide font-bold uppercase tracking-widest block mb-1">GALAXY 03 // TACTILE DECKS</span>
+            <h2 class="font-serif text-3xl md:text-5xl text-umber">Mechanical Decks &amp; Switches</h2>
+          </div>
+          <span class="font-mono text-xs text-silt">SUB-0.125ms POLLING · PRECISION CNC MATRICES</span>
+        </div>
+
+        <!-- Interactive Specimen: Teardown & Force Simulator Showcase -->
+        <article class="galaxy-card bg-porcelain border border-suture rounded-sm p-6 mb-8">
+          <div class="flex justify-between items-start font-mono text-xs border-b border-suture pb-4">
+            <div>
+              <span class="text-solarOxide font-bold">REF. KBD-68</span>
+              <h3 class="font-serif text-2xl text-umber mt-1">Anodized 68-Key Gasket Matrix</h3>
+            </div>
+            <span class="px-2 py-1 bg-vellum border border-suture text-[10px] font-bold">CALIBRATED SWITCH MATRIX</span>
+          </div>
+
+          <div class="flex border-b border-suture font-mono text-[10px] font-bold uppercase bg-limestone mt-4">
+            <button class="kbd-tab-btn active flex-1 py-2 border-r border-suture bg-vellum" data-target="kbd-view-specimen">Specimen CAD</button>
+            <button class="kbd-tab-btn flex-1 py-2 border-r border-suture hover:bg-vellum/50" data-target="kbd-view-teardown">Teardown X-Ray</button>
+            <button class="kbd-tab-btn flex-1 py-2 hover:bg-vellum/50" data-target="kbd-view-force">Force Curve Metrology</button>
+          </div>
+
+          <div class="relative bg-limestone overflow-hidden min-h-[360px] border-b border-suture">
+            <!-- 1. Procedural CAD -->
+            <div id="kbd-view-specimen" class="kbd-view absolute inset-0 opacity-100 z-10 flex items-center justify-center p-4">
+              <canvas id="cad-canvas-kbd" class="w-full h-full object-contain"></canvas>
+            </div>
+            <!-- 2. Teardown Slider -->
+            <div id="kbd-view-teardown" class="kbd-view absolute inset-0 opacity-0 z-0 pointer-events-none">
+              <div class="xray-slider-container">
+                <img src="https://images.unsplash.com/photo-1595225476474-87563907a212?q=80&w=800&auto=format&fit=crop" class="xray-layer filter grayscale contrast-125" alt="PCB Internals">
+                <img src="https://images.unsplash.com/photo-1595225476474-87563907a212?q=80&w=800&auto=format&fit=crop" class="xray-layer xray-layer-top" id="kbd-xray-top" alt="Exterior">
+                <div class="xray-wiper" id="kbd-xray-wiper"></div>
+              </div>
+            </div>
+            <!-- 3. Force Curve Simulation -->
+            <div id="kbd-view-force" class="kbd-view absolute inset-0 opacity-0 z-0 pointer-events-none p-6 flex flex-col">
+              <div class="flex justify-between font-mono text-[10px] mb-2 text-silt">
+                <span>ACTUATION FORCE (cN)</span>
+                <span>TRAVEL DISPLACEMENT (mm)</span>
+              </div>
+              <div class="flex-grow relative border-l border-b border-suture">
+                <canvas id="force-curve-canvas" class="w-full h-full absolute inset-0"></canvas>
+                <div class="absolute top-4 right-4 text-right font-mono text-[10px]">
+                  <div class="text-solarOxide font-bold">Tactile Actuation: 2.0mm @ 45cN</div>
+                  <div class="text-umber">Bottom-Out: 4.0mm @ 68cN</div>
+                </div>
+              </div>
+              <div class="mt-4 flex space-x-3">
+                <button class="px-4 py-1.5 bg-umber text-vellum font-mono text-xs font-bold" onclick="triggerForceSim()">SIMULATE SWITCH STROKE</button>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Product Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {% for product in products %}
+            {% if product.category == "Keyboards" %}
+            <div class="galaxy-card corner-mark bg-porcelain border border-suture p-5 rounded-sm flex flex-col justify-between" data-card>
+              <div>
+                <div class="flex justify-between items-center border-b border-suture pb-2 font-mono text-xs">
+                  <span class="text-solarOxide font-bold">{{ product.product_code }}</span>
+                  <span class="px-2 py-0.5 bg-vellum text-silt text-[10px] border border-suture rounded-sm">IN STOCK</span>
+                </div>
+                <h3 class="font-serif text-xl text-umber mt-3 font-bold truncate">{{ product.name }}</h3>
+                <p class="font-sans text-xs text-silt mt-1 leading-relaxed line-clamp-2">{{ product.description }}</p>
+
+                <div class="card-plane-photo my-4 bg-limestone border border-suture aspect-video overflow-hidden relative flex items-center justify-center p-3 rounded-sm">
+                  {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-contain" />
+                  {% else %}
+                    <span class="font-mono text-xs text-silt">SPECIMEN</span>
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="pt-2">
+                <div class="flex justify-between items-baseline py-2 border-t border-suture font-mono">
+                  <span class="text-silt text-xs">PRICE:</span>
+                  <span class="text-lg font-bold text-umber">₹{{ product.price|floatformat:2 }}</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 mt-2 font-mono text-xs">
+                  <a href="{% url 'product_details' product.id %}" class="py-2 bg-porcelain border border-suture hover:border-umber text-center font-bold uppercase rounded-sm">
+                    INSPECT
+                  </a>
+                  <a href="{% url 'add_to_cart' product.id %}" class="py-2 bg-umber hover:bg-solarOxide text-vellum text-center font-bold uppercase rounded-sm">
+                    ALLOCATE +
+                  </a>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================= -->
+    <!-- GALAXY 04: SOUNDBARS & ACOUSTICS (LIVE 5-BAND DSP HARMONICS)            -->
+    <!-- ======================================================================= -->
+    <section id="galaxy-soundbars" class="galaxy-section py-20 px-6 md:px-14 bg-porcelain border-b border-suture relative overflow-hidden">
+      <svg class="galaxy-watermark"><text x="5%" y="60%">ACOUSTICS</text></svg>
+      <div class="max-w-7xl mx-auto space-y-8 relative z-10">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end border-b border-suture pb-4">
+          <div>
+            <span class="font-mono text-xs text-solarOxide font-bold uppercase tracking-widest block mb-1">GALAXY 04 // SPATIAL ARRAYS</span>
+            <h2 class="font-serif text-3xl md:text-5xl text-umber">Soundbars &amp; Spatial Transducers</h2>
+          </div>
+          <span class="font-mono text-xs text-silt">PURE BERYLLIUM CONES · DOLBY ATMOS DSP EQUATIONS</span>
+        </div>
+
+        <!-- Interactive DSP Parametric EQ Studio -->
+        <article class="galaxy-card bg-vellum border border-suture rounded-sm p-6 mb-8">
+          <div class="flex justify-between items-center border-b border-suture pb-3 font-mono text-xs">
+            <span class="text-solarOxide font-bold">ATMOS ACOUSTIC RIG // 5-BAND DSP GENERATOR</span>
+            <button onclick="toggleSineWave()" id="dsp-toggle-btn" class="px-3 py-1 bg-umber text-vellum text-[10px] font-bold uppercase tracking-wider rounded-sm hover:bg-solarOxide transition-colors">
+              [ TOGGLE DSP SYNTHESIZER ]
+            </button>
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-4 items-center">
+            <div class="lg:col-span-8 bg-umber rounded-sm p-3 h-48">
+              <canvas id="eq-visualizer-canvas" class="w-full h-full"></canvas>
+            </div>
+            <div class="lg:col-span-4 bg-porcelain border border-suture p-4 rounded-sm font-mono text-[9px] space-y-3">
+              <span class="font-bold text-silt uppercase block">PARAMETRIC EQUALIZER (Hz)</span>
+              <div class="flex justify-between items-center h-28 px-2">
+                <div class="flex flex-col items-center"><input type="range" class="eq-slider" min="0" max="100" value="70"><span class="mt-2">60Hz</span></div>
+                <div class="flex flex-col items-center"><input type="range" class="eq-slider" min="0" max="100" value="45"><span class="mt-2">230Hz</span></div>
+                <div class="flex flex-col items-center"><input type="range" class="eq-slider" min="0" max="100" value="50"><span class="mt-2">910Hz</span></div>
+                <div class="flex flex-col items-center"><input type="range" class="eq-slider" min="0" max="100" value="65"><span class="mt-2">3kHz</span></div>
+                <div class="flex flex-col items-center"><input type="range" class="eq-slider" min="0" max="100" value="80"><span class="mt-2">12kHz</span></div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- Product Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {% for product in products %}
+            {% if product.category == "Soundbars" %}
+            <div class="galaxy-card corner-mark bg-vellum border border-suture p-5 rounded-sm flex flex-col justify-between" data-card>
+              <div>
+                <div class="flex justify-between items-center border-b border-suture pb-2 font-mono text-xs">
+                  <span class="text-solarOxide font-bold">{{ product.product_code }}</span>
+                  <span class="px-2 py-0.5 bg-porcelain text-silt text-[10px] border border-suture rounded-sm">ATMOS CALIBRATED</span>
+                </div>
+                <h3 class="font-serif text-xl text-umber mt-3 font-bold truncate">{{ product.name }}</h3>
+                <p class="font-sans text-xs text-silt mt-1 leading-relaxed line-clamp-2">{{ product.description }}</p>
+
+                <div class="card-plane-photo my-4 bg-limestone border border-suture aspect-video overflow-hidden relative flex items-center justify-center p-3 rounded-sm">
+                  {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-contain" />
+                  {% else %}
+                    <span class="font-mono text-xs text-silt">SPECIMEN</span>
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="pt-2">
+                <div class="flex justify-between items-baseline py-2 border-t border-suture font-mono">
+                  <span class="text-silt text-xs">PRICE:</span>
+                  <span class="text-lg font-bold text-umber">₹{{ product.price|floatformat:2 }}</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 mt-2 font-mono text-xs">
+                  <a href="{% url 'product_details' product.id %}" class="py-2 bg-vellum border border-suture hover:border-umber text-center font-bold uppercase rounded-sm">
+                    INSPECT
+                  </a>
+                  <a href="{% url 'add_to_cart' product.id %}" class="py-2 bg-umber hover:bg-solarOxide text-vellum text-center font-bold uppercase rounded-sm">
+                    ALLOCATE +
+                  </a>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================= -->
+    <!-- GALAXY 05: PERIPHERALS, POWER & FAST GaN                               -->
+    <!-- ======================================================================= -->
+    <section id="galaxy-accessories" class="galaxy-section py-20 px-6 md:px-14 bg-vellum border-b border-suture relative overflow-hidden">
       <svg class="galaxy-watermark"><text x="5%" y="60%">PERIPHERALS</text></svg>
       <div class="max-w-7xl mx-auto space-y-8 relative z-10">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-end border-b border-suture pb-4">
           <div>
-            <span class="font-mono text-xs text-solarOxide font-bold uppercase tracking-widest block mb-1">GALAXY 03 // ACOUSTIC &amp; KINETIC SPECIMENS</span>
-            <h2 class="font-serif text-3xl md:text-5xl text-umber">Keyboards, Audio &amp; Wearables</h2>
+            <span class="font-mono text-xs text-solarOxide font-bold uppercase tracking-widest block mb-1">GALAXY 05 // HARDWARE COMPANIONS</span>
+            <h2 class="font-serif text-3xl md:text-5xl text-umber">Peripherals, GaN Power &amp; Wearables</h2>
           </div>
-          <span class="font-mono text-xs text-silt">SUB-0.125ms TACTILE MATRIX · VAPOR-DEPOSITED BERYLLIUM</span>
+          <span class="font-mono text-xs text-silt">240W USB-PD 3.1 · OPTICAL CAMERAS &amp; SOLID POWER</span>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {% for product in products %}
-            {% if product.category == "Keyboards" or product.category == "Soundbars" or product.category == "Wearables" or product.category == "Cameras" or product.category == "Power" or product.category == "Chargers" or product.category == "Mobile Accessories" %}
-            <div class="galaxy-card corner-mark bg-porcelain border border-suture p-5 rounded-sm flex flex-col justify-between">
+            {% if product.category == "Mobile Accessories" or product.category == "Power" or product.category == "Chargers" or product.category == "Cameras" or product.category == "Wearables" %}
+            <div class="galaxy-card corner-mark bg-porcelain border border-suture p-5 rounded-sm flex flex-col justify-between" data-card>
               <div>
                 <div class="flex justify-between items-center border-b border-suture pb-2 font-mono text-xs">
                   <span class="text-solarOxide font-bold">{{ product.product_code }}</span>
                   <span class="px-2 py-0.5 bg-vellum text-silt text-[10px] border border-suture rounded-sm">{{ product.category }}</span>
                 </div>
-                <h3 class="font-serif text-xl text-umber mt-3 font-bold truncate">{{ product.name }}</h3>
+                <h3 class="font-serif text-lg text-umber mt-3 font-bold truncate">{{ product.name }}</h3>
                 <p class="font-sans text-xs text-silt mt-1 leading-relaxed line-clamp-2">{{ product.description }}</p>
 
                 <div class="card-plane-photo my-4 bg-limestone border border-suture aspect-square overflow-hidden relative flex items-center justify-center p-3 rounded-sm">
@@ -629,7 +914,63 @@
                   <span class="text-base font-bold text-umber">₹{{ product.price|floatformat:2 }}</span>
                 </div>
                 <div class="grid grid-cols-2 gap-2 mt-2 font-mono text-xs">
-                  <a href="{% url 'product_details' %}?id={{ product.id }}" class="py-2 bg-porcelain border border-suture hover:border-umber text-center font-bold uppercase rounded-sm">
+                  <a href="{% url 'product_details' product.id %}" class="py-2 bg-porcelain border border-suture hover:border-umber text-center font-bold uppercase rounded-sm">
+                    INSPECT
+                  </a>
+                  <a href="{% url 'add_to_cart' product.id %}" class="py-2 bg-umber hover:bg-solarOxide text-vellum text-center font-bold uppercase rounded-sm">
+                    ALLOCATE +
+                  </a>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================= -->
+    <!-- GALAXY 06: TABLETS                                                      -->
+    <!-- ======================================================================= -->
+    <section id="galaxy-tablets" class="galaxy-section py-20 px-6 md:px-14 bg-porcelain border-b border-suture relative overflow-hidden">
+      <svg class="galaxy-watermark"><text x="5%" y="60%">TABLETS</text></svg>
+      <div class="max-w-7xl mx-auto space-y-8 relative z-10">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-end border-b border-suture pb-4">
+          <div>
+            <span class="font-mono text-xs text-solarOxide font-bold uppercase tracking-widest block mb-1">GALAXY 06 // SLATE OPTICS</span>
+            <h2 class="font-serif text-3xl md:text-5xl text-umber">Tablets &amp; Slate Displays</h2>
+          </div>
+          <span class="font-mono text-xs text-silt">DIGITIZER ARRAYS · ZERO-REFLECTANCE SUBSTRATES</span>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {% for product in products %}
+            {% if product.category == "Tablets" %}
+            <div class="galaxy-card corner-mark bg-vellum border border-suture p-5 rounded-sm flex flex-col justify-between" data-card>
+              <div>
+                <div class="flex justify-between items-center border-b border-suture pb-2 font-mono text-xs">
+                  <span class="text-solarOxide font-bold">{{ product.product_code }}</span>
+                  <span class="px-2 py-0.5 bg-porcelain text-silt text-[10px] border border-suture rounded-sm">{{ product.brand|default:"Tablet" }}</span>
+                </div>
+                <h3 class="font-serif text-xl text-umber mt-3 font-bold truncate">{{ product.name }}</h3>
+                <p class="font-sans text-xs text-silt mt-1 leading-relaxed line-clamp-2">{{ product.description }}</p>
+
+                <div class="card-plane-photo my-4 bg-limestone border border-suture aspect-video overflow-hidden relative flex items-center justify-center p-3 rounded-sm">
+                  {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-full h-full object-contain" />
+                  {% else %}
+                    <span class="font-mono text-xs text-silt">SPECIMEN</span>
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="pt-2">
+                <div class="flex justify-between items-baseline py-2 border-t border-suture font-mono">
+                  <span class="text-silt text-xs">PRICE:</span>
+                  <span class="text-lg font-bold text-umber">₹{{ product.price|floatformat:2 }}</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2 mt-2 font-mono text-xs">
+                  <a href="{% url 'product_details' product.id %}" class="py-2 bg-vellum border border-suture hover:border-umber text-center font-bold uppercase rounded-sm">
                     INSPECT
                   </a>
                   <a href="{% url 'add_to_cart' product.id %}" class="py-2 bg-umber hover:bg-solarOxide text-vellum text-center font-bold uppercase rounded-sm">
@@ -681,12 +1022,133 @@
     </footer>
   </main>
 
-  <!-- MASTER SCRIPT RUNTIME -->
- <script>
+  <!-- ========================================================================= -->
+  <!-- MODAL: FULL MASTER REPOSITORY                                             -->
+  <!-- ========================================================================= -->
+  <div id="catalog-repository-modal" class="fixed inset-0 z-[100] bg-vellum/95 backdrop-blur-xl hidden flex-col transform translate-y-full transition-transform duration-500 ease-out border-t border-suture">
+    <div class="flex justify-between items-center px-6 md:px-14 py-6 border-b border-suture bg-porcelain">
+      <div>
+        <h2 class="font-syne text-2xl md:text-3xl font-black uppercase text-umber">Master Hardware Repository</h2>
+        <span class="font-mono text-[10px] text-silt tracking-widest uppercase">COMPLETE INVENTORY ({{ products|length }} SPECIMENS)</span>
+      </div>
+      <div class="flex items-center space-x-4">
+        <input type="text" id="repo-search-input" placeholder="Search SKU, Brand or Model..." class="px-4 py-2 bg-vellum border border-suture font-mono text-xs outline-none focus:border-solarOxide w-52 sm:w-72" />
+        <button onclick="closeMasterRepository()" class="w-10 h-10 border border-suture flex items-center justify-center hover:border-solarOxide hover:text-solarOxide transition-colors font-mono font-bold">✕</button>
+      </div>
+    </div>
+
+    <div class="flex-grow overflow-y-auto px-6 md:px-14 py-8">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="repo-product-grid">
+        {% for product in products %}
+          <div class="repo-card border border-suture p-4 bg-vellum flex flex-col justify-between hover:border-solarOxide transition-colors" data-search="{{ product.name|lower }} {{ product.product_code|lower }} {{ product.category|lower }} {{ product.brand|lower }}">
+            <div>
+              <div class="flex justify-between items-center mb-2 font-mono text-[10px]">
+                <span class="text-solarOxide font-bold">{{ product.product_code }}</span>
+                <span class="text-silt uppercase">{{ product.category }}</span>
+              </div>
+              <h4 class="font-serif text-lg text-umber leading-tight font-bold mb-1">{{ product.name }}</h4>
+              <span class="font-mono text-[10px] text-silt">{{ product.brand|default:"Atelier Specimen" }}</span>
+            </div>
+            <div class="mt-6 pt-3 border-t border-suture flex justify-between items-center">
+              <span class="font-mono text-sm font-bold text-umber">₹{{ product.price|floatformat:2 }}</span>
+              <a href="{% url 'product_details' product.id %}" class="px-3 py-1 bg-porcelain border border-suture hover:bg-umber hover:text-vellum font-mono text-[10px] font-bold uppercase transition-colors">
+                Inspect ↗
+              </a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================= -->
+  <!-- SCRIPT ENGINE: LENIS INTERCEPTORS + CAD + DSP EQ + XRAY                   -->
+  <!-- ========================================================================= -->
+  <script>
     (function () {
       "use strict";
 
-      // 1. PRELOADER WITH SESSION GATEWAY (Only runs once per browser session)
+      // 1. LENIS SMOOTH SCROLLER WITH GSAP UNIFIED TICKER
+      const lenis = new Lenis({
+        duration: 1.15,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smoothWheel: true,
+        orientation: 'vertical',
+      });
+      window.lenis = lenis;
+
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add((time) => { lenis.raf(time * 1000); });
+      gsap.ticker.lagSmoothing(0);
+
+      // 2. EXPLICIT CLICK LISTENER FOR CATEGORY ANCHORS (PREVENTS FROZEN JUMPS)
+      document.querySelectorAll('.galaxy-nav-link, a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          const targetId = this.getAttribute('href');
+          if (targetId && targetId.startsWith('#') && targetId.length > 1) {
+            const targetEl = document.querySelector(targetId);
+            if (targetEl) {
+              e.preventDefault();
+              lenis.scrollTo(targetEl, { offset: -80, duration: 1.2 });
+            }
+          }
+        });
+      });
+
+      // 3. HEADER METAMORPHOSIS & ACTIVE RUNE SCROLLSPY
+      const header = document.getElementById('metamorphic-header');
+      const navLinks = document.querySelectorAll('.galaxy-nav-link');
+
+      lenis.on('scroll', (e) => {
+        if (e.scroll > 280) {
+          header.classList.add('scrolled');
+        } else {
+          header.classList.remove('scrolled');
+        }
+
+        // Active Rune ScrollSpy
+        navLinks.forEach(link => {
+          const targetId = link.getAttribute('data-target');
+          if (targetId) {
+            const sec = document.getElementById(targetId);
+            if (sec) {
+              const rect = sec.getBoundingClientRect();
+              if (rect.top <= 120 && rect.bottom >= 120) {
+                navLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+              }
+            }
+          }
+        });
+      });
+
+      // 4. FLOATING TAPE DECK CATEGORY ISOLATOR
+      document.querySelectorAll('.tape-filter-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.tape-filter-btn').forEach(b => {
+            b.classList.remove('active', 'bg-umber', 'text-vellum');
+            b.classList.add('bg-porcelain', 'text-silt');
+          });
+          this.classList.add('active', 'bg-umber', 'text-vellum');
+          this.classList.remove('bg-porcelain', 'text-silt');
+
+          const targetGalaxy = this.getAttribute('data-target-galaxy');
+          document.querySelectorAll('.galaxy-section').forEach(sec => {
+            if (targetGalaxy === 'all' || sec.id === targetGalaxy) {
+              gsap.to(sec, { opacity: 1, filter: 'grayscale(0)', pointerEvents: 'auto', duration: 0.4 });
+            } else {
+              gsap.to(sec, { opacity: 0.15, filter: 'grayscale(1)', pointerEvents: 'none', duration: 0.4 });
+            }
+          });
+
+          if (targetGalaxy !== 'all') {
+            const targetSec = document.getElementById(targetGalaxy);
+            if (targetSec) lenis.scrollTo(targetSec, { offset: -90, duration: 1.1 });
+          }
+        });
+      });
+
+      // 5. PRELOADER FAILSAFE
       const preloaderOverlay = document.getElementById('system-preloader');
       const tickerDigits = document.getElementById('preloader-digit-ticker');
       const gaugeBar = document.getElementById('preloader-indicator-gauge');
@@ -706,13 +1168,13 @@
         const safetyTimer = setTimeout(() => {
           sessionStorage.setItem('ec_booted', 'true');
           dismissPreloader();
-        }, 1200);
+        }, 1100);
 
         if (typeof gsap !== 'undefined' && preloaderOverlay && tickerDigits) {
           let bootProgress = { val: 0 };
           gsap.to(bootProgress, {
             val: 100,
-            duration: 0.85,
+            duration: 0.8,
             ease: 'power2.inOut',
             onUpdate: () => {
               const val = Math.round(bootProgress.val);
@@ -731,7 +1193,7 @@
         }
       }
 
-      // 2. ACCOUNT DRAWER CONTROLS
+      // 6. ACCOUNT COMMAND SUITE DRAWER
       const accountDrawer = document.getElementById('account-drawer');
       const accountDrawerScrim = document.getElementById('account-drawer-scrim');
       const accountDrawerTrigger = document.getElementById('account-drawer-trigger');
@@ -748,26 +1210,35 @@
       if (accountDrawerClose) accountDrawerClose.addEventListener('click', () => toggleAccountDrawer(false));
       if (accountDrawerScrim) accountDrawerScrim.addEventListener('click', () => toggleAccountDrawer(false));
 
-      // 3. MULTI-CURRENCY CONVERTER
-      const exchangeRates = {
-        INR: { symbol: '₹', rate: 1.0 },
-        USD: { symbol: '$', rate: 0.012 },
-        EUR: { symbol: '€', rate: 0.011 }
+      // 7. MASTER REPOSITORY MODAL WITH SEARCH
+      const repoModal = document.getElementById('catalog-repository-modal');
+      const repoSearchInput = document.getElementById('repo-search-input');
+      const repoCards = document.querySelectorAll('.repo-card');
+
+      window.openMasterRepository = function() {
+        if (!repoModal) return;
+        repoModal.classList.remove('hidden');
+        setTimeout(() => { repoModal.classList.remove('translate-y-full'); }, 10);
       };
-      let activeCurrency = 'INR';
 
-      document.querySelectorAll('.currency-switch-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.currency-switch-btn').forEach(b => {
-            b.className = 'currency-switch-btn px-2 py-1 text-silt hover:text-umber';
+      window.closeMasterRepository = function() {
+        if (!repoModal) return;
+        repoModal.classList.add('translate-y-full');
+        setTimeout(() => { repoModal.classList.add('hidden'); }, 500);
+      };
+
+      if (repoSearchInput) {
+        repoSearchInput.addEventListener('input', function() {
+          const query = this.value.toLowerCase().trim();
+          repoCards.forEach(card => {
+            const haystack = card.getAttribute('data-search') || '';
+            card.style.display = haystack.includes(query) ? 'flex' : 'none';
           });
-          btn.className = 'currency-switch-btn px-2 py-1 font-bold bg-umber text-vellum';
-          activeCurrency = btn.getAttribute('data-curr') || 'INR';
         });
-      });
+      }
 
-      // 4. 2.5D CARD TILT DYNAMICS
-      document.querySelectorAll('.galaxy-card').forEach(card => {
+      // 8. 2.5D POINTER TILT ON HARDWARE CARDS
+      document.querySelectorAll('[data-card]').forEach(card => {
         card.addEventListener('mousemove', (e) => {
           const rect = card.getBoundingClientRect();
           const normX = ((e.clientX - rect.left) / rect.width) * 2 - 1;
@@ -798,21 +1269,201 @@
         });
       });
 
-      // 5. TOAST NOTIFICATION UTILITY
+      // 9. PROCEDURAL CAD BLUEPRINT CANVAS (KEYBOARDS)
+      const cadKbd = document.getElementById('cad-canvas-kbd');
+      if (cadKbd) {
+        const ctxKbd = cadKbd.getContext('2d');
+        const resizeKbd = () => { cadKbd.width = cadKbd.clientWidth; cadKbd.height = cadKbd.clientHeight; };
+        window.addEventListener('resize', resizeKbd);
+        resizeKbd();
+
+        gsap.ticker.add((time) => {
+          ctxKbd.clearRect(0, 0, cadKbd.width, cadKbd.height);
+          ctxKbd.strokeStyle = '#C25E3E';
+          ctxKbd.lineWidth = 1;
+          const cx = cadKbd.width / 2, cy = cadKbd.height / 2;
+          const size = 95 + Math.sin(time * 2) * 8;
+          ctxKbd.save();
+          ctxKbd.translate(cx, cy);
+          ctxKbd.scale(1, 0.5);
+          ctxKbd.rotate(time * 0.5);
+          ctxKbd.strokeRect(-size / 2, -size / 2, size, size);
+          ctxKbd.beginPath();
+          ctxKbd.moveTo(-size/2, -size/2); ctx.lineTo(-size/2, -size/2 - 40);
+          ctxKbd.moveTo(size/2, -size/2); ctx.lineTo(size/2, -size/2 - 40);
+          ctxKbd.moveTo(size/2, size/2); ctx.lineTo(size/2, size/2 - 40);
+          ctxKbd.moveTo(-size/2, size/2); ctx.lineTo(-size/2, size/2 - 40);
+          ctxKbd.stroke();
+          ctxKbd.strokeRect(-size/2, -size/2 - 40, size, size);
+          ctxKbd.restore();
+        });
+      }
+
+      // 10. TEARDOWN X-RAY SLIDER WIPER
+      const xrayContainer = document.querySelector('.xray-slider-container');
+      const xrayTop = document.getElementById('kbd-xray-top');
+      const xrayWiper = document.getElementById('kbd-xray-wiper');
+      let isDraggingXray = false;
+
+      if (xrayContainer && xrayTop && xrayWiper) {
+        const setXrayPos = (clientX) => {
+          const rect = xrayContainer.getBoundingClientRect();
+          let x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+          let percent = (x / rect.width) * 100;
+          xrayTop.style.clipPath = `polygon(0 0, ${percent}% 0, ${percent}% 100%, 0 100%)`;
+          xrayWiper.style.left = `${percent}%`;
+        };
+        xrayContainer.addEventListener('mousedown', () => isDraggingXray = true);
+        window.addEventListener('mouseup', () => isDraggingXray = false);
+        window.addEventListener('mousemove', (e) => { if (isDraggingXray) setXrayPos(e.clientX); });
+        xrayContainer.addEventListener('touchstart', () => isDraggingXray = true);
+        window.addEventListener('touchend', () => isDraggingXray = false);
+        window.addEventListener('touchmove', (e) => { if (isDraggingXray) setXrayPos(e.touches[0].clientX); });
+      }
+
+      // 11. KEYBOARD TAB SWITCHER & FORCE SIMULATOR
+      document.querySelectorAll('.kbd-tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('.kbd-tab-btn').forEach(b => {
+            b.classList.remove('active', 'bg-vellum');
+            b.classList.add('hover:bg-vellum/50');
+          });
+          this.classList.add('active', 'bg-vellum');
+          this.classList.remove('hover:bg-vellum/50');
+
+          document.querySelectorAll('.kbd-view').forEach(v => gsap.to(v, { opacity: 0, duration: 0.3, pointerEvents: 'none' }));
+          const target = document.getElementById(this.getAttribute('data-target'));
+          if (target) gsap.to(target, { opacity: 1, duration: 0.3, pointerEvents: 'auto', delay: 0.1 });
+        });
+      });
+
+      const forceCanvas = document.getElementById('force-curve-canvas');
+      let forceProgress = 0, isSimulatingForce = false;
+      if (forceCanvas) {
+        const fCtx = forceCanvas.getContext('2d');
+        const resizeF = () => { forceCanvas.width = forceCanvas.clientWidth; forceCanvas.height = forceCanvas.clientHeight; };
+        window.addEventListener('resize', resizeF);
+        resizeF();
+
+        gsap.ticker.add(() => {
+          fCtx.clearRect(0, 0, forceCanvas.width, forceCanvas.height);
+          fCtx.strokeStyle = 'rgba(29, 25, 22, 0.15)';
+          fCtx.lineWidth = 1;
+          for (let i = 0; i < 8; i++) {
+            fCtx.beginPath(); fCtx.moveTo(0, i * (forceCanvas.height / 8)); fCtx.lineTo(forceCanvas.width, i * (forceCanvas.height / 8)); fCtx.stroke();
+            fCtx.beginPath(); fCtx.moveTo(i * (forceCanvas.width / 8), 0); fCtx.lineTo(i * (forceCanvas.width / 8), forceCanvas.height); fCtx.stroke();
+          }
+
+          fCtx.strokeStyle = '#7A7269';
+          fCtx.lineWidth = 2;
+          fCtx.beginPath();
+          fCtx.moveTo(0, forceCanvas.height);
+          fCtx.quadraticCurveTo(forceCanvas.width / 2, forceCanvas.height / 2, forceCanvas.width, 20);
+          fCtx.stroke();
+
+          if (isSimulatingForce || forceProgress > 0) {
+            const px = forceProgress * forceCanvas.width;
+            const py = forceCanvas.height - Math.pow(forceProgress, 1.4) * (forceCanvas.height - 20);
+            fCtx.fillStyle = '#C25E3E';
+            fCtx.beginPath(); fCtx.arc(px, py, 6, 0, Math.PI * 2); fCtx.fill();
+            fCtx.strokeStyle = '#C25E3E';
+            fCtx.setLineDash([3, 3]);
+            fCtx.beginPath(); fCtx.moveTo(px, py); fCtx.lineTo(px, forceCanvas.height); fCtx.stroke();
+            fCtx.beginPath(); fCtx.moveTo(px, py); fCtx.lineTo(0, py); fCtx.stroke();
+            fCtx.setLineDash([]);
+          }
+        });
+      }
+
+      window.triggerForceSim = function() {
+        isSimulatingForce = true;
+        forceProgress = 0;
+        gsap.to(window, {
+          forceProgress: 1,
+          duration: 0.6,
+          ease: "power2.in",
+          yoyo: true,
+          repeat: 1,
+          onUpdate: () => { window.forceProgress = forceProgress; },
+          onComplete: () => { isSimulatingForce = false; }
+        });
+      };
+
+      // 12. WEB AUDIO & 5-BAND EQUALIZER VISUALIZER
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      let audioCtx = null, dspOsc = null, dspGain = null, isDspPlaying = false;
+      const eqCanvas = document.getElementById('eq-visualizer-canvas');
+      if (eqCanvas) {
+        const eqCtx = eqCanvas.getContext('2d');
+        const resizeEq = () => { eqCanvas.width = eqCanvas.clientWidth; eqCanvas.height = eqCanvas.clientHeight; };
+        window.addEventListener('resize', resizeEq);
+        resizeEq();
+
+        gsap.ticker.add((time) => {
+          eqCtx.clearRect(0, 0, eqCanvas.width, eqCanvas.height);
+          eqCtx.strokeStyle = '#C49A45';
+          eqCtx.lineWidth = 2;
+          eqCtx.beginPath();
+          const bands = Array.from(document.querySelectorAll('.eq-slider')).map(s => parseInt(s.value) || 50);
+          const pts = eqCanvas.width;
+          for (let x = 0; x < pts; x++) {
+            let y = eqCanvas.height / 2;
+            const normX = x / pts;
+            if (isDspPlaying) {
+              y += Math.sin(normX * 18 + time * 10) * (bands[0] / 100 * 22);
+              y += Math.sin(normX * 45 + time * 16) * (bands[2] / 100 * 16);
+              y += (Math.random() - 0.5) * (bands[4] / 100 * 12);
+            } else {
+              y += Math.sin(normX * 8 + time * 2) * 5;
+            }
+            if (x === 0) eqCtx.moveTo(x, y);
+            else eqCtx.lineTo(x, y);
+          }
+          eqCtx.stroke();
+        });
+      }
+
+      window.toggleSineWave = function() {
+        if (!audioCtx) audioCtx = new AudioContextClass();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        const toggleBtn = document.getElementById('dsp-toggle-btn');
+
+        if (isDspPlaying) {
+          if (dspGain) {
+            dspGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.1);
+            setTimeout(() => { if (dspOsc) dspOsc.stop(); }, 120);
+          }
+          isDspPlaying = false;
+          if (toggleBtn) toggleBtn.textContent = "[ TOGGLE DSP SYNTHESIZER ]";
+        } else {
+          dspOsc = audioCtx.createOscillator();
+          dspGain = audioCtx.createGain();
+          dspOsc.type = 'sawtooth';
+          dspOsc.frequency.setValueAtTime(110, audioCtx.currentTime);
+          dspGain.gain.setValueAtTime(0.001, audioCtx.currentTime);
+          dspGain.gain.exponentialRampToValueAtTime(0.08, audioCtx.currentTime + 0.1);
+          dspOsc.connect(dspGain);
+          dspGain.connect(audioCtx.destination);
+          dspOsc.start();
+          isDspPlaying = true;
+          if (toggleBtn) toggleBtn.textContent = "[ STOP DSP SYNTHESIZER ]";
+        }
+      };
+
+      // 13. TOAST NOTIFICATION UTILITY
       window.showToast = function(msg) {
         const toast = document.getElementById('toast-banner');
         const label = document.getElementById('toast-message');
         if (!toast || !label) return;
         label.textContent = msg;
         toast.classList.remove('translate-y-24', 'opacity-0');
-        setTimeout(() => toast.classList.add('translate-y-24', 'opacity-0'), 3000);
+        setTimeout(() => toast.classList.add('translate-y-24', 'opacity-0'), 2800);
       };
 
-      // 6. ASYNC ALLOCATE TO BAG (NO FULL PAGE RELOAD)
+      // 14. ASYNC ALLOCATE / QUICK-ADD (NO FULL PAGE RELOAD)
       document.addEventListener('click', async (e) => {
         const btn = e.target.closest('a[href*="/cart/add/"]');
         if (!btn) return;
-
         e.preventDefault();
         e.stopPropagation();
 
@@ -821,18 +1472,13 @@
         btn.textContent = 'ALLOCATING...';
 
         try {
-          const resp = await fetch(href, {
-            headers: { 'X-Requested-With': 'XMLHttpRequest' }
-          });
+          const resp = await fetch(href, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
           const data = await resp.json();
-
           if (data.status === 'success') {
             const navBadge = document.getElementById('nav-bag-count');
             if (navBadge) navBadge.textContent = data.cart_count;
-
             btn.textContent = 'ALLOCATED ✓';
-            window.showToast(`ALLOCATED: ${data.product_name.toUpperCase()}`);
-
+            window.showToast("ALLOCATED TO DISPATCH BAG");
             setTimeout(() => { btn.textContent = originalText; }, 1600);
           } else {
             btn.textContent = originalText;
@@ -843,8 +1489,18 @@
         }
       });
 
+      // 15. THEME MODE TOGGLE
+      const themeToggle = document.getElementById('theme-mode-toggle');
+      const themeLabel = document.getElementById('theme-mode-label');
+      if (themeToggle && themeLabel) {
+        themeToggle.addEventListener('click', () => {
+          document.body.classList.toggle('mode-overclock');
+          const isOverclock = document.body.classList.contains('mode-overclock');
+          themeLabel.textContent = isOverclock ? 'MODE: [OVERCLOCK]' : 'MODE: [STUDIO]';
+        });
+      }
+
     })();
   </script>
-
 </body>
 </html>
