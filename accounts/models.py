@@ -49,6 +49,18 @@ class Product(models.Model):
             return self.mrp - self.price
         return Decimal('0.00')
 
+    class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['category']),
+            models.Index(fields=['brand']),
+            models.Index(fields=['is_featured']),
+            models.Index(fields=['price']),
+        ]
+        constraints = [
+            models.CheckConstraint(condition=models.Q(stock__gte=0), name='product_stock_non_negative'),
+        ]
+
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='gallery_images')
@@ -118,6 +130,9 @@ class CartItem(models.Model):
 
     class Meta:
         unique_together = ('cart', 'product')
+        constraints = [
+            models.CheckConstraint(condition=models.Q(quantity__gt=0), name='cart_item_quantity_positive'),
+        ]
 
     def __str__(self):
         return f"{self.quantity}x {self.product.name}"
@@ -137,6 +152,8 @@ class Order(models.Model):
     )
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders', null=True, blank=True)
+    customer_name = models.CharField(max_length=255, blank=True, null=True, default='')
+    customer_email = models.EmailField(blank=True, null=True, default='')
     order_number = models.CharField(max_length=64, blank=True, default='', db_index=True)
     total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
     discount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
@@ -163,6 +180,11 @@ class OrderItem(models.Model):
     product_name = models.CharField(max_length=255, blank=True, default='')
     price = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
     quantity = models.PositiveIntegerField(default=1)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(condition=models.Q(quantity__gt=0), name='order_item_quantity_positive'),
+        ]
 
     def __str__(self):
         return f"{self.quantity}x {self.product_name} (Order #{self.order.order_number})"

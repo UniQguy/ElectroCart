@@ -1,42 +1,12 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Order Confirmed // #{{ order.order_number }} // ELECTROCART</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Italiana&family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+{% extends 'accounts/base.html' %}
+{% load static humanize %}
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            serif: ['Italiana', 'serif'],
-            syne: ['Syne', 'sans-serif'],
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-            mono: ['"JetBrains Mono"', 'monospace'],
-          },
-          colors: {
-            vellum: '#FAF7F2',
-            porcelain: '#F3ECE2',
-            limestone: '#E8DFD1',
-            umber: '#1D1916',
-            silt: '#7A7269',
-            solarOxide: '#C25E3E',
-            suture: 'rgba(29, 25, 22, 0.12)',
-          }
-        }
-      }
-    };
-  </script>
-</head>
-<body class="bg-vellum text-umber min-h-screen py-12 px-4 sm:px-6 lg:px-8 flex items-center justify-center font-sans antialiased selection:bg-solarOxide selection:text-white">
+{% block title %}Order Confirmed // #{{ order.order_number }} // ELECTROCART{% endblock %}
 
-  <div class="max-w-3xl w-full bg-porcelain border border-suture p-8 sm:p-12 rounded-sm shadow-2xl space-y-8">
+{% block content %}
+<section class="max-w-4xl mx-auto w-full px-4 sm:px-6 md:px-14 py-12">
+  
+  <div class="bg-porcelain border border-suture p-6 sm:p-10 rounded-sm shadow-xl space-y-8 corner-mark">
     
     <!-- HEADER BANNER -->
     <div class="border-b border-suture pb-6 flex flex-col sm:flex-row sm:items-start justify-between gap-4">
@@ -48,92 +18,106 @@
         <h1 class="font-syne font-extrabold text-3xl sm:text-4xl uppercase tracking-tight text-umber">
           Order Confirmed
         </h1>
-        <p class="font-mono text-xs text-silt mt-1">INVOICE CODE: #{{ order.order_number }}</p>
+        <p class="font-mono text-xs text-silt mt-1">INVOICE NUMBER: #{{ order.order_number }}</p>
       </div>
+
       <div class="sm:text-right font-mono text-xs text-silt">
-        <span>AUTHORIZATION DATE:</span>
+        <span>AUTHORIZATION TIMESTAMP:</span>
         <div class="font-bold text-umber text-sm">{{ order.created_at|date:"d M Y, H:i" }} IST</div>
       </div>
     </div>
 
-    <!-- METADATA GRID -->
+    <!-- RECIPIENT & STATUS METADATA -->
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 bg-vellum p-5 rounded-sm border border-suture font-mono text-xs">
       <div>
         <span class="text-silt block text-[10px] uppercase font-bold tracking-wider">Dispatched To</span>
         <p class="font-bold text-umber text-sm mt-1">
-          {% if order.user %}{{ order.user.get_full_name|default:order.user.username }}{% else %}Guest Recipient{% endif %}
+          {{ order.display_name }}
         </p>
-        <p class="text-silt mt-0.5">{{ order.shipping_address }}</p>
+        {% if order.display_email %}
+          <p class="text-silt text-[11px]">{{ order.display_email }}</p>
+        {% endif %}
+        <p class="text-silt mt-1">{{ order.shipping_address }}</p>
         <p class="text-silt">{{ order.city }}, {{ order.state }} - {{ order.pincode }}</p>
         <p class="text-silt mt-1">TEL: {{ order.phone }}</p>
       </div>
+
       <div>
-        <span class="text-silt block text-[10px] uppercase font-bold tracking-wider">Dispatch Status</span>
-        <span class="inline-block mt-2 px-2.5 py-1 bg-green-900/10 text-green-800 rounded-sm font-bold text-[11px]">
-          ● {{ order.get_status_display|default:"CONFIRMED & PROCESSING" }}
+        <span class="text-silt block text-[10px] uppercase font-bold tracking-wider">Fulfillment Status</span>
+        <span class="inline-block mt-2 px-2.5 py-1 bg-green-900/10 text-green-800 rounded-sm font-bold text-[11px] border border-green-800/20">
+          ● {{ order.get_status_display }}
         </span>
-        <span class="text-silt block text-[10px] uppercase font-bold tracking-wider mt-4">Financial Protocol</span>
-        <p class="text-umber font-semibold mt-0.5">DIRECT RECONCILED INVOICE (INR)</p>
+        <span class="text-silt block text-[10px] uppercase font-bold tracking-wider mt-4">Clearing Mode</span>
+        <p class="text-umber font-semibold mt-0.5">DIRECT ATELIER RECONCILED INVOICE (INR)</p>
       </div>
     </div>
 
     <!-- DYNAMIC LINE ITEMS MANIFEST -->
     <div class="space-y-3 font-mono text-xs">
-      <span class="text-silt block text-[10px] uppercase font-bold tracking-wider">Allocations Manifest ({{ order_items|length }} Units)</span>
+      <span class="text-silt block text-[10px] uppercase font-bold tracking-wider">Allocated Manifest ({{ order_items|length }} Items)</span>
       
       <div class="divide-y divide-suture/70 border-y border-suture">
         {% for item in order_items %}
-        <div class="py-3.5 flex justify-between items-center">
-          <div class="flex items-center space-x-4">
-            {% if item.product and item.product.image %}
-              <img src="{{ item.product.image.url }}" alt="{{ item.product_name }}" class="w-12 h-12 object-contain border border-suture rounded-sm bg-white p-1">
-            {% else %}
-              <div class="w-12 h-12 bg-vellum border border-suture flex items-center justify-center text-[9px] text-silt font-bold">ATELIER</div>
-            {% endif %}
-            <div>
-              <p class="font-bold text-umber text-sm">{{ item.product_name }}</p>
-              <span class="text-silt text-[11px]">QTY: {{ item.quantity }} × ₹{{ item.price|floatformat:2 }}</span>
+          <div class="py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-4">
+              {% if item.product and item.product.image %}
+                <img src="{{ item.product.image.url }}" alt="{{ item.product_name }}" class="w-12 h-12 object-contain border border-suture rounded-sm bg-white p-1 shrink-0" />
+              {% else %}
+                <div class="w-12 h-12 bg-vellum border border-suture flex items-center justify-center text-[9px] text-silt font-bold shrink-0">ATELIER</div>
+              {% endif %}
+              <div>
+                <p class="font-bold text-umber text-sm">{{ item.product_name }}</p>
+                <span class="text-silt text-[11px]">QTY: {{ item.quantity }} × ₹{{ item.price|floatformat:2 }}</span>
+              </div>
+            </div>
+            <div class="text-right font-bold text-umber text-sm">
+              ₹{{ item.line_total|floatformat:2 }}
             </div>
           </div>
-          <div class="text-right font-bold text-umber text-sm">
-            ₹{{ item.line_total|floatformat:2 }}
-          </div>
-        </div>
         {% endfor %}
       </div>
     </div>
 
-    <!-- FINANCIAL BREAKDOWN -->
-    <div class="space-y-2 pt-2 border-t border-suture font-mono text-xs">
+    <!-- SETTLEMENT SUMMARY -->
+    <div class="space-y-2 pt-2 border-t border-suture font-mono text-xs max-w-sm ml-auto">
       <div class="flex justify-between text-silt">
-        <span>Gross Item Subtotal:</span>
-        <span class="font-bold text-umber">₹{{ subtotal|floatformat:2 }}</span>
+        <span>Specimen Subtotal:</span>
+        <span class="font-bold text-umber">₹{{ order.total_amount|floatformat:2 }}</span>
       </div>
       <div class="flex justify-between text-silt">
-        <span>Express Insured Courier:</span>
+        <span>Insured Priority Logistics:</span>
         <span class="text-solarOxide font-bold">COMPLIMENTARY</span>
       </div>
       <div class="flex justify-between text-silt">
-        <span>GST Compliance (18% Included):</span>
-        <span class="text-umber">INCLUDED</span>
+        <span>GST Status (18% Included):</span>
+        <span class="text-umber font-bold">PAID</span>
       </div>
-      <div class="flex justify-between text-base font-bold text-umber pt-3 border-t border-suture">
-        <span class="font-syne uppercase">Total Invoiced:</span>
-        <span class="text-solarOxide text-2xl">₹{{ order.total_amount|floatformat:2 }}</span>
+      <div class="pt-3 border-t border-suture flex justify-between items-baseline text-base font-bold text-umber">
+        <span class="font-syne uppercase">Grand Total:</span>
+        <span class="text-solarOxide text-xl">₹{{ order.total_amount|floatformat:2 }}</span>
       </div>
     </div>
 
-    <!-- NAVIGATION OUT -->
-    <div class="pt-6 flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4">
-      <a href="{% url 'home' %}" class="flex-1 py-3.5 bg-umber hover:bg-solarOxide text-vellum font-mono text-xs font-bold uppercase tracking-widest text-center transition-colors rounded-sm shadow-md">
-        Return to Storefront
-      </a>
-      <a href="{% url 'orders' %}" class="flex-1 py-3.5 bg-vellum hover:bg-limestone border border-suture text-umber font-mono text-xs font-bold uppercase tracking-widest text-center transition-colors rounded-sm">
-        Review All Orders
-      </a>
+    <!-- ACTION BUTTONS -->
+    <div class="pt-6 border-t border-suture flex flex-col sm:flex-row justify-between items-center gap-4 font-mono text-xs">
+      <button type="button" onclick="window.print()" class="w-full sm:w-auto px-6 py-3 border border-suture bg-vellum hover:border-umber text-umber transition-colors uppercase font-bold text-[11px] rounded-sm">
+        ⎙ Print Verified Invoice
+      </button>
+
+      <div class="flex items-center space-x-3 w-full sm:w-auto">
+        {% if user.is_authenticated %}
+          <a href="{% url 'orders' %}" class="w-full sm:w-auto px-6 py-3 border border-suture bg-vellum hover:border-umber text-umber transition-colors uppercase font-bold text-[11px] text-center rounded-sm">
+            View All Orders
+          </a>
+        {% endif %}
+        <a href="{% url 'home' %}" class="w-full sm:w-auto px-6 py-3 bg-umber hover:bg-solarOxide text-vellum transition-colors uppercase font-bold text-[11px] text-center rounded-sm shadow-md">
+          Return to Catalog →
+        </a>
+      </div>
     </div>
 
   </div>
 
-</body>
+</section>
+{% endblock %}
 </html>

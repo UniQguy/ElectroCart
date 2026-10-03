@@ -1,0 +1,286 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+  <title>{% block title %}ELECTROCART // Celestial Hardware Atelier{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}ElectroCart is an Indian haute-horlogerie inspired hardware atelier for mechanical keyboards, workstations, smartphones, and kinetic peripherals.{% endblock %}" />
+
+  <!-- Open Graph / SEO -->
+  <meta property="og:site_name" content="ElectroCart Hardware Labs" />
+  <meta property="og:title" content="{% block og_title %}ELECTROCART // Celestial Hardware Atelier{% endblock %}" />
+  <meta property="og:description" content="{% block og_description %}Premium electronics and computer hardware curated with metrological precision and immediate dispatch across India.{% endblock %}" />
+  <meta property="og:type" content="website" />
+
+  <!-- Typographic Foundations -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Italiana&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Syne:wght@700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CDN & Base Palette -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['Italiana', 'serif'],
+            syne: ['Syne', 'sans-serif'],
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            vellum: 'var(--bg-vellum)',
+            porcelain: 'var(--bg-porcelain)',
+            limestone: 'var(--bg-limestone)',
+            umber: 'var(--ink-umber)',
+            silt: 'var(--ink-silt)',
+            celestialGold: 'var(--accent-gold)',
+            solarOxide: 'var(--accent-oxide)',
+            suture: 'var(--border-suture)',
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Production Atelier Design Tokens & Styles -->
+  <link rel="stylesheet" href="{% static 'css/atelier.css' %}" />
+
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="bg-vellum text-umber min-h-screen flex flex-col font-sans antialiased selection:bg-solarOxide selection:text-white">
+
+  <!-- A11y Skip Link -->
+  <a href="#main-content" class="skip-to-content">Skip to primary content</a>
+
+  <!-- ================================================================
+       ACCOUNT SLIDE-OUT COMMAND SUITE
+  ================================================================ -->
+  <div id="account-drawer-scrim" class="fixed inset-0 z-[65] bg-umber/40 opacity-0 pointer-events-none transition-opacity duration-300 backdrop-blur-xs"></div>
+
+  <aside id="account-drawer" class="fixed top-0 left-0 bottom-0 z-[70] w-[360px] max-w-[90vw] bg-vellum border-r border-suture transform -translate-x-full transition-transform duration-300 ease-out flex flex-col shadow-2xl" aria-label="Atelier Navigation Drawer">
+    <div class="p-6 border-b border-suture flex items-start justify-between">
+      <div>
+        <span class="font-mono text-[9px] text-solarOxide font-bold tracking-[0.2em] uppercase">ELECTROCART // ATELIER ACCESS</span>
+        <h2 class="font-serif text-3xl text-umber mt-1">Command Suite</h2>
+        <p class="font-mono text-[9px] text-silt mt-1 uppercase tracking-wider">Session credentials &amp; hardware dossiers</p>
+      </div>
+      <button id="account-drawer-close" type="button" class="w-8 h-8 border border-suture text-silt hover:text-umber hover:border-umber transition-colors rounded-sm flex items-center justify-center font-mono" aria-label="Close Command Suite">✕</button>
+    </div>
+
+    <div class="p-5">
+      <div class="corner-mark border border-suture bg-porcelain p-4 rounded-sm">
+        <div class="flex justify-between items-center border-b border-suture pb-2">
+          <span class="font-mono text-[9px] font-bold text-solarOxide">ATELIER NODE</span>
+          <span class="font-mono text-[9px] font-bold text-green-700">ONLINE</span>
+        </div>
+        <div class="grid grid-cols-2 gap-3 pt-3 font-mono text-[9px]">
+          <div><span class="text-silt block">ACCESS LEVEL</span><strong class="text-umber">{% if user.is_authenticated %}{{ user.username|upper }}{% else %}GUEST DISCOVERY{% endif %}</strong></div>
+          <div><span class="text-silt block">BAG ALLOCATIONS</span><strong class="text-solarOxide nav-cart-badge">{{ cart_count }} UNITS</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <nav id="account-drawer-navigation" class="px-5 space-y-2 overflow-y-auto flex-1 font-mono text-xs">
+      <a href="{% url 'home' %}" class="flex items-center gap-3 w-full p-3.5 border border-suture bg-vellum hover:bg-porcelain text-umber hover:border-solarOxide transition-all rounded-sm">
+        <span class="w-7 h-7 flex items-center justify-center border border-suture text-solarOxide font-bold">⊞</span>
+        <div class="flex-1">
+          <strong class="block text-[11px] tracking-wider uppercase">MASTER REPOSITORY</strong>
+          <small class="block text-silt text-[9px]">Browse full hardware catalog</small>
+        </div>
+        <span class="text-silt font-bold">→</span>
+      </a>
+
+      <a href="{% url 'account_hub' %}" class="flex items-center gap-3 w-full p-3.5 border border-suture bg-vellum hover:bg-porcelain text-umber hover:border-solarOxide transition-all rounded-sm">
+        <span class="w-7 h-7 flex items-center justify-center border border-suture text-solarOxide font-bold">◉</span>
+        <div class="flex-1">
+          <strong class="block text-[11px] tracking-wider uppercase">PROFILE DOSSIER</strong>
+          <small class="block text-silt text-[9px]">Identity &amp; telemetry hub</small>
+        </div>
+        <span class="text-silt font-bold">→</span>
+      </a>
+
+      <a href="{% url 'orders' %}" class="flex items-center gap-3 w-full p-3.5 border border-suture bg-vellum hover:bg-porcelain text-umber hover:border-solarOxide transition-all rounded-sm">
+        <span class="w-7 h-7 flex items-center justify-center border border-suture text-solarOxide font-bold">▤</span>
+        <div class="flex-1">
+          <strong class="block text-[11px] tracking-wider uppercase">ACQUISITIONS</strong>
+          <small class="block text-silt text-[9px]">Verified order dispatches &amp; invoices</small>
+        </div>
+        <span class="text-silt font-bold">→</span>
+      </a>
+
+      <a href="{% url 'wishlist_page' %}" class="flex items-center gap-3 w-full p-3.5 border border-suture bg-vellum hover:bg-porcelain text-umber hover:border-solarOxide transition-all rounded-sm">
+        <span class="w-7 h-7 flex items-center justify-center border border-suture text-solarOxide font-bold">♡</span>
+        <div class="flex-1">
+          <strong class="block text-[11px] tracking-wider uppercase">RESERVE LIST</strong>
+          <small class="block text-silt text-[9px]">Saved hardware models (<span class="nav-wishlist-badge">{{ wishlist_count }}</span>)</small>
+        </div>
+        <span class="text-silt font-bold">→</span>
+      </a>
+
+      <a href="{% url 'addresses' %}" class="flex items-center gap-3 w-full p-3.5 border border-suture bg-vellum hover:bg-porcelain text-umber hover:border-solarOxide transition-all rounded-sm">
+        <span class="w-7 h-7 flex items-center justify-center border border-suture text-solarOxide font-bold">⌖</span>
+        <div class="flex-1">
+          <strong class="block text-[11px] tracking-wider uppercase">DISPATCH MATRIX</strong>
+          <small class="block text-silt text-[9px]">Postal routing parameters</small>
+        </div>
+        <span class="text-silt font-bold">→</span>
+      </a>
+    </nav>
+
+    <div class="mt-auto border-t border-suture p-5 space-y-3 font-mono text-xs">
+      {% if user.is_authenticated %}
+        <form method="POST" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <button type="submit" class="flex items-center justify-between w-full px-4 py-3 border border-solarOxide bg-solarOxide text-white hover:bg-umber hover:border-umber transition-all font-bold tracking-wider uppercase text-[10px] rounded-sm">
+            <span>SEAL SESSION / LOGOUT</span>
+            <span>→</span>
+          </button>
+        </form>
+      {% else %}
+        <a href="{% url 'login' %}" class="flex items-center justify-between w-full px-4 py-3 border border-solarOxide bg-solarOxide text-white hover:bg-umber hover:border-umber transition-all font-bold tracking-wider uppercase text-[10px] rounded-sm">
+          <span>AUTHENTICATE / SIGN IN</span>
+          <span>→</span>
+        </a>
+      {% endif %}
+      <div class="flex justify-between text-[9px] text-silt">
+        <span>ELECTROCART // ATELIER</span>
+        <span class="text-solarOxide font-bold">TLS-1.3 ENCLAVE</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ========================================================================= -->
+  <!-- TOP PERSISTENT UTILITY HEADER                                             -->
+  <!-- ========================================================================= -->
+  <header class="sticky top-0 z-40 w-full border-b border-suture bg-vellum/90 backdrop-blur-md px-4 sm:px-6 md:px-14 py-3.5 flex justify-between items-center transition-all">
+    <div class="flex items-center space-x-3 sm:space-x-5">
+      <button id="account-drawer-trigger" type="button" class="w-9 h-9 border border-suture bg-porcelain text-umber hover:bg-umber hover:text-vellum transition-all rounded-sm flex items-center justify-center font-mono text-sm" aria-label="Open Command Suite navigation" aria-expanded="false">
+        ☰
+      </button>
+
+      <a href="{% url 'home' %}" class="flex items-center space-x-2.5 group">
+        <span class="w-7 h-7 rounded-sm bg-umber text-vellum flex items-center justify-center font-syne text-xs font-bold group-hover:bg-solarOxide transition-colors">⚡</span>
+        <span class="font-syne font-black text-lg tracking-tight uppercase text-umber whitespace-nowrap">
+          ELECTROCART
+        </span>
+      </a>
+
+      <!-- Quick Search Bar -->
+      <form action="{% url 'home' %}" method="GET" class="hidden md:flex items-center relative font-mono text-xs ml-4">
+        <input type="text" id="global-search-input" name="q" value="{{ search_query|default:'' }}" placeholder="Search hardware, brands, SKUs... (Press /)" class="w-64 lg:w-80 px-3 py-1.5 bg-porcelain border border-suture rounded-sm text-umber text-xs placeholder:text-silt outline-none focus:border-solarOxide transition-all" />
+        <button type="submit" class="absolute right-2 text-silt hover:text-solarOxide transition-colors" aria-label="Execute search">
+          ⌕
+        </button>
+      </form>
+    </div>
+
+    <div class="flex items-center space-x-2 sm:space-x-4 font-mono text-xs">
+      <button id="theme-mode-toggle" type="button" class="px-2.5 py-1.5 border border-suture bg-porcelain hover:border-solarOxide rounded-sm text-[10px] text-umber transition-all flex items-center space-x-1.5 hidden sm:flex">
+        <span class="w-1.5 h-1.5 rounded-full bg-solarOxide"></span>
+        <span id="theme-mode-label">MODE: [STUDIO]</span>
+      </button>
+
+      <a href="{% url 'wishlist_page' %}" class="px-2.5 py-1.5 border border-suture bg-porcelain hover:border-solarOxide text-umber transition-colors rounded-sm flex items-center space-x-1.5" title="Curated Reserve List">
+        <span>♡</span>
+        <span class="hidden md:inline text-[10px] uppercase font-bold">RESERVE</span>
+        <span class="nav-wishlist-badge text-[10px] font-bold text-solarOxide">{{ wishlist_count }}</span>
+      </a>
+
+      <a href="{% url 'cart_view' %}" class="px-3.5 py-1.5 bg-umber hover:bg-solarOxide text-vellum font-bold transition-colors rounded-sm flex items-center space-x-2 shadow-sm">
+        <span>BAG</span>
+        <span class="nav-cart-badge px-1.5 py-0.2 bg-solarOxide text-white text-[10px] rounded-xs font-bold">{{ cart_count }}</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Global Toast Banner for Live Notifications -->
+  <div id="atelier-toast" role="status" aria-live="polite" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none bg-umber text-vellum px-5 py-3 rounded-sm font-mono text-xs flex items-center space-x-3 shadow-2xl border border-solarOxide">
+    <span class="w-2 h-2 rounded-full bg-solarOxide animate-ping"></span>
+    <span id="atelier-toast-text">SPECIMEN ALLOCATED</span>
+  </div>
+
+  <!-- Django Messages Container -->
+  {% if messages %}
+    <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 md:px-14 pt-4" aria-live="polite">
+      {% for message in messages %}
+        <div class="mb-2 p-3 text-xs font-mono border rounded-sm flex items-center justify-between {% if message.tags == 'error' or message.tags == 'danger' %}border-rose-400 bg-rose-50 text-rose-800{% elif message.tags == 'warning' %}border-amber-400 bg-amber-50 text-amber-800{% elif message.tags == 'success' %}border-emerald-400 bg-emerald-50 text-emerald-800{% else %}border-suture bg-porcelain text-umber{% endif %}">
+          <div class="flex items-center space-x-2">
+            <span class="font-bold">●</span>
+            <span>{{ message }}</span>
+          </div>
+          <span class="text-[10px] uppercase font-bold tracking-wider">{{ message.tags|default:"NOTICE" }}</span>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- Primary Page Body Container -->
+  <main id="main-content" class="flex-grow">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ========================================================================= -->
+  <!-- ATELIER FOOTER                                                            -->
+  <!-- ========================================================================= -->
+  <footer class="w-full border-t border-suture bg-porcelain font-mono text-xs text-silt py-10 px-4 sm:px-6 md:px-14 mt-16">
+    <div class="max-w-7xl mx-auto space-y-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <div class="flex items-center space-x-2 text-umber font-syne font-black text-lg mb-2">
+            <span>⚡</span>
+            <span>ELECTROCART</span>
+          </div>
+          <p class="text-[11px] leading-relaxed">
+            Celestial Hardware Atelier &amp; Kinetic Peripherals. High-precision hardware engineering calibrated for the Indian technology vanguard.
+          </p>
+        </div>
+
+        <div>
+          <strong class="text-umber block uppercase tracking-widest text-[10px] mb-3">HARDWARE ARCHIVE</strong>
+          <ul class="space-y-1.5 text-[11px]">
+            {% for cat in store_categories|slice:":5" %}
+              <li><a href="{% url 'home' %}?category={{ cat }}" class="hover:text-solarOxide transition-colors">{{ cat }}</a></li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <div>
+          <strong class="text-umber block uppercase tracking-widest text-[10px] mb-3">COMMAND LINKS</strong>
+          <ul class="space-y-1.5 text-[11px]">
+            <li><a href="{% url 'cart_view' %}" class="hover:text-solarOxide transition-colors">Dispatch Bag ({{ cart_count }})</a></li>
+            <li><a href="{% url 'checkout' %}" class="hover:text-solarOxide transition-colors">Direct Session Checkout</a></li>
+            <li><a href="{% url 'orders' %}" class="hover:text-solarOxide transition-colors">Acquisition Dossiers</a></li>
+            <li><a href="{% url 'wishlist_page' %}" class="hover:text-solarOxide transition-colors">Curated Reserve ({{ wishlist_count }})</a></li>
+          </ul>
+        </div>
+
+        <div>
+          <strong class="text-solarOxide block uppercase tracking-widest text-[10px] mb-3">STUDIO COORDINATES</strong>
+          <p class="text-[11px] leading-relaxed">
+            ElectroCart Hardware Labs:<br />
+            Navrangpura, Near C.G. Road<br />
+            Ahmedabad, Gujarat 380009<br />
+            Republic of India · DIN 40050 Certified
+          </p>
+        </div>
+      </div>
+
+      <div class="border-t border-suture pt-4 flex flex-col sm:flex-row justify-between items-center gap-2 text-[10px]">
+        <span>© 2026 ELECTROCART HARDWARE LABS PVT LTD. ALL RIGHTS RESERVED.</span>
+        <span class="font-bold text-umber">100% INDIAN INR CALIBRATION · FAST RECONCILED DISPATCH</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Atelier JS Script Engine -->
+  <script src="{% static 'js/atelier.js' %}"></script>
+  {% block extra_scripts %}{% endblock %}
+
+</body>
+</html>
+

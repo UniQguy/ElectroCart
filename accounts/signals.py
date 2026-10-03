@@ -8,10 +8,7 @@ from .models import UserProfile, Cart, CartItem
 @receiver(post_save, sender=User)
 def create_or_update_user_profile(sender, instance, created, **kwargs):
     if created:
-        UserProfile.objects.create(user=instance)
-    else:
-        if hasattr(instance, 'profile'):
-            instance.profile.save()
+        UserProfile.objects.get_or_create(user=instance)
 
 
 @receiver(user_logged_in)
@@ -37,11 +34,15 @@ def merge_guest_cart_on_login(sender, request, user, **kwargs):
         user_item = user_cart.items.filter(product=guest_item.product).first()
         if user_item:
             user_item.quantity += guest_item.quantity
+            if user_item.quantity > user_item.product.stock:
+                user_item.quantity = max(1, user_item.product.stock)
             user_item.save(update_fields=['quantity'])
             guest_item.delete()
         else:
+            if guest_item.quantity > guest_item.product.stock:
+                guest_item.quantity = max(1, guest_item.product.stock)
             guest_item.cart = user_cart
-            guest_item.save(update_fields=['cart'])
+            guest_item.save(update_fields=['cart', 'quantity'])
 
     guest_cart.delete()
 
