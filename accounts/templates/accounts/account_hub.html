@@ -1,173 +1,122 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ElectroCart | Atelier Account</title>
+{% extends 'accounts/base.html' %}
+{% load static humanize %}
 
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        :root {
-            --vellum: #FAF7F2;
-            --porcelain: #F3ECE2;
-            --limestone: #E8DFD1;
-            --umber: #1D1916;
-            --silt: #7A7269;
-            --oxide: #C25E3E;
-            --gold: #C49A45;
-            --suture: rgba(29,25,22,0.10);
-        }
-        body {
-            min-height: 100vh;
-            background: linear-gradient(to right, var(--suture) 1px, transparent 1px), linear-gradient(to bottom, var(--suture) 1px, transparent 1px);
-            background-size: 72px 72px;
-            background-color: var(--vellum);
-            color: var(--umber);
-            font-family: "Courier New", monospace;
-        }
-        .scan-line {
-            position: fixed; top: -2px; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(90deg, transparent, rgba(194,94,62,.2), var(--oxide), rgba(194,94,62,.2), transparent);
-            box-shadow: 0 0 8px rgba(194,94,62,.4);
-            z-index: 999; pointer-events: none;
-            animation: scanDown 4.5s linear infinite;
-        }
-        @keyframes scanDown {
-            0% { top: -2px; opacity: 0; }
-            8% { opacity: 1; }
-            92% { opacity: 1; }
-            100% { top: 100vh; opacity: 0; }
-        }
-        .page { width: calc(100% - 28px); min-height: calc(100vh - 28px); margin: 14px; border: 1px solid #bcb5a9; }
-        header { height: 68px; padding: 0 30px; border-bottom: 1px solid var(--suture); display: flex; align-items: center; justify-content: space-between; }
-        .brand { display: flex; align-items: center; gap: 10px; }
-        .brand-icon { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; background: var(--umber); color: var(--oxide); font-weight: bold; }
-        .brand-name { font-family: Arial, sans-serif; font-size: 16px; font-weight: 900; letter-spacing: 1.5px; }
-        .brand-sub { display: block; font-size: 8px; color: var(--silt); letter-spacing: 1px; }
-        .back { color: var(--oxide); text-decoration: none; font-size: 10px; font-weight: bold; }
-        main { padding: 50px; max-width: 1200px; margin: auto; }
-        .code { color: var(--oxide); font-size: 10px; font-weight: bold; letter-spacing: 2px; margin-bottom: 12px; }
-        h1 { font-family: Georgia, serif; font-size: clamp(48px, 7vw, 82px); font-weight: 400; line-height: .9; letter-spacing: -3px; margin-bottom: 20px; }
-        h1 span { color: var(--oxide); }
-        .intro { color: var(--silt); font-family: Arial, sans-serif; font-size: 14px; line-height: 1.7; max-width: 600px; margin-bottom: 40px; }
-        .panel { border: 1px solid var(--suture); background: rgba(255,255,255,.22); padding: 25px; margin-bottom: 30px; }
-        .panel-title { color: var(--oxide); font-size: 10px; font-weight: bold; letter-spacing: 1.5px; border-bottom: 1px solid var(--suture); padding-bottom: 12px; margin-bottom: 20px; }
-        .profile-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
-        .info-box { border: 1px solid var(--suture); background: var(--porcelain); padding: 18px; }
-        .label { display: block; color: var(--silt); font-size: 8px; margin-bottom: 7px; letter-spacing: 1px; }
-        .value { font-size: 11px; font-weight: bold; }
-        .order-item { border: 1px solid var(--suture); padding: 16px; margin-bottom: 10px; display: flex; justify-content: space-between; gap: 20px; background: white; }
-        .item-name { font-family: Georgia, serif; font-size: 18px; }
-        .item-meta { color: var(--silt); font-size: 9px; margin-top: 5px; }
-        .item-price { color: var(--oxide); font-weight: bold; }
-        @media(max-width:700px) {
-            main { padding: 30px 20px; }
-            .profile-grid { grid-template-columns: 1fr; }
-            header { padding: 0 15px; }
-        }
-    </style>
-</head>
+{% block title %}ELECTROCART // Atelier Profile Dossier{% endblock %}
 
-<body>
-<div class="scan-line"></div>
+{% block content %}
+<section class="max-w-7xl mx-auto w-full px-4 sm:px-6 md:px-14 py-10 font-mono text-xs">
+  
+  <div class="mb-8 pb-4 border-b border-suture flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+    <div>
+      <span class="text-solarOxide font-bold uppercase tracking-widest block mb-1 text-[10px]">IDENTIFICATION HUB</span>
+      <h1 class="font-syne font-extrabold text-3xl sm:text-4xl uppercase tracking-tight text-umber">Command Dossier</h1>
+    </div>
+    <div class="text-silt">
+      PATRON: <span class="font-bold text-green-800">{{ user.username|upper }}</span>
+    </div>
+  </div>
 
-<div class="page">
-    <header>
-        <div class="brand">
-            <div class="brand-icon">⚡</div>
-            <div>
-                <div class="brand-name">ELECTROCART</div>
-                <span class="brand-sub">HEAVEN ATELIER</span>
-            </div>
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    
+    <!-- LEFT: PROFILE TELEMETRY (4 COLS) -->
+    <div class="lg:col-span-4 bg-porcelain border border-suture p-6 rounded-sm corner-mark space-y-5">
+      <div class="border-b border-suture pb-3">
+        <span class="text-solarOxide font-bold text-[10px] tracking-wider uppercase block mb-1">ATELIER PATRON</span>
+        <h2 class="font-syne font-bold text-xl text-umber">{{ user.get_full_name|default:user.username }}</h2>
+        <span class="text-silt text-[11px]">{{ user.email }}</span>
+      </div>
+
+      <div class="space-y-3 text-[11px]">
+        <div class="flex justify-between py-1 border-b border-suture/60">
+          <span class="text-silt">ACCESS TIER:</span>
+          <strong class="text-solarOxide font-bold">VERIFIED PATRON</strong>
+        </div>
+        <div class="flex justify-between py-1 border-b border-suture/60">
+          <span class="text-silt">CONTACT NUMBER:</span>
+          <strong class="text-umber">{{ profile.phone|default:"NOT SPECIFIED" }}</strong>
+        </div>
+        <div class="flex justify-between py-1 border-b border-suture/60">
+          <span class="text-silt">TOTAL ACQUISITIONS:</span>
+          <strong class="text-umber">{{ total_orders }} Dispatches</strong>
+        </div>
+        <div class="flex justify-between py-1 text-[11px]">
+          <span class="text-silt">LIFETIME ALLOCATION:</span>
+          <strong class="text-celestialGold font-bold">₹{{ total_spent|floatformat:2 }}</strong>
+        </div>
+      </div>
+
+      <div class="pt-3 border-t border-suture space-y-2">
+        <a href="{% url 'addresses' %}" class="w-full py-2.5 px-3 border border-suture bg-vellum hover:border-umber text-umber font-bold uppercase text-[10px] rounded-sm transition-colors block text-center">
+          Edit Delivery Parameters →
+        </a>
+      </div>
+    </div>
+
+    <!-- RIGHT: NAVIGATION & RECENT ACQUISITIONS (8 COLS) -->
+    <div class="lg:col-span-8 space-y-8">
+      
+      <!-- Quick Navigation Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <a href="{% url 'orders' %}" class="bg-porcelain border border-suture p-5 rounded-sm hover:border-solarOxide transition-colors space-y-1 block">
+          <span class="text-solarOxide font-bold text-lg">▤</span>
+          <strong class="block text-umber text-xs uppercase font-syne font-bold">Acquisitions</strong>
+          <span class="text-silt text-[10px] block">Review order history</span>
+        </a>
+
+        <a href="{% url 'wishlist_page' %}" class="bg-porcelain border border-suture p-5 rounded-sm hover:border-solarOxide transition-colors space-y-1 block">
+          <span class="text-solarOxide font-bold text-lg">♡</span>
+          <strong class="block text-umber text-xs uppercase font-syne font-bold">Reserve List</strong>
+          <span class="text-silt text-[10px] block">Saved hardware models</span>
+        </a>
+
+        <a href="{% url 'cart_view' %}" class="bg-porcelain border border-suture p-5 rounded-sm hover:border-solarOxide transition-colors space-y-1 block">
+          <span class="text-solarOxide font-bold text-lg">⚡</span>
+          <strong class="block text-umber text-xs uppercase font-syne font-bold">Dispatch Bag</strong>
+          <span class="text-silt text-[10px] block">{{ cart_count }} active allocations</span>
+        </a>
+      </div>
+
+      <!-- Recent Orders Ledger -->
+      <div class="bg-porcelain border border-suture p-6 sm:p-8 rounded-sm corner-mark space-y-4">
+        <div class="flex justify-between items-center border-b border-suture pb-3">
+          <div>
+            <span class="text-solarOxide font-bold text-[10px] uppercase">VERIFIED HISTORY</span>
+            <h3 class="font-syne font-bold text-lg uppercase text-umber">Recent Acquisitions</h3>
+          </div>
+          <a href="{% url 'orders' %}" class="text-silt hover:text-solarOxide text-[10px] uppercase font-bold">
+            View All →
+          </a>
         </div>
 
-        <div style="display:flex; gap:18px; align-items:center;">
-            <form method="post" action="{% url 'logout' %}" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit" class="back" style="color:var(--silt); background:none; border:0; cursor:pointer;">[SEAL SESSION]</button>
-            </form>
-            <a href="{% url 'home' %}" class="back">← RETURN TO ATELIER</a>
-        </div>
-    </header>
-
-    <main>
-        <div class="code">// ATELIER ACCOUNT 01</div>
-
-        <h1>ACCOUNT<br><span>PROFILE.</span></h1>
-
-        <p class="intro">
-            Manage your personal ElectroCart atelier coordinates and verified hardware dispatches.
-        </p>
-
-        <!-- PROFILE DOSSIER -->
-        <section class="panel">
-            <div class="panel-title">PROFILE DOSSIER</div>
-            <div class="profile-grid">
-                <div class="info-box">
-                    <span class="label">USER DESIGNATION</span>
-                    <span class="value">{{ user.get_full_name|default:user.username }}</span>
+        {% if recent_orders %}
+          <div class="divide-y divide-suture/60">
+            {% for order in recent_orders %}
+              <div class="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                <div>
+                  <div class="flex items-center space-x-2">
+                    <strong class="text-solarOxide font-bold">#{{ order.order_number }}</strong>
+                    <span class="text-silt text-[10px]">· {{ order.created_at|date:"d M Y" }}</span>
+                  </div>
+                  <span class="text-silt text-[10px]">{{ order.items.count }} items · {{ order.shipping_address|truncatechars:35 }}</span>
                 </div>
-                <div class="info-box">
-                    <span class="label">ATELIER NODE</span>
-                    <span class="value">{{ user.email|default:"CLIENT NODE UNASSIGNED" }}</span>
-                </div>
-                <div class="info-box">
-                    <span class="label">TELEMETRY ACCESS</span>
-                    <span class="value">ACTIVE (62 HARDWARE SPECIMENS)</span>
-                </div>
-                <div class="info-box">
-                    <span class="label">AUTHENTICATION LEVEL</span>
-                    <span class="value">VERIFIED ATELIER PATRON</span>
-                </div>
-            </div>
-        </section>
 
-        <!-- DISPATCH COORDINATES -->
-        <section class="panel">
-            <div class="panel-title" style="display:flex; justify-content:space-between; align-items:center;">
-                <span>DISPATCH ROUTING MATRIX</span>
-                <a href="{% url 'addresses' %}" style="color:var(--oxide); text-decoration:none;">[CONFIGURE COORDINATES →]</a>
-            </div>
-            <div class="profile-grid">
-                <div class="info-box">
-                    <span class="label">PHYSICAL LOCATION</span>
-                    <span class="value">{{ profile.address|default:"No physical dispatch address recorded." }}</span>
+                <div class="flex items-center space-x-4 sm:text-right">
+                  <strong class="text-umber">₹{{ order.total_amount|floatformat:2 }}</strong>
+                  <a href="{% url 'order_confirmation' order.order_number %}" class="px-3 py-1 bg-vellum border border-suture hover:border-umber text-umber text-[10px] uppercase font-bold rounded-sm transition-colors">
+                    Receipt ↗
+                  </a>
                 </div>
-                <div class="info-box">
-                    <span class="label">MUNICIPALITY / PIN</span>
-                    <span class="value">{% if profile.city or profile.state or profile.pincode %}{{ profile.city }}, {{ profile.state }} ({{ profile.pincode }}){% else %}No dispatch coordinates recorded.{% endif %}</span>
-                </div>
-            </div>
-        </section>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="text-silt text-xs italic py-4">Zero acquisitions logged for this session.</p>
+        {% endif %}
+      </div>
 
-        <!-- RECENT ACQUISITIONS -->
-        <section class="panel">
-            <div class="panel-title" style="display:flex; justify-content:space-between; align-items:center;">
-                <span>RECENT ORDER ARCHIVE</span>
-                <a href="{% url 'orders' %}" style="color:var(--oxide); text-decoration:none;">[ALL ORDERS →]</a>
-            </div>
+    </div>
 
-            {% if recent_orders %}
-                {% for order in recent_orders %}
-                    <div class="order-item">
-                        <div>
-                            <div class="item-name">Order #{{ order.order_number }}</div>
-                            <div class="item-meta">{{ order.created_at|date:"d M Y, H:i" }} IST · {{ order.items.count }} ALLOCATIONS</div>
-                        </div>
-                        <div style="text-align:right;">
-                            <div class="item-price">₹{{ order.total_amount|floatformat:2 }}</div>
-                            <a href="{% url 'order_confirmation' order.order_number %}" style="font-size:8px; color:var(--silt); text-decoration:underline;">INVOICE ↗</a>
-                        </div>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <div style="padding: 30px; text-align:center; color:var(--silt); font-size:10px; border:1px dashed var(--suture);">
-                    NO ACQUISITIONS ARCHIVED YET. COMPLETE AN ORDER TO INITIALIZE ARCHIVE.
-                </div>
-            {% endif %}
-        </section>
-    </main>
-</div>
-</body>
-</html>
+  </div>
+
+</section>
+{% endblock %}

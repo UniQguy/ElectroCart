@@ -37,6 +37,13 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
+        ordering = ['-created_at']
+        indexes = [
+            models.Index(fields=['category']),
+            models.Index(fields=['brand']),
+            models.Index(fields=['is_featured']),
+            models.Index(fields=['price']),
+        ]
         constraints = [
             models.CheckConstraint(
                 condition=models.Q(price__gte=0),
@@ -164,6 +171,8 @@ class Order(models.Model):
     )
 
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders', null=True, blank=True)
+    customer_name = models.CharField(max_length=255, blank=True, null=True, default='')
+    customer_email = models.EmailField(blank=True, null=True, default='')
     order_number = models.CharField(max_length=64, blank=True, default='', db_index=True)
     total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
     discount = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
@@ -191,9 +200,6 @@ class OrderItem(models.Model):
     price = models.DecimalField(max_digits=12, decimal_places=2, default=Decimal('0.00'))
     quantity = models.PositiveIntegerField(default=1)
 
-    def __str__(self):
-        return f"{self.quantity}x {self.product_name} (Order #{self.order.order_number})"
-
     class Meta:
         constraints = [
             models.CheckConstraint(
@@ -205,6 +211,9 @@ class OrderItem(models.Model):
                 name='order_item_price_non_negative',
             ),
         ]
+
+    def __str__(self):
+        return f"{self.quantity}x {self.product_name} (Order #{self.order.order_number})"
 
     @property
     def line_total(self):

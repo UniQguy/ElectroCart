@@ -1,0 +1,22 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block title %}404 // Specimen Not Found | ELECTROCART{% endblock %}
+
+{% block content %}
+<section class="max-w-2xl mx-auto w-full px-4 py-20 text-center font-mono text-xs space-y-6">
+  <div class="p-10 bg-porcelain border border-suture rounded-sm corner-mark shadow-sm space-y-4">
+    <span class="text-solarOxide font-bold text-5xl block font-syne">404</span>
+    <h1 class="font-syne font-bold text-2xl uppercase text-umber">Hardware Coordinate Missing</h1>
+    <p class="text-silt max-w-md mx-auto leading-relaxed">
+      The requested URL or technical dossier cannot be indexed in our active inventory archive. The specimen may have been decommissioned or relocated.
+    </p>
+    <div class="pt-4 flex justify-center space-x-3">
+      <a href="{% url 'home' %}" class="btn-primary">
+        Return to Master Catalog →
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}
+

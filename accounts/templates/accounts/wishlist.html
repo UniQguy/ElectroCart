@@ -1,212 +1,93 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wishlist | ElectroCart</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+{% extends 'accounts/base.html' %}
+{% load static humanize %}
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        vellum: "#f5f3ee",
-                        ink: "#181818",
-                        silt: "#77736c",
-                        suture: "#d6d0c6",
-                        electric: "#2563eb",
-                        cyanGlow: "#06b6d4"
-                    }
-                }
-            }
-        }
-    </script>
+{% block title %}ELECTROCART // Curated Reserve List{% endblock %}
 
-    <style>
-        * { box-sizing: border-box; }
-        body { margin: 0; background: #f5f3ee; color: #181818; font-family: Arial, sans-serif; }
-        .technical-label { font-family: "Courier New", monospace; font-size: 10px; letter-spacing: 0.2em; font-weight: bold; }
-        .corner-mark { position: relative; }
-        .corner-mark::before, .corner-mark::after { content: ""; position: absolute; width: 9px; height: 9px; border-color: #2563eb; pointer-events: none; }
-        .corner-mark::before { top: -1px; left: -1px; border-top: 2px solid; border-left: 2px solid; }
-        .corner-mark::after { bottom: -1px; right: -1px; border-bottom: 2px solid; border-right: 2px solid; }
-        .wishlist-card { border: 1px solid #d6d0c6; background: #ffffff; padding: 24px; position: relative; transition: all 0.3s ease; }
-        .wishlist-card:hover { border-color: #2563eb; box-shadow: 8px 8px 0 rgba(37, 99, 235, 0.08); }
-        .explore-button { background: #181818; color: white; border: 1px solid #181818; transition: all 0.3s ease; }
-        .explore-button:hover { background: #2563eb; border-color: #2563eb; transform: translateY(-2px); }
-        .back-button:hover { color: #2563eb; }
-        .grid-pattern {
-            background-image: linear-gradient(rgba(24, 24, 24, 0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(24, 24, 24, 0.035) 1px, transparent 1px);
-            background-size: 25px 25px;
-        }
-    </style>
-</head>
-
-<body class="grid-pattern min-h-screen">
-
-    <div class="bg-[#181818] text-white px-6 py-3">
-        <div class="max-w-7xl mx-auto flex flex-wrap justify-between gap-3 technical-label">
-            <span>FREE DELIVERY ACROSS INDIA</span>
-            <span class="text-cyan-300">24H DISPATCH VERIFIED</span>
-            <span>100% ORIGINAL PRODUCTS</span>
-        </div>
+{% block content %}
+<section class="max-w-7xl mx-auto w-full px-4 sm:px-6 md:px-14 py-10">
+  
+  <div class="mb-8 pb-4 border-b border-suture flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+    <div>
+      <span class="font-mono text-xs text-solarOxide font-bold uppercase tracking-widest block mb-1">CURATED COLLECTION</span>
+      <h1 class="font-syne font-extrabold text-3xl sm:text-4xl uppercase tracking-tight text-umber">Reserve List</h1>
     </div>
+    <div class="font-mono text-xs text-silt">
+      SAVED SPECIMENS: <span class="font-bold text-umber nav-wishlist-badge">{{ items|length }} UNITS</span>
+    </div>
+  </div>
 
-    <!-- HEADER -->
-    <header class="bg-vellum border-b border-suture px-6 py-6">
-        <div class="max-w-7xl mx-auto flex justify-between items-center gap-5">
-            <a href="{% url 'home' %}" class="text-xl md:text-2xl font-black tracking-widest flex items-center gap-2">
-                <span class="text-electric">⚡</span>
-                ELECTROCART
-            </a>
-            <a href="{% url 'home' %}" class="back-button technical-label flex items-center gap-2">
-                <span>←</span>
-                BACK HOME
-            </a>
-        </div>
-    </header>
-
-    <!-- MAIN -->
-    <main class="max-w-7xl mx-auto px-6 py-12 md:py-20">
-
-        <!-- PAGE LABEL -->
-        <div class="flex items-center gap-3 mb-5">
-            <span class="w-8 h-px bg-electric"></span>
-            <p class="technical-label text-electric">// ACCOUNT DOSSIER 03</p>
-            <span class="text-xs font-mono text-silt">[ WISHLIST ]</span>
-        </div>
-
-        <!-- TITLE -->
-        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
-            <div>
-                <h1 class="text-5xl md:text-7xl font-black tracking-tight leading-none">
-                    YOUR <span class="text-electric">WISHLIST.</span>
-                </h1>
-                <p class="mt-5 text-sm md:text-base text-silt max-w-xl leading-relaxed">
-                    Save the technology you love and preserve your personal collection of future hardware upgrades.
-                </p>
-            </div>
-            <div class="technical-label text-silt">EC / SAVED COLLECTION</div>
-        </div>
-
-        <!-- WISHLIST SECTION -->
-        <section class="border border-suture bg-white p-6 md:p-8 corner-mark">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6 pb-6 border-b border-suture">
-                <div>
-                    <p class="technical-label text-electric mb-1">
-                        {% if items %}STATUS / ACTIVE{% else %}STATUS / EMPTY{% endif %}
-                    </p>
-                    <h2 class="text-2xl md:text-3xl font-black tracking-tight">SAVED SPECIMENS</h2>
-                </div>
-                <div class="border border-suture px-4 py-2 font-mono">
-                    <span class="technical-label text-silt block">SAVED ITEMS</span>
-                    <strong class="text-2xl font-black">{{ items|length|stringformat:"02d" }}</strong>
-                </div>
+  {% if items %}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      {% for item in items %}
+        <article class="specimen-card corner-mark">
+          <div>
+            <div class="flex justify-between items-center border-b border-suture pb-2 font-mono text-[10px]">
+              <span class="text-solarOxide font-bold">{{ item.product.product_code|default:"REF. ATELIER" }}</span>
+              <span class="px-2 py-0.5 bg-vellum text-silt border border-suture rounded-sm uppercase">{{ item.product.brand }}</span>
             </div>
 
-            {% if items %}
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {% for item in items %}
-                        <article class="wishlist-card flex flex-col justify-between" id="wishlist-item-{{ item.product.id }}">
-                            <div>
-                                <div class="w-full h-48 border border-suture bg-[#f5f3ee] flex items-center justify-center p-3 mb-4 overflow-hidden">
-                                    {% if item.product.image %}
-                                        <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="max-h-full max-w-full object-contain" />
-                                    {% else %}
-                                        <span class="technical-label text-silt">NO CAD VISUAL</span>
-                                    {% endif %}
-                                </div>
+            <div class="my-4 aspect-square bg-vellum border border-suture rounded-sm p-3 flex items-center justify-center relative">
+              {% if item.product.image %}
+                <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="w-full h-full object-contain" />
+              {% else %}
+                <span class="font-mono text-[10px] text-silt">NO CAD</span>
+              {% endif %}
 
-                                <span class="technical-label text-electric">{{ item.product.product_code }}</span>
-                                <h3 class="text-xl font-black mt-1 leading-tight">{{ item.product.name }}</h3>
-                                <p class="text-xs text-silt mt-2 line-clamp-2">{{ item.product.description }}</p>
-                            </div>
+              <div class="absolute top-2 left-2">
+                {% if item.product.in_stock %}
+                  <span class="atelier-badge emerald">IN STOCK</span>
+                {% else %}
+                  <span class="atelier-badge" style="color: var(--status-rose); border-color: var(--status-rose);">OUT OF STOCK</span>
+                {% endif %}
+              </div>
+            </div>
 
-                            <div class="mt-6 pt-4 border-t border-suture">
-                                <div class="flex justify-between items-baseline mb-4 font-mono">
-                                    <strong class="text-xl font-black">₹{{ item.product.price|floatformat:2 }}</strong>
-                                    {% if item.product.mrp and item.product.mrp > item.product.price %}
-                                        <span class="text-xs text-silt line-through">₹{{ item.product.mrp|floatformat:2 }}</span>
-                                    {% endif %}
-                                </div>
+            <h2 class="font-syne font-bold text-base text-umber line-clamp-2">
+              <a href="{% url 'product_details' item.product.id %}" class="hover:text-solarOxide transition-colors">
+                {{ item.product.name }}
+              </a>
+            </h2>
+          </div>
 
-                                <div class="flex gap-2 font-mono text-xs">
-                                    <button onclick="addToBagFromWishlist({{ item.product.id }}, this)" class="flex-1 py-3 bg-ink text-white hover:bg-electric font-bold uppercase transition text-center">
-                                        + ADD TO CART
-                                    </button>
-                                    <button onclick="removeWishlistItem({{ item.product.id }})" class="px-4 py-3 border border-suture hover:border-oxide text-oxide font-bold uppercase transition">
-                                        ×
-                                    </button>
-                                </div>
-                            </div>
-                        </article>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="py-14 text-center">
-                    <div class="text-6xl md:text-7xl text-electric mb-4">♡</div>
-                    <h3 class="text-xl md:text-2xl font-black tracking-wide mb-2">YOUR WISHLIST IS EMPTY</h3>
-                    <p class="text-sm text-silt max-w-md mx-auto leading-relaxed mb-6">
-                        You haven't saved any products yet. Explore the master repository and reserve tech specimens.
-                    </p>
-                    <a href="{% url 'home' %}" class="explore-button inline-flex items-center justify-center gap-4 px-6 py-3.5 technical-label">
-                        <span>EXPLORE REPOSITORY</span>
-                        <span class="text-cyan-300">→</span>
-                    </a>
-                </div>
-            {% endif %}
-        </section>
-    </main>
+          <div class="pt-4 mt-4 border-t border-suture">
+            <div class="flex justify-between items-baseline mb-3 font-mono">
+              <span class="text-xs text-silt uppercase text-[10px]">DIRECT PRICE:</span>
+              <span class="text-lg font-bold text-umber">₹{{ item.product.price|floatformat:2 }}</span>
+            </div>
 
-    <footer class="border-t border-suture px-6 py-8 mt-10">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between gap-4 technical-label text-silt">
-            <span>© 2026 ELECTROCART</span>
-            <span>SMART TECH. SMARTER YOU.</span>
-            <span class="text-electric">SYSTEM ONLINE //</span>
-        </div>
-    </footer>
+            <div class="space-y-2 font-mono text-xs">
+              <form method="POST" action="{% url 'add_to_cart' item.product.id %}" data-ajax-cart class="w-full">
+                {% csrf_token %}
+                <input type="hidden" name="quantity" value="1" />
+                <button type="submit" {% if not item.product.in_stock %}disabled{% endif %} class="w-full py-2.5 bg-umber hover:bg-solarOxide disabled:bg-slate-300 text-vellum text-center font-bold uppercase rounded-sm transition-colors text-[11px] shadow-sm">
+                  {% if item.product.in_stock %}ALLOCATE TO BAG +{% else %}SPECIMEN EXHAUSTED{% endif %}
+                </button>
+              </form>
 
-    <!-- CART & WISHLIST INTEGRATION -->
-    <script>
-        async function addToBagFromWishlist(productId, btn) {
-            const originalText = btn.textContent;
-            btn.textContent = "ALLOCATING...";
-            try {
-                const res = await fetch(`/cart/add/${productId}/`, {
-                    headers: { 'X-Requested-With': 'XMLHttpRequest' }
-                });
-                if (res.ok) {
-                    btn.textContent = "ADDED TO BAG ✓";
-                    setTimeout(() => { btn.textContent = originalText; }, 1500);
-                } else {
-                    window.location.href = `/cart/add/${productId}/`;
-                }
-            } catch(e) {
-                window.location.href = `/cart/add/${productId}/`;
-            }
-        }
+              <form method="POST" action="{% url 'toggle_wishlist' item.product.id %}">
+                {% csrf_token %}
+                <button type="submit" class="w-full py-2 border border-suture bg-vellum hover:border-solarOxide text-silt hover:text-solarOxide text-center font-bold uppercase rounded-sm transition-colors text-[10px]">
+                  Remove from Reserve
+                </button>
+              </form>
+            </div>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="py-20 text-center border border-dashed border-suture bg-porcelain rounded-sm max-w-xl mx-auto p-8 space-y-4">
+      <span class="font-mono text-4xl text-silt block">♡</span>
+      <h2 class="font-syne font-bold text-2xl uppercase text-umber">Reserve Collection is Empty</h2>
+      <p class="font-mono text-xs text-silt">You have not curated any hardware models into your reserve list.</p>
+      <div class="pt-4">
+        <a href="{% url 'home' %}" class="btn-primary">
+          Explore Master Catalog
+        </a>
+      </div>
+    </div>
+  {% endif %}
 
-        async function removeWishlistItem(productId) {
-            const csrfToken = '{{ csrf_token }}';
-            try {
-                const res = await fetch(`/wishlist/toggle/${productId}/`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRFToken': csrfToken,
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                });
-                if (res.ok) {
-                    const el = document.getElementById(`wishlist-item-${productId}`);
-                    if (el) el.remove();
-                    window.location.reload();
-                }
-            } catch(e) {
-                window.location.href = `/wishlist/toggle/${productId}/`;
-            }
-        }
-    </script>
-</body>
+</section>
+{% endblock %}
 </html>

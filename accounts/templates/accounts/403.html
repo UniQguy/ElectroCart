@@ -1,0 +1,22 @@
+{% extends 'accounts/base.html' %}
+{% load static %}
+
+{% block title %}403 // Access Denied | ELECTROCART{% endblock %}
+
+{% block content %}
+<section class="max-w-2xl mx-auto w-full px-4 py-20 text-center font-mono text-xs space-y-6">
+  <div class="p-10 bg-porcelain border border-suture rounded-sm corner-mark shadow-sm space-y-4">
+    <span class="text-amber-700 font-bold text-5xl block font-syne">403</span>
+    <h1 class="font-syne font-bold text-2xl uppercase text-umber">Access Denied // Forbidden</h1>
+    <p class="text-silt max-w-md mx-auto leading-relaxed">
+      Security clearance insufficient to view this transaction enclave or patron dossier.
+    </p>
+    <div class="pt-4 flex justify-center space-x-3">
+      <a href="{% url 'home' %}" class="btn-primary">
+        Return to Catalog →
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}
+

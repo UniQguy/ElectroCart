@@ -1,274 +1,227 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{{ product.name }} // Technical Dossier | ELECTROCART</title>
+{% extends 'accounts/base.html' %}
+{% load static humanize %}
 
-  <!-- Typography -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Italiana&family=JetBrains+Mono:wght@400;500;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Syne:wght@700;800;900&display=swap" rel="stylesheet" />
+{% block title %}{{ product.name }} // Technical Dossier | ELECTROCART{% endblock %}
+{% block meta_description %}{{ product.name }} by {{ product.brand }}. Direct Atelier price ₹{{ product.price|floatformat:2 }}. High precision electronics with fast dispatch across India.{% endblock %}
 
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-
-  <style>
-    :root {
-      --bg-vellum: #FAF7F2;
-      --bg-porcelain: #F3ECE2;
-      --bg-limestone: #E8DFD1;
-      --ink-umber: #1D1916;
-      --ink-silt: #7A7269;
-      --accent-gold: #C49A45;
-      --accent-oxide: #C25E3E;
-      --border-suture: rgba(29, 25, 22, 0.12);
-    }
-    body {
-      background-color: var(--bg-vellum);
-      color: var(--ink-umber);
-      font-family: '"Plus Jakarta Sans"', sans-serif;
-      -webkit-font-smoothing: antialiased;
-    }
-    .celestial-grid {
-      background-size: 64px 64px;
-      background-image: 
-        linear-gradient(to right, var(--border-suture) 0.5px, transparent 0.5px),
-        linear-gradient(to bottom, var(--border-suture) 0.5px, transparent 0.5px);
-    }
-    .corner-mark {
-      position: relative;
-    }
-    .corner-mark::before, .corner-mark::after {
-      content: '';
-      position: absolute;
-      width: 7px;
-      height: 7px;
-      border-color: var(--ink-silt);
-      opacity: 0.4;
-    }
-    .corner-mark::before { top: 0; left: 0; border-top: 1px solid; border-left: 1px solid; }
-    .corner-mark::after { bottom: 0; right: 0; border-bottom: 1px solid; border-right: 1px solid; }
-
-    .radar-pulse {
-      animation: radarScan 2s infinite ease-in-out;
-    }
-    @keyframes radarScan {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.6); opacity: 0.25; }
-    }
-  </style>
-</head>
-<body class="relative min-h-screen celestial-grid">
-
-  <!-- Header -->
-  <header class="sticky top-0 z-40 bg-vellum/90 backdrop-blur-md border-b border-[var(--border-suture)] px-6 md:px-14 py-4 flex justify-between items-center">
-    <a href="{% url 'home' %}" class="flex items-center space-x-3 group">
-      <span class="w-7 h-7 bg-[var(--ink-umber)] text-white flex items-center justify-center font-bold text-xs rounded-sm group-hover:bg-[var(--accent-oxide)] transition-colors">⚡</span>
-      <div class="leading-none">
-        <span class="font-bold text-xs uppercase tracking-widest text-[var(--ink-umber)]">ELECTROCART</span>
-        <span class="font-mono text-[9px] text-[var(--ink-silt)] tracking-wider block mt-0.5">TECHNICAL INSPECTION</span>
-      </div>
-    </a>
-
-    <div class="flex items-center space-x-4 font-mono text-xs">
-      <a href="{% url 'home' %}" class="px-3.5 py-1.5 border border-[var(--border-suture)] bg-[var(--bg-porcelain)] hover:border-[var(--accent-oxide)] transition-colors">
-        ← REPOSITORY CATALOG
-      </a>
-      <a href="{% url 'cart_view' %}" class="px-4 py-1.5 bg-[var(--ink-umber)] hover:bg-[var(--accent-oxide)] text-white transition-colors font-bold flex items-center space-x-2 rounded-sm shadow-sm">
-        <span>BAG</span>
-        <span id="nav-bag-count" class="w-4 h-4 rounded-full bg-[var(--accent-oxide)] text-[9px] flex items-center justify-center font-bold">{{ cart_count }}</span>
-      </a>
-    </div>
-  </header>
-
-  <!-- Breadcrumb -->
-  <div class="max-w-7xl mx-auto px-6 md:px-14 pt-8 pb-4 flex items-center justify-between font-mono text-[10px] text-[var(--ink-silt)] border-b border-[var(--border-suture)]">
-    <div>
-      <span>SECTOR: {{ product.category|upper }}</span>
-      <span class="mx-2">/</span>
-      <span class="text-[var(--accent-oxide)] font-bold">REF. {{ product.product_code }}</span>
-    </div>
+{% block content %}
+<!-- BREADCRUMB STRIP -->
+<div class="border-b border-suture bg-porcelain/50 py-3 px-4 sm:px-6 md:px-14">
+  <div class="max-w-7xl mx-auto flex items-center justify-between font-mono text-[10px] text-silt">
     <div class="flex items-center space-x-2">
-      <span class="w-1.5 h-1.5 rounded-full {% if product.in_stock %}bg-emerald-600{% else %}bg-rose-600{% endif %} animate-pulse"></span>
-      <span class="font-bold text-[var(--ink-umber)]">{% if product.in_stock %}ALLOCATION ACTIVE [{{ product.stock }} UNITS]{% else %}ALLOCATION EXHAUSTED{% endif %}</span>
+      <a href="{% url 'home' %}" class="hover:text-umber transition-colors">CATALOG</a>
+      <span>/</span>
+      <a href="{% url 'home' %}?category={{ product.category }}" class="hover:text-umber transition-colors uppercase">{{ product.category }}</a>
+      <span>/</span>
+      <span class="text-solarOxide font-bold uppercase truncate max-w-[200px] sm:max-w-none">{{ product.product_code|default:product.name }}</span>
+    </div>
+
+    <div class="flex items-center space-x-2">
+      <span class="w-2 h-2 rounded-full {% if product.in_stock %}bg-emerald-600{% else %}bg-rose-600{% endif %} animate-pulse"></span>
+      <span class="font-bold text-umber uppercase">
+        {% if product.in_stock %}ALLOCATION ACTIVE [{{ product.stock }} UNITS]{% else %}ALLOCATION EXHAUSTED{% endif %}
+      </span>
     </div>
   </div>
+</div>
 
-  <!-- Primary Stage -->
-  <main class="max-w-7xl mx-auto px-6 md:px-14 py-10 grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-    
-    <!-- Specimen Visuals (Left) -->
+<!-- MAIN PDP STAGE -->
+<section class="py-10 px-4 sm:px-6 md:px-14">
+  <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+
+    <!-- LEFT: PHOTOGRAPHY & GALLERY (6 COLS) -->
     <div class="lg:col-span-6 space-y-4">
-      <div class="corner-mark border border-[var(--border-suture)] bg-[var(--bg-porcelain)] p-8 aspect-square flex items-center justify-center relative overflow-hidden rounded-sm">
-        <span class="absolute top-4 left-4 font-mono text-[9px] text-[var(--ink-silt)] uppercase">PHYSICAL ARCHIVE SPECIMEN</span>
-        <span class="absolute top-4 right-4 font-mono text-[9px] text-[var(--accent-oxide)] font-bold">DIN 40050 COMPLIANT</span>
+      <div class="corner-mark border border-suture bg-porcelain p-6 sm:p-10 aspect-square flex items-center justify-center relative overflow-hidden rounded-sm shadow-sm">
+        <span class="absolute top-4 left-4 font-mono text-[9px] text-silt uppercase">PHYSICAL ARCHIVE SPECIMEN</span>
+        <span class="absolute top-4 right-4 font-mono text-[9px] text-solarOxide font-bold">DIN 40050 COMPLIANT</span>
 
         {% if product.image %}
           <img id="primary-specimen-img" src="{{ product.image.url }}" alt="{{ product.name }}" class="max-h-[85%] max-w-[85%] object-contain transition-transform duration-500 hover:scale-105" />
         {% else %}
-          <span class="font-mono text-xs text-[var(--ink-silt)]">SPECIMEN VISUAL PENDING</span>
+          <div class="font-mono text-xs text-silt text-center">
+            <span>SPECIMEN VISUAL PENDING</span>
+          </div>
         {% endif %}
       </div>
 
       <!-- Gallery Filmstrip -->
       {% if gallery %}
-      <div class="grid grid-cols-4 gap-3">
-        {% for g in gallery %}
-        <div class="border border-[var(--border-suture)] bg-[var(--bg-porcelain)] p-2 aspect-square cursor-pointer hover:border-[var(--accent-oxide)] transition-colors flex items-center justify-center rounded-sm" onclick="document.getElementById('primary-specimen-img').src='{{ g.image.url }}'">
-          <img src="{{ g.image.url }}" alt="Angle" class="w-full h-full object-contain" />
+        <div class="grid grid-cols-4 gap-3">
+          {% for g in gallery %}
+            <button type="button" class="border border-suture bg-porcelain p-2 aspect-square cursor-pointer hover:border-solarOxide transition-colors flex items-center justify-center rounded-sm" onclick="document.getElementById('primary-specimen-img').src='{{ g.image.url }}'" aria-label="View gallery photo {{ forloop.counter }}">
+              <img src="{{ g.image.url }}" alt="Angle {{ forloop.counter }}" class="w-full h-full object-contain" />
+            </button>
+          {% endfor %}
         </div>
-        {% endfor %}
-      </div>
       {% endif %}
     </div>
 
-    <!-- Technical Architecture & Procurement (Right) -->
+    <!-- RIGHT: TECHNICAL ARCHITECTURE & PROCUREMENT (6 COLS) -->
     <div class="lg:col-span-6 space-y-6">
       <div>
-        <span class="font-mono text-xs text-[var(--accent-oxide)] font-bold uppercase tracking-widest">{{ product.brand|default:"Atelier Reserve" }}</span>
-        <h1 class="font-serif text-3xl md:text-5xl font-light text-[var(--ink-umber)] mt-2 leading-tight font-bold">{{ product.name }}</h1>
-        <p class="text-xs md:text-sm text-[var(--ink-silt)] leading-relaxed mt-4 font-normal">{{ product.description }}</p>
+        <div class="flex items-center space-x-2 font-mono text-xs mb-1">
+          <span class="text-solarOxide font-bold uppercase tracking-wider">{{ product.brand|default:"Atelier Reserve" }}</span>
+          <span class="text-silt">·</span>
+          <span class="text-silt uppercase">{{ product.category }}</span>
+        </div>
+        <h1 class="font-syne text-3xl sm:text-4xl text-umber font-bold leading-tight mt-1">
+          {{ product.name }}
+        </h1>
+        <p class="font-sans text-xs sm:text-sm text-silt leading-relaxed mt-4 font-normal">
+          {{ product.description }}
+        </p>
       </div>
 
       <!-- Price Block -->
-      <div class="border border-[var(--border-suture)] bg-[var(--bg-porcelain)] p-5 corner-mark space-y-2 font-mono">
+      <div class="border border-suture bg-porcelain p-5 corner-mark rounded-sm font-mono space-y-2">
         <div class="flex justify-between items-baseline">
-          <span class="text-xs text-[var(--ink-silt)] uppercase">ATELIER DIRECT INVOICE:</span>
-          <span class="text-3xl font-bold text-[var(--ink-umber)]">₹{{ product.price|floatformat:2 }}</span>
+          <span class="text-xs text-silt uppercase">ATELIER DIRECT INVOICE:</span>
+          <span class="text-3xl font-bold text-umber">₹{{ product.price|floatformat:2 }}</span>
         </div>
         {% if product.mrp and product.mrp > product.price %}
-        <div class="flex justify-between items-center text-xs text-[var(--ink-silt)] pt-2 border-t border-[var(--border-suture)]">
-          <span>STANDARD INDIAN MRP:</span>
-          <span class="line-through text-slate-400">₹{{ product.mrp|floatformat:2 }}</span>
-        </div>
+          <div class="flex justify-between items-center text-xs text-silt pt-2 border-t border-suture">
+            <span>STANDARD INDIAN MRP:</span>
+            <div class="space-x-2">
+              <span class="line-through text-slate-400">₹{{ product.mrp|floatformat:2 }}</span>
+              <span class="text-solarOxide font-bold">SAVE ₹{{ product.savings|floatformat:2 }}</span>
+            </div>
+          </div>
         {% endif %}
       </div>
 
       <!-- SERPAPI LIVE MARKET RADAR COMPONENT -->
-      <div class="border border-[var(--accent-oxide)]/40 bg-[var(--bg-porcelain)] p-5 corner-mark relative overflow-hidden font-mono space-y-4">
-        <div class="flex justify-between items-center border-b border-[var(--border-suture)] pb-2.5">
+      <div class="border border-solarOxide/40 bg-porcelain p-5 corner-mark relative overflow-hidden font-mono space-y-3 rounded-sm">
+        <div class="flex justify-between items-center border-b border-suture pb-2.5">
           <div class="flex items-center space-x-2">
-            <span class="w-2 h-2 rounded-full bg-[var(--accent-oxide)] radar-pulse"></span>
-            <span class="text-[10px] font-bold text-[var(--accent-oxide)] uppercase tracking-wider">LIVE MARKET INTELLIGENCE RADAR</span>
+            <span class="w-2 h-2 rounded-full bg-solarOxide animate-ping"></span>
+            <span class="text-[10px] font-bold text-solarOxide uppercase tracking-wider">LIVE MARKET INTELLIGENCE RADAR</span>
           </div>
-          <span class="text-[9px] text-[var(--ink-silt)] uppercase">SERPAPI GOOGLE SHOPPING</span>
+          <span class="text-[9px] text-silt uppercase">BENCHMARK MATRIX</span>
         </div>
 
         <div class="space-y-2 text-xs">
           {% for comp in market_benchmark %}
-          <div class="flex justify-between items-center py-2 px-3 bg-white border border-[var(--border-suture)] rounded-sm">
-            <div class="flex items-center space-x-2">
-              <span class="text-slate-400 font-bold">⟶</span>
-              <strong class="text-[var(--ink-umber)]">{{ comp.merchant_name }}</strong>
+            <div class="flex justify-between items-center py-2 px-3 bg-vellum border border-suture rounded-sm">
+              <div class="flex items-center space-x-2">
+                <span class="text-slate-400 font-bold">⟶</span>
+                <strong class="text-umber">{{ comp.merchant_name }}</strong>
+              </div>
+              <span class="text-silt font-bold">₹{{ comp.price|floatformat:2 }}</span>
             </div>
-            <span class="text-[var(--ink-silt)] font-bold">₹{{ comp.price|floatformat:2 }}</span>
-          </div>
           {% empty %}
-          <p class="text-[10px] text-[var(--ink-silt)] italic">Aggregating live regional benchmarks...</p>
+            <p class="text-[10px] text-silt italic">Calibrating regional retail spread...</p>
           {% endfor %}
         </div>
 
         {% if savings_vs_market %}
-        <div class="p-3 bg-emerald-50 border border-emerald-300 text-emerald-800 text-[10px] flex items-center justify-between font-bold rounded-sm">
-          <span>VERIFIED COMPETITIVE SPREAD:</span>
-          <span>SAVE ₹{{ savings_vs_market|floatformat:2 }} VS LOWEST REGIONAL RETAILER</span>
-        </div>
+          <div class="p-2.5 bg-emerald-50 border border-emerald-300 text-emerald-800 text-[10px] flex items-center justify-between font-bold rounded-sm">
+            <span>VERIFIED COMPETITIVE SPREAD:</span>
+            <span>SAVE ₹{{ savings_vs_market|floatformat:2 }} VS LOWEST REGIONAL BENCHMARK</span>
+          </div>
         {% endif %}
       </div>
 
-      <!-- Action Buttons -->
+      <!-- Procurement Action Suite -->
       <div class="space-y-3 font-mono">
-        <button id="pdp-add-btn" type="button" {% if not product.in_stock %}disabled{% endif %} class="w-full py-4 bg-[var(--ink-umber)] hover:bg-[var(--accent-oxide)] disabled:bg-slate-300 text-white font-bold text-xs uppercase tracking-widest transition-colors shadow-md rounded-sm">
-          {% if product.in_stock %}ALLOCATE SPECIMEN TO BAG →{% else %}SPECIMEN EXHAUSTED{% endif %}
-        </button>
+        <!-- Add to Bag Form -->
+        <form method="POST" action="{% url 'add_to_cart' product.id %}" data-ajax-cart class="space-y-3">
+          {% csrf_token %}
+          <div class="flex items-center gap-3">
+            <div class="w-24">
+              <label for="pdp-quantity" class="sr-only">Quantity</label>
+              <input type="number" id="pdp-quantity" name="quantity" value="1" min="1" max="{{ product.stock|default:1 }}" {% if not product.in_stock %}disabled{% endif %} class="w-full p-3.5 bg-porcelain border border-suture rounded-sm text-center font-bold text-umber outline-none focus:border-solarOxide" />
+            </div>
 
-        <button id="pdp-wishlist-btn" type="button" class="block w-full py-3 border border-[var(--border-suture)] bg-[var(--bg-porcelain)] hover:border-[var(--ink-umber)] text-center text-xs font-bold uppercase tracking-wider transition-colors rounded-sm">
-          {% if in_wishlist %}♥ SAVED IN RESERVE COLLECTION{% else %}♡ SAVE TO RESERVE COLLECTION{% endif %}
-        </button>
+            <button type="submit" {% if not product.in_stock %}disabled{% endif %} class="flex-1 py-4 px-6 bg-umber hover:bg-solarOxide disabled:bg-slate-300 text-vellum font-bold text-xs uppercase tracking-widest transition-colors rounded-sm shadow-md flex items-center justify-center">
+              {% if product.in_stock %}ALLOCATE SPECIMEN TO BAG →{% else %}SPECIMEN EXHAUSTED{% endif %}
+            </button>
+          </div>
+        </form>
+
+        <!-- Wishlist Toggle Form -->
+        <form method="POST" action="{% url 'toggle_wishlist' product.id %}" data-ajax-wishlist>
+          {% csrf_token %}
+          <button type="submit" class="w-full py-3 border border-suture bg-porcelain hover:border-umber text-center text-xs font-bold uppercase tracking-wider transition-colors rounded-sm flex items-center justify-center space-x-2">
+            <span>{% if in_wishlist %}♥ IN RESERVE{% else %}♡ SAVE SPECIMEN{% endif %}</span>
+          </button>
+        </form>
       </div>
 
       <!-- Technical Attribute Ledger -->
-      <div class="border border-[var(--border-suture)] bg-white/70 p-5 space-y-3 font-mono text-xs rounded-sm">
-        <span class="text-[10px] font-bold text-[var(--accent-oxide)] uppercase tracking-wider block border-b border-[var(--border-suture)] pb-2">TECHNICAL ATTRIBUTE LEDGER</span>
-        
-        <div class="flex justify-between py-1 border-b border-[var(--border-suture)]/60 text-[11px]">
-          <span class="text-[var(--ink-silt)]">SKU NUMBER:</span>
-          <strong class="text-[var(--ink-umber)]">{{ product.api_sku|default:product.product_code }}</strong>
+      <div class="border border-suture bg-porcelain/80 p-5 space-y-3 font-mono text-xs rounded-sm">
+        <span class="text-[10px] font-bold text-solarOxide uppercase tracking-wider block border-b border-suture pb-2">TECHNICAL SPECIFICATIONS LEDGER</span>
+
+        <div class="flex justify-between py-1 border-b border-suture/60 text-[11px]">
+          <span class="text-silt">SKU NUMBER:</span>
+          <strong class="text-umber">{{ product.api_sku|default:product.product_code }}</strong>
         </div>
-        <div class="flex justify-between py-1 border-b border-[var(--border-suture)]/60 text-[11px]">
-          <span class="text-[var(--ink-silt)]">TAXONOMY:</span>
-          <strong class="text-[var(--ink-umber)]">{{ product.category }}</strong>
+        <div class="flex justify-between py-1 border-b border-suture/60 text-[11px]">
+          <span class="text-silt">TAXONOMY:</span>
+          <strong class="text-umber">{{ product.category }}</strong>
         </div>
-        <div class="flex justify-between py-1 border-b border-[var(--border-suture)]/60 text-[11px]">
-          <span class="text-[var(--ink-silt)]">METROLOGICAL RATING:</span>
-          <strong class="text-[var(--accent-gold)]">★ {{ product.rating }} / 5.00</strong>
+        <div class="flex justify-between py-1 border-b border-suture/60 text-[11px]">
+          <span class="text-silt">METROLOGICAL RATING:</span>
+          <strong class="text-celestialGold">★ {{ product.rating }} / 5.00</strong>
         </div>
 
         {% for spec in specs %}
-        <div class="flex justify-between py-1 border-b border-[var(--border-suture)]/60 text-[11px]">
-          <span class="text-[var(--ink-silt)]">{{ spec.name|upper }}:</span>
-          <strong class="text-[var(--ink-umber)]">{{ spec.value }}</strong>
-        </div>
+          <div class="flex justify-between py-1 border-b border-suture/60 text-[11px]">
+            <span class="text-silt">{{ spec.name|upper }}:</span>
+            <strong class="text-umber">{{ spec.value }}</strong>
+          </div>
         {% endfor %}
       </div>
 
     </div>
-  </main>
 
-  <!-- Client AJAX Script -->
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const addBtn = document.getElementById("pdp-add-btn");
-      const wishBtn = document.getElementById("pdp-wishlist-btn");
-      const badge = document.getElementById("nav-bag-count");
+  </div>
+</section>
 
-      if (addBtn) {
-        addBtn.addEventListener("click", async () => {
-          const original = addBtn.textContent;
-          addBtn.textContent = "ALLOCATING SPECIMEN...";
+<!-- RELATED CURATIONS SECTION -->
+{% if related_products %}
+<section class="border-t border-suture py-12 px-4 sm:px-6 md:px-14 bg-porcelain/30">
+  <div class="max-w-7xl mx-auto space-y-6">
+    <div class="border-b border-suture pb-3 flex justify-between items-end">
+      <div>
+        <span class="font-mono text-xs text-solarOxide font-bold uppercase tracking-widest block mb-1">RELATED HARDWARE</span>
+        <h2 class="font-serif text-2xl text-umber">Complementary Architecture</h2>
+      </div>
+      <a href="{% url 'home' %}?category={{ product.category }}" class="font-mono text-xs text-silt hover:text-solarOxide uppercase font-bold">
+        View All in {{ product.category }} →
+      </a>
+    </div>
 
-          try {
-            const resp = await fetch("{% url 'add_to_cart' product.id %}", {
-              headers: { "X-Requested-With": "XMLHttpRequest" }
-            });
-            const data = await resp.json();
-            if (data.status === "success") {
-              if (badge) badge.textContent = data.cart_count;
-              addBtn.textContent = "ALLOCATED TO BAG ✓";
-              setTimeout(() => { addBtn.textContent = original; }, 1800);
-            } else {
-              addBtn.textContent = original;
-              alert(data.message || "Failed to allocate specimen.");
-            }
-          } catch (e) {
-            window.location.href = "{% url 'add_to_cart' product.id %}";
-          }
-        });
-      }
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {% for rel in related_products %}
+        <article class="specimen-card corner-mark">
+          <div class="flex justify-between items-center border-b border-suture pb-1 font-mono text-[9px]">
+            <span class="text-solarOxide font-bold">{{ rel.product_code }}</span>
+            <span class="text-silt uppercase">{{ rel.brand }}</span>
+          </div>
 
-      if (wishBtn) {
-        wishBtn.addEventListener("click", async () => {
-          try {
-            const resp = await fetch("{% url 'toggle_wishlist' product.id %}", {
-              headers: { "X-Requested-With": "XMLHttpRequest" }
-            });
-            const data = await resp.json();
-            if (data.status === "auth_required") {
-              window.location.href = data.redirect_url;
-            } else if (data.status === "success") {
-              wishBtn.textContent = data.is_saved
-                ? "♥ SAVED IN RESERVE COLLECTION"
-                : "♡ SAVE TO RESERVE COLLECTION";
-            }
-          } catch (e) {
-            window.location.href = "{% url 'toggle_wishlist' product.id %}";
-          }
-        });
-      }
-    });
-  </script>
+          <div class="my-3 aspect-square bg-vellum border border-suture rounded-sm p-3 flex items-center justify-center">
+            {% if rel.image %}
+              <img src="{{ rel.image.url }}" alt="{{ rel.name }}" class="max-h-full max-w-full object-contain" />
+            {% else %}
+              <span class="font-mono text-[10px] text-silt">NO CAD</span>
+            {% endif %}
+          </div>
 
-</body>
+          <h3 class="font-syne font-bold text-sm text-umber truncate">
+            <a href="{% url 'product_details' rel.id %}" class="hover:text-solarOxide">{{ rel.name }}</a>
+          </h3>
+
+          <div class="mt-4 pt-2 border-t border-suture flex justify-between items-center font-mono text-xs">
+            <span class="font-bold text-umber">₹{{ rel.price|floatformat:2 }}</span>
+            <a href="{% url 'product_details' rel.id %}" class="px-3 py-1 bg-porcelain border border-suture hover:bg-umber hover:text-vellum transition-colors uppercase text-[10px] font-bold">
+              Inspect ↗
+            </a>
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}
 </html>
