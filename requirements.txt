@@ -1,0 +1,4 @@
+Django>=5.2,<7
+Pillow>=10
+PyMySQL>=1.1
+python-dotenv>=1.0

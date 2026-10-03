@@ -77,7 +77,7 @@ class ElectroCartSystemTests(TestCase):
     # -------------------------------------------------------------
     def test_anonymous_guest_can_add_to_cart(self):
         """Verifies unauthenticated visitors obtain a session-backed cart."""
-        response = self.client.get(reverse('add_to_cart', kwargs={'product_id': self.laptop.id}))
+        response = self.client.post(reverse('add_to_cart', kwargs={'product_id': self.laptop.id}))
         self.assertEqual(response.status_code, 302)
 
         guest_cart = Cart.objects.filter(user__isnull=True).first()
@@ -91,7 +91,7 @@ class ElectroCartSystemTests(TestCase):
     def test_guest_cart_merges_to_user_on_login(self):
         """Verifies guest cart lines transfer to permanent user cart upon login without duplication."""
         # Step A: Add item as guest
-        self.client.get(reverse('add_to_cart', kwargs={'product_id': self.laptop.id}))
+        self.client.post(reverse('add_to_cart', kwargs={'product_id': self.laptop.id}))
         guest_cart = Cart.objects.filter(user__isnull=True).first()
         self.assertIsNotNone(guest_cart)
         self.assertEqual(guest_cart.total_items, 1)
@@ -118,7 +118,7 @@ class ElectroCartSystemTests(TestCase):
             'username': 'atelier_tester',
             'password': 'TestPassword123!'
         })
-        self.client.get(reverse('add_to_cart', kwargs={'product_id': self.laptop.id}))
+        self.client.post(reverse('add_to_cart', kwargs={'product_id': self.laptop.id}))
 
         checkout_payload = {
             'name': 'Adarsh Patel',

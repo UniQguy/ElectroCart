@@ -1,4 +1,4 @@
-{% load static %}
+﻿{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -207,7 +207,7 @@
     .xray-layer-top { clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%); z-index: 10; }
     .xray-wiper { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; background: var(--accent-oxide); z-index: 20; transform: translateX(-50%); cursor: ew-resize !important; }
     .xray-wiper::after {
-      content: '↕';
+      content: 'â†•';
       position: absolute;
       top: 50%;
       left: 50%;
@@ -280,7 +280,7 @@
         <h2 class="font-serif text-3xl text-umber mt-1">Command Suite</h2>
         <p class="font-mono text-[8px] text-silt mt-2 uppercase tracking-wider">Session credentials &amp; hardware dossiers</p>
       </div>
-      <button id="account-drawer-close" type="button" class="w-8 h-8 border border-suture text-silt hover:text-umber hover:border-umber transition-colors">✕</button>
+      <button id="account-drawer-close" type="button" class="w-8 h-8 border border-suture text-silt hover:text-umber hover:border-umber transition-colors">âœ•</button>
     </div>
 
     <div class="p-5">
@@ -298,52 +298,55 @@
 
     <nav id="account-drawer-navigation" class="px-5 space-y-2 overflow-y-auto flex-1">
       <a href="{% url 'account_hub' %}" class="ec-drawer-link corner-mark">
-        <span class="ec-drawer-icon">◉</span>
+        <span class="ec-drawer-icon">â—‰</span>
         <span class="min-w-0 flex-1">
           <strong class="block text-[10px] tracking-[0.12em]">PROFILE DOSSIER</strong>
           <small class="block mt-0.5 text-silt text-[8px]">Identity &amp; telemetry settings</small>
         </span>
-        <span class="text-silt font-bold">→</span>
+        <span class="text-silt font-bold">â†’</span>
       </a>
 
       <a href="{% url 'orders' %}" class="ec-drawer-link corner-mark">
-        <span class="ec-drawer-icon">▤</span>
+        <span class="ec-drawer-icon">â–¤</span>
         <span class="min-w-0 flex-1">
           <strong class="block text-[10px] tracking-[0.12em]">ACQUISITIONS</strong>
           <small class="block mt-0.5 text-silt text-[8px]">Verified order dispatches &amp; receipts</small>
         </span>
-        <span class="text-silt font-bold">→</span>
+        <span class="text-silt font-bold">â†’</span>
       </a>
 
       <a href="{% url 'wishlist_page' %}" class="ec-drawer-link corner-mark">
-        <span class="ec-drawer-icon">♡</span>
+        <span class="ec-drawer-icon">â™¡</span>
         <span class="min-w-0 flex-1">
           <strong class="block text-[10px] tracking-[0.12em]">RESERVE LIST</strong>
           <small class="block mt-0.5 text-silt text-[8px]">Saved hardware models</small>
         </span>
-        <span class="text-silt font-bold">→</span>
+        <span class="text-silt font-bold">â†’</span>
       </a>
 
       <a href="{% url 'addresses' %}" class="ec-drawer-link corner-mark">
-        <span class="ec-drawer-icon">⌖</span>
+        <span class="ec-drawer-icon">âŒ–</span>
         <span class="min-w-0 flex-1">
           <strong class="block text-[10px] tracking-[0.12em]">DISPATCH MATRIX</strong>
           <small class="block mt-0.5 text-silt text-[8px]">Indian PIN &amp; street routing</small>
         </span>
-        <span class="text-silt font-bold">→</span>
+        <span class="text-silt font-bold">â†’</span>
       </a>
     </nav>
 
     <div class="mt-auto border-t border-suture p-5 space-y-4">
       {% if user.is_authenticated %}
-      <a href="{% url 'logout' %}" class="flex items-center justify-between w-full px-4 py-3 border border-solarOxide bg-solarOxide text-white hover:bg-umber hover:border-umber transition-all duration-300 font-mono text-[10px] font-bold tracking-widest uppercase">
-        <span>↪ SEAL SESSION / LOGOUT</span>
-        <span>→</span>
-      </a>
+      <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="flex items-center justify-between w-full px-4 py-3 border border-solarOxide bg-solarOxide text-white hover:bg-umber hover:border-umber transition-all duration-300 font-mono text-[10px] font-bold tracking-widest uppercase">
+          <span>â†ª SEAL SESSION / LOGOUT</span>
+          <span>â†’</span>
+        </button>
+      </form>
       {% else %}
       <a href="{% url 'login' %}" class="flex items-center justify-between w-full px-4 py-3 border border-solarOxide bg-solarOxide text-white hover:bg-umber hover:border-umber transition-all duration-300 font-mono text-[10px] font-bold tracking-widest uppercase">
         <span>AUTHENTICATE / SIGN IN</span>
-        <span>→</span>
+        <span>â†’</span>
       </a>
       {% endif %}
       <div class="flex justify-between font-mono text-[8px] text-silt">
@@ -388,7 +391,7 @@
     </div>
 
     <div class="flex justify-between items-center border-t border-suture pt-4 text-[10px] text-silt">
-      <span>STUDIO COORDINATES: AHMEDABAD [23.0225° N, 72.5714° E]</span>
+      <span>STUDIO COORDINATES: AHMEDABAD [23.0225Â° N, 72.5714Â° E]</span>
       <span class="text-umber font-bold">COMMISSIONING STOREFRONT...</span>
     </div>
   </div>
@@ -398,9 +401,9 @@
   <!-- ========================================================================= -->
   <header id="metamorphic-header" class="fixed top-0 left-0 w-full z-40 px-6 md:px-14 py-5 flex justify-between items-center border-b border-suture bg-vellum/90 backdrop-blur-md">
     <div class="flex items-center space-x-6">
-      <button id="account-drawer-trigger" type="button" class="w-8 h-8 border border-suture bg-porcelain text-umber hover:bg-umber hover:text-vellum transition-all rounded-sm flex items-center justify-center font-mono text-sm" title="Atelier Account">☰</button>
+      <button id="account-drawer-trigger" type="button" class="w-8 h-8 border border-suture bg-porcelain text-umber hover:bg-umber hover:text-vellum transition-all rounded-sm flex items-center justify-center font-mono text-sm" title="Atelier Account">â˜°</button>
       <a href="{% url 'home' %}" class="flex items-center space-x-2.5 group">
-        <span class="w-7 h-7 rounded-sm bg-umber text-vellum flex items-center justify-center font-syne text-xs font-bold group-hover:bg-solarOxide transition-colors">⚡</span>
+        <span class="w-7 h-7 rounded-sm bg-umber text-vellum flex items-center justify-center font-syne text-xs font-bold group-hover:bg-solarOxide transition-colors">âš¡</span>
         <span class="font-syne font-black text-sm tracking-wider uppercase whitespace-nowrap text-umber">
           <span class="header-full-text">ELECTROCART</span>
           <span class="header-compact-text">EC // ATELIER</span>
@@ -411,27 +414,27 @@
       <nav class="hidden xl:flex items-center space-x-6 font-mono text-xs uppercase tracking-wider text-silt">
         <a href="#galaxy-laptops" class="galaxy-nav-link hover:text-solarOxide transition-colors" data-target="galaxy-laptops">
           <span class="nav-label">01. Laptops</span>
-          <span class="nav-rune">💻</span>
+          <span class="nav-rune">ðŸ’»</span>
         </a>
         <a href="#galaxy-smartphones" class="galaxy-nav-link hover:text-solarOxide transition-colors" data-target="galaxy-smartphones">
           <span class="nav-label">02. Phones</span>
-          <span class="nav-rune">📱</span>
+          <span class="nav-rune">ðŸ“±</span>
         </a>
         <a href="#galaxy-keyboards" class="galaxy-nav-link hover:text-solarOxide transition-colors" data-target="galaxy-keyboards">
           <span class="nav-label">03. Keyboards</span>
-          <span class="nav-rune">⌨</span>
+          <span class="nav-rune">âŒ¨</span>
         </a>
         <a href="#galaxy-soundbars" class="galaxy-nav-link hover:text-solarOxide transition-colors" data-target="galaxy-soundbars">
           <span class="nav-label">04. Acoustics</span>
-          <span class="nav-rune">∿</span>
+          <span class="nav-rune">âˆ¿</span>
         </a>
         <a href="#galaxy-accessories" class="galaxy-nav-link hover:text-solarOxide transition-colors" data-target="galaxy-accessories">
           <span class="nav-label">05. Peripherals</span>
-          <span class="nav-rune">⚡</span>
+          <span class="nav-rune">âš¡</span>
         </a>
         <a href="#galaxy-tablets" class="galaxy-nav-link hover:text-solarOxide transition-colors" data-target="galaxy-tablets">
           <span class="nav-label">06. Tablets</span>
-          <span class="nav-rune">▥</span>
+          <span class="nav-rune">â–¥</span>
         </a>
       </nav>
     </div>
@@ -447,9 +450,9 @@
       </button>
 
       <div class="flex border border-suture bg-porcelain rounded-sm text-[10px] overflow-hidden">
-        <button class="currency-switch-btn px-2 py-1 font-bold bg-umber text-vellum" data-curr="INR">₹ INR</button>
+        <button class="currency-switch-btn px-2 py-1 font-bold bg-umber text-vellum" data-curr="INR">â‚¹ INR</button>
         <button class="currency-switch-btn px-2 py-1 text-silt hover:text-umber" data-curr="USD">$ USD</button>
-        <button class="currency-switch-btn px-2 py-1 text-silt hover:text-umber" data-curr="EUR">€ EUR</button>
+        <button class="currency-switch-btn px-2 py-1 text-silt hover:text-umber" data-curr="EUR">â‚¬ EUR</button>
       </div>
 
       <a href="{% url 'cart_view' %}" class="px-4 py-2 bg-umber hover:bg-solarOxide text-vellum transition-colors rounded-sm font-bold text-xs uppercase tracking-wider flex items-center space-x-2.5 shadow-sm">
@@ -487,10 +490,10 @@
 
           <div class="flex flex-wrap items-center gap-4 pt-4 font-mono text-xs">
             <a href="#galaxy-laptops" class="galaxy-nav-link px-8 py-3.5 bg-umber text-vellum hover:bg-solarOxide font-bold uppercase tracking-widest transition-all rounded-sm shadow-md">
-              INITIALIZE GALAXY SUITE ↓
+              INITIALIZE GALAXY SUITE â†“
             </a>
             <button onclick="openMasterRepository()" class="px-6 py-3.5 border border-solarOxide bg-porcelain text-solarOxide hover:bg-solarOxide hover:text-vellum uppercase tracking-wider font-bold transition-all rounded-sm">
-              EXPLORE FULL REPOSITORY ({{ products|length }}) ↗
+              EXPLORE FULL REPOSITORY ({{ products|length }}) â†—
             </button>
           </div>
         </div>
@@ -534,10 +537,10 @@
         <span>GALAXY 06: TABLETS</span>
       </div>
       <div class="track-vortex-r text-[11px] uppercase tracking-[0.18em] text-silt py-2 whitespace-nowrap">
-        <span>APPLE MACBOOK PRO 14"</span><span class="text-celestialGold font-bold px-3">·</span>
-        <span>DELL XPS 13 9300</span><span class="text-celestialGold font-bold px-3">·</span>
-        <span>HUAWEI MATEBOOK X PRO</span><span class="text-celestialGold font-bold px-3">·</span>
-        <span>IPHONE 13 PRO</span><span class="text-celestialGold font-bold px-3">·</span>
+        <span>APPLE MACBOOK PRO 14"</span><span class="text-celestialGold font-bold px-3">Â·</span>
+        <span>DELL XPS 13 9300</span><span class="text-celestialGold font-bold px-3">Â·</span>
+        <span>HUAWEI MATEBOOK X PRO</span><span class="text-celestialGold font-bold px-3">Â·</span>
+        <span>IPHONE 13 PRO</span><span class="text-celestialGold font-bold px-3">Â·</span>
         <span>SAMSUNG GALAXY TAB S8 PLUS</span>
       </div>
     </section>
@@ -584,7 +587,7 @@
             <span class="font-mono text-xs text-solarOxide font-bold uppercase tracking-widest block mb-1">GALAXY 01 // COMPUTING WORKSTATIONS</span>
             <h2 class="font-serif text-3xl md:text-5xl text-umber">High-Performance Laptops</h2>
           </div>
-          <span class="font-mono text-xs text-silt">BILLET ALLOY CHASSIS · RECALIBRATED INDIAN MRP</span>
+          <span class="font-mono text-xs text-silt">BILLET ALLOY CHASSIS Â· RECALIBRATED INDIAN MRP</span>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -611,15 +614,15 @@
               <div class="pt-2">
                 <div class="flex justify-between items-baseline py-2.5 border-t border-suture font-mono">
                   <span class="text-silt text-xs">INVOICE SUM:</span>
-                  <span class="text-xl font-bold text-umber">₹{{ product.price|floatformat:2 }}</span>
+                  <span class="text-xl font-bold text-umber">â‚¹{{ product.price|floatformat:2 }}</span>
                 </div>
                 <div class="grid grid-cols-2 gap-2 mt-2">
                   <a href="{% url 'product_details' product.id %}" class="py-2.5 bg-porcelain border border-suture hover:border-umber text-center font-mono font-bold text-xs uppercase tracking-wider rounded-sm transition-colors">
-                    INSPECT ↗
+                    INSPECT â†—
                   </a>
-                  <a href="{% url 'add_to_cart' product.id %}" class="py-2.5 bg-umber hover:bg-solarOxide text-vellum text-center font-mono font-bold text-xs uppercase tracking-wider rounded-sm transition-colors shadow-sm">
+                  <form method="post" action="{% url 'add_to_cart' product.id %}" class="py-2.5 bg-umber hover:bg-solarOxide text-vellum text-center font-mono font-bold text-xs uppercase tracking-wider rounded-sm transition-colors shadow-sm">{% csrf_token %}
                     ALLOCATE +
-                  </a>
+                  </form>
                 </div>
               </div>
             </div>
@@ -640,7 +643,7 @@
             <span class="font-mono text-xs text-solarOxide font-bold uppercase tracking-widest block mb-1">GALAXY 02 // CELLULAR ENCLAVES</span>
             <h2 class="font-serif text-3xl md:text-5xl text-umber">Smartphones &amp; Flagships</h2>
           </div>
-          <span class="font-mono text-xs text-silt">HIGH REFRESH MATRICES · IMMEDIATE 24H EXPRESS</span>
+          <span class="font-mono text-xs text-silt">HIGH REFRESH MATRICES Â· IMMEDIATE 24H EXPRESS</span>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -650,7 +653,7 @@
               <div>
                 <div class="flex justify-between items-center border-b border-suture pb-2 font-mono text-xs">
                   <span class="text-solarOxide font-bold">{{ product.product_code }}</span>
-                  <span class="px-2 py-0.5 bg-porcelain text-silt text-[10px] border border-suture rounded-sm">★ {{ product.rating }}</span>
+                  <span class="px-2 py-0.5 bg-porcelain text-silt text-[10px] border border-suture rounded-sm">â˜… {{ product.rating }}</span>
                 </div>
                 <h3 class="font-serif text-xl text-umber mt-3 font-bold truncate">{{ product.name }}</h3>
                 <p class="font-sans text-xs text-silt mt-1 leading-relaxed line-clamp-2">{{ product.description }}</p>
@@ -667,15 +670,15 @@
               <div class="pt-2">
                 <div class="flex justify-between items-baseline py-2 border-t border-suture font-mono">
                   <span class="text-silt text-xs">PRICE:</span>
-                  <span class="text-base font-bold text-umber">₹{{ product.price|floatformat:2 }}</span>
+                  <span class="text-base font-bold text-umber">â‚¹{{ product.price|floatformat:2 }}</span>
                 </div>
                 <div class="grid grid-cols-2 gap-2 mt-2 font-mono text-xs">
                   <a href="{% url 'product_details' product.id %}" class="py-2 bg-vellum border border-suture hover:border-umber text-center font-bold uppercase rounded-sm">
                     INSPECT
                   </a>
-                  <a href="{% url 'add_to_cart' product.id %}" class="py-2 bg-umber hover:bg-solarOxide text-vellum text-center font-bold uppercase rounded-sm">
+                  <form method="post" action="{% url 'add_to_cart' product.id %}" class="py-2 bg-umber hover:bg-solarOxide text-vellum text-center font-bold uppercase rounded-sm">{% csrf_token %}
                     ALLOCATE +
-                  </a>
+                  </form>
                 </div>
               </div>
             </div>
@@ -696,7 +699,7 @@
             <span class="font-mono text-xs text-solarOxide font-bold uppercase tracking-widest block mb-1">GALAXY 03 // TACTILE DECKS</span>
             <h2 class="font-serif text-3xl md:text-5xl text-umber">Mechanical Decks &amp; Switches</h2>
           </div>
-          <span class="font-mono text-xs text-silt">SUB-0.125ms POLLING · PRECISION CNC MATRICES</span>
+          <span class="font-mono text-xs text-silt">SUB-0.125ms POLLING Â· PRECISION CNC MATRICES</span>
         </div>
 
         <!-- Interactive Specimen: Teardown & Force Simulator Showcase -->
@@ -773,15 +776,15 @@
               <div class="pt-2">
                 <div class="flex justify-between items-baseline py-2 border-t border-suture font-mono">
                   <span class="text-silt text-xs">PRICE:</span>
-                  <span class="text-lg font-bold text-umber">₹{{ product.price|floatformat:2 }}</span>
+                  <span class="text-lg font-bold text-umber">â‚¹{{ product.price|floatformat:2 }}</span>
                 </div>
                 <div class="grid grid-cols-2 gap-2 mt-2 font-mono text-xs">
                   <a href="{% url 'product_details' product.id %}" class="py-2 bg-porcelain border border-suture hover:border-umber text-center font-bold uppercase rounded-sm">
                     INSPECT
                   </a>
-                  <a href="{% url 'add_to_cart' product.id %}" class="py-2 bg-umber hover:bg-solarOxide text-vellum text-center font-bold uppercase rounded-sm">
+                  <form method="post" action="{% url 'add_to_cart' product.id %}" class="py-2 bg-umber hover:bg-solarOxide text-vellum text-center font-bold uppercase rounded-sm">{% csrf_token %}
                     ALLOCATE +
-                  </a>
+                  </form>
                 </div>
               </div>
             </div>
@@ -802,7 +805,7 @@
             <span class="font-mono text-xs text-solarOxide font-bold uppercase tracking-widest block mb-1">GALAXY 04 // SPATIAL ARRAYS</span>
             <h2 class="font-serif text-3xl md:text-5xl text-umber">Soundbars &amp; Spatial Transducers</h2>
           </div>
-          <span class="font-mono text-xs text-silt">PURE BERYLLIUM CONES · DOLBY ATMOS DSP EQUATIONS</span>
+          <span class="font-mono text-xs text-silt">PURE BERYLLIUM CONES Â· DOLBY ATMOS DSP EQUATIONS</span>
         </div>
 
         <!-- Interactive DSP Parametric EQ Studio -->
@@ -855,15 +858,15 @@
               <div class="pt-2">
                 <div class="flex justify-between items-baseline py-2 border-t border-suture font-mono">
                   <span class="text-silt text-xs">PRICE:</span>
-                  <span class="text-lg font-bold text-umber">₹{{ product.price|floatformat:2 }}</span>
+                  <span class="text-lg font-bold text-umber">â‚¹{{ product.price|floatformat:2 }}</span>
                 </div>
                 <div class="grid grid-cols-2 gap-2 mt-2 font-mono text-xs">
                   <a href="{% url 'product_details' product.id %}" class="py-2 bg-vellum border border-suture hover:border-umber text-center font-bold uppercase rounded-sm">
                     INSPECT
                   </a>
-                  <a href="{% url 'add_to_cart' product.id %}" class="py-2 bg-umber hover:bg-solarOxide text-vellum text-center font-bold uppercase rounded-sm">
+                  <form method="post" action="{% url 'add_to_cart' product.id %}" class="py-2 bg-umber hover:bg-solarOxide text-vellum text-center font-bold uppercase rounded-sm">{% csrf_token %}
                     ALLOCATE +
-                  </a>
+                  </form>
                 </div>
               </div>
             </div>
@@ -884,7 +887,7 @@
             <span class="font-mono text-xs text-solarOxide font-bold uppercase tracking-widest block mb-1">GALAXY 05 // HARDWARE COMPANIONS</span>
             <h2 class="font-serif text-3xl md:text-5xl text-umber">Peripherals, GaN Power &amp; Wearables</h2>
           </div>
-          <span class="font-mono text-xs text-silt">240W USB-PD 3.1 · OPTICAL CAMERAS &amp; SOLID POWER</span>
+          <span class="font-mono text-xs text-silt">240W USB-PD 3.1 Â· OPTICAL CAMERAS &amp; SOLID POWER</span>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -911,15 +914,15 @@
               <div class="pt-2">
                 <div class="flex justify-between items-baseline py-2 border-t border-suture font-mono">
                   <span class="text-silt text-xs">PRICE:</span>
-                  <span class="text-base font-bold text-umber">₹{{ product.price|floatformat:2 }}</span>
+                  <span class="text-base font-bold text-umber">â‚¹{{ product.price|floatformat:2 }}</span>
                 </div>
                 <div class="grid grid-cols-2 gap-2 mt-2 font-mono text-xs">
                   <a href="{% url 'product_details' product.id %}" class="py-2 bg-porcelain border border-suture hover:border-umber text-center font-bold uppercase rounded-sm">
                     INSPECT
                   </a>
-                  <a href="{% url 'add_to_cart' product.id %}" class="py-2 bg-umber hover:bg-solarOxide text-vellum text-center font-bold uppercase rounded-sm">
+                  <form method="post" action="{% url 'add_to_cart' product.id %}" class="py-2 bg-umber hover:bg-solarOxide text-vellum text-center font-bold uppercase rounded-sm">{% csrf_token %}
                     ALLOCATE +
-                  </a>
+                  </form>
                 </div>
               </div>
             </div>
@@ -940,7 +943,7 @@
             <span class="font-mono text-xs text-solarOxide font-bold uppercase tracking-widest block mb-1">GALAXY 06 // SLATE OPTICS</span>
             <h2 class="font-serif text-3xl md:text-5xl text-umber">Tablets &amp; Slate Displays</h2>
           </div>
-          <span class="font-mono text-xs text-silt">DIGITIZER ARRAYS · ZERO-REFLECTANCE SUBSTRATES</span>
+          <span class="font-mono text-xs text-silt">DIGITIZER ARRAYS Â· ZERO-REFLECTANCE SUBSTRATES</span>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -967,15 +970,15 @@
               <div class="pt-2">
                 <div class="flex justify-between items-baseline py-2 border-t border-suture font-mono">
                   <span class="text-silt text-xs">PRICE:</span>
-                  <span class="text-lg font-bold text-umber">₹{{ product.price|floatformat:2 }}</span>
+                  <span class="text-lg font-bold text-umber">â‚¹{{ product.price|floatformat:2 }}</span>
                 </div>
                 <div class="grid grid-cols-2 gap-2 mt-2 font-mono text-xs">
                   <a href="{% url 'product_details' product.id %}" class="py-2 bg-vellum border border-suture hover:border-umber text-center font-bold uppercase rounded-sm">
                     INSPECT
                   </a>
-                  <a href="{% url 'add_to_cart' product.id %}" class="py-2 bg-umber hover:bg-solarOxide text-vellum text-center font-bold uppercase rounded-sm">
+                  <form method="post" action="{% url 'add_to_cart' product.id %}" class="py-2 bg-umber hover:bg-solarOxide text-vellum text-center font-bold uppercase rounded-sm">{% csrf_token %}
                     ALLOCATE +
-                  </a>
+                  </form>
                 </div>
               </div>
             </div>
@@ -1010,12 +1013,12 @@
               ElectroCart Hardware Labs:<br />
               Navrangpura, Near C.G. Road<br />
               Ahmedabad, Gujarat 380009<br />
-              Republic of India · DIN 40050 Certified
+              Republic of India Â· DIN 40050 Certified
             </p>
           </div>
         </div>
         <div class="flex justify-between items-center text-[10px]">
-          <span>© 2026 ELECTROCART HARDWARE LABS PVT LTD.</span>
+          <span>Â© 2026 ELECTROCART HARDWARE LABS PVT LTD.</span>
           <span class="font-bold text-umber">SYSTEM VERIFIED // {{ products|length }} PRODUCTS DISPATCHABLE</span>
         </div>
       </div>
@@ -1033,7 +1036,7 @@
       </div>
       <div class="flex items-center space-x-4">
         <input type="text" id="repo-search-input" placeholder="Search SKU, Brand or Model..." class="px-4 py-2 bg-vellum border border-suture font-mono text-xs outline-none focus:border-solarOxide w-52 sm:w-72" />
-        <button onclick="closeMasterRepository()" class="w-10 h-10 border border-suture flex items-center justify-center hover:border-solarOxide hover:text-solarOxide transition-colors font-mono font-bold">✕</button>
+        <button onclick="closeMasterRepository()" class="w-10 h-10 border border-suture flex items-center justify-center hover:border-solarOxide hover:text-solarOxide transition-colors font-mono font-bold">âœ•</button>
       </div>
     </div>
 
@@ -1050,9 +1053,9 @@
               <span class="font-mono text-[10px] text-silt">{{ product.brand|default:"Atelier Specimen" }}</span>
             </div>
             <div class="mt-6 pt-3 border-t border-suture flex justify-between items-center">
-              <span class="font-mono text-sm font-bold text-umber">₹{{ product.price|floatformat:2 }}</span>
+              <span class="font-mono text-sm font-bold text-umber">â‚¹{{ product.price|floatformat:2 }}</span>
               <a href="{% url 'product_details' product.id %}" class="px-3 py-1 bg-porcelain border border-suture hover:bg-umber hover:text-vellum font-mono text-[10px] font-bold uppercase transition-colors">
-                Inspect ↗
+                Inspect â†—
               </a>
             </div>
           </div>
@@ -1477,7 +1480,7 @@
           if (data.status === 'success') {
             const navBadge = document.getElementById('nav-bag-count');
             if (navBadge) navBadge.textContent = data.cart_count;
-            btn.textContent = 'ALLOCATED ✓';
+            btn.textContent = 'ALLOCATED âœ“';
             window.showToast("ALLOCATED TO DISPATCH BAG");
             setTimeout(() => { btn.textContent = originalText; }, 1600);
           } else {

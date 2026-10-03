@@ -1,5 +1,6 @@
-import uuid
+﻿import uuid
 import json
+import re
 from decimal import Decimal
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
@@ -8,6 +9,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db import transaction
 from django.http import JsonResponse
+from django.views.decorators.http import require_POST
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+from django.utils.http import url_has_allowed_host_and_scheme
 from .models import (
     Product,
     ProductImage,
@@ -140,6 +145,7 @@ def cart_view(request):
     return render(request, 'accounts/cart.html', context)
 
 
+@require_POST
 def add_to_cart(request, product_id=None):
     """Adds product to cart via URL parameter, POST body, or JSON payload."""
     if not product_id:
@@ -179,6 +185,7 @@ def add_to_cart(request, product_id=None):
     return redirect(request.META.get('HTTP_REFERER', 'cart_view'))
 
 
+@require_POST
 def update_cart_quantity(request, item_id=None):
     if not item_id:
         item_id = request.POST.get('item_id') or request.GET.get('item_id')
@@ -202,6 +209,7 @@ def update_cart_quantity(request, item_id=None):
     return redirect('cart_view')
 
 
+@require_POST
 def remove_from_cart(request, item_id=None):
     if not item_id:
         item_id = request.POST.get('item_id') or request.GET.get('item_id')
@@ -240,6 +248,7 @@ def wishlist_data(request):
     return JsonResponse({'wishlist_ids': ids})
 
 
+@require_POST
 def toggle_wishlist(request, product_id=None):
     if not request.user.is_authenticated:
         if request.headers.get('x-requested-with') == 'XMLHttpRequest':
@@ -290,6 +299,18 @@ def addresses_view(request):
         profile.state = request.POST.get('state', profile.state).strip()
         profile.pincode = request.POST.get('pincode', profile.pincode).strip()
         profile.phone = request.POST.get('phone', profile.phone).strip()
+        if (
+            len(profile.address) < 8
+            or not profile.city
+            or not profile.state
+            or not re.fullmatch(r'[1-9][0-9]{5}', profile.pincode)
+            or not re.fullmatch(r'[6-9][0-9]{9}', profile.phone)
+        ):
+            messages.error(request, "Enter a complete address, valid six-digit PIN, and valid mobile number.")
+            return render(request, 'accounts/addresses.html', {
+                'profile': profile,
+                'cart_count': cart.total_items,
+            })
         profile.save()
         messages.success(request, "Delivery parameters updated.")
         return redirect('addresses')
@@ -301,7 +322,6 @@ def addresses_view(request):
     return render(request, 'accounts/addresses.html', context)
 
 
-@transaction.atomic
 def checkout_view(request):
     """
     Frictionless Checkout: Allows both authenticated users AND guest visitors to checkout.
@@ -321,11 +341,38 @@ def checkout_view(request):
     if request.method == 'POST':
         name = (request.POST.get('name') or request.POST.get('customer_name') or '').strip()
         email = (request.POST.get('email') or '').strip()
-        address = (request.POST.get('address') or request.POST.get('shipping_address') or (profile.address if profile else '') or 'Standard Delivery Address').strip()
-        city = (request.POST.get('city') or (profile.city if profile else '') or 'Ahmedabad').strip()
-        state = (request.POST.get('state') or (profile.state if profile else '') or 'Gujarat').strip()
-        pincode = (request.POST.get('pincode') or request.POST.get('zip_code') or (profile.pincode if profile else '') or '380009').strip()
-        phone = (request.POST.get('phone') or request.POST.get('contact_number') or (profile.phone if profile else '') or '9999999999').strip()
+        address = (request.POST.get('address') or request.POST.get('shipping_address') or (profile.address if profile else '')).strip()
+        city = (request.POST.get('city') or (profile.city if profile else '')).strip()
+        state = (request.POST.get('state') or (profile.state if profile else '')).strip()
+        pincode = (request.POST.get('pincode') or request.POST.get('zip_code') or (profile.pincode if profile else '')).strip()
+        phone = (request.POST.get('phone') or request.POST.get('contact_number') or (profile.phone if profile else '')).strip()
+
+        errors = []
+        if len(name) < 2:
+            errors.append("Enter the recipient's full name.")
+        try:
+            validate_email(email)
+        except ValidationError:
+            errors.append("Enter a valid email address.")
+        if len(address) < 8:
+            errors.append("Enter a complete delivery address.")
+        if not city:
+            errors.append("Enter a city.")
+        if not state:
+            errors.append("Enter a state or territory.")
+        if not re.fullmatch(r'[1-9][0-9]{5}', pincode):
+            errors.append("Enter a valid six-digit PIN code.")
+        if not re.fullmatch(r'[6-9][0-9]{9}', phone):
+            errors.append("Enter a valid ten-digit Indian mobile number.")
+        if errors:
+            for error in errors:
+                messages.error(request, error)
+            return render(request, 'accounts/checkout.html', {
+                'cart': cart,
+                'items': items,
+                'profile': profile,
+                'total_price': cart.total_price
+            })
 
         if profile:
             profile.address = address
@@ -335,45 +382,52 @@ def checkout_view(request):
             profile.phone = phone
             profile.save()
 
-        # Database row-level locking concurrency guard
-        for item in items:
-            locked_product = Product.objects.select_for_update().get(id=item.product.id)
-            if locked_product.stock < item.quantity:
-                messages.error(request, f"Insufficient stock for {locked_product.name}. Remaining: {locked_product.stock}.")
-                return render(request, 'accounts/checkout.html', {
-                    'cart': cart,
-                    'items': items,
-                    'profile': profile,
-                    'total_price': cart.total_price
-                })
+        with transaction.atomic():
+            locked_products = {}
+            for item in items:
+                locked_product = Product.objects.select_for_update().get(id=item.product.id)
+                if locked_product.stock < item.quantity:
+                    messages.error(request, f"Insufficient stock for {locked_product.name}. Remaining: {locked_product.stock}.")
+                    return render(request, 'accounts/checkout.html', {
+                        'cart': cart,
+                        'items': items,
+                        'profile': profile,
+                        'total_price': cart.total_price
+                    })
+                locked_products[item.product_id] = locked_product
 
-            locked_product.stock -= item.quantity
-            locked_product.save(update_fields=['stock'])
+            total_amount = Decimal('0.00')
+            for item in items:
+                locked_product = locked_products[item.product_id]
+                locked_product.stock -= item.quantity
+                locked_product.save(update_fields=['stock'])
+                total_amount += locked_product.price * item.quantity
 
-        order_num = f"EC-{uuid.uuid4().hex[:8].upper()}"
-        order = Order.objects.create(
-            user=request.user if request.user.is_authenticated else None,
-            order_number=order_num,
-            total_amount=cart.total_price,
-            shipping_address=address,
-            city=city,
-            state=state,
-            pincode=pincode,
-            phone=phone,
-            status='CONFIRMED'
-        )
-
-        for item in items:
-            OrderItem.objects.create(
-                order=order,
-                product=item.product,
-                product_name=item.product.name,
-                price=item.product.price,
-                quantity=item.quantity
+            order_num = f"EC-{uuid.uuid4().hex[:8].upper()}"
+            order = Order.objects.create(
+                user=request.user if request.user.is_authenticated else None,
+                order_number=order_num,
+                total_amount=total_amount,
+                shipping_address=address,
+                city=city,
+                state=state,
+                pincode=pincode,
+                phone=phone,
+                status='CONFIRMED'
             )
 
+            for item in items:
+                locked_product = locked_products[item.product_id]
+                OrderItem.objects.create(
+                    order=order,
+                    product=locked_product,
+                    product_name=locked_product.name,
+                    price=locked_product.price,
+                    quantity=item.quantity
+                )
+
         if not request.user.is_authenticated:
-            request.session['guest_customer_name'] = name or 'Guest Patron'
+            request.session['guest_customer_name'] = name
             request.session['guest_customer_email'] = email
 
         items.delete()
@@ -441,7 +495,10 @@ def login_view(request):
     if request.user.is_authenticated:
         return redirect('home')
 
-    next_url = request.GET.get('next') or request.POST.get('next') or 'home'
+    requested_next = request.GET.get('next') or request.POST.get('next') or ''
+    next_url = requested_next if url_has_allowed_host_and_scheme(
+        requested_next, allowed_hosts={request.get_host()}, require_https=request.is_secure()
+    ) else 'home'
 
     if request.method == 'POST':
         # Accept username, identifier, email, or phone from the form
@@ -462,7 +519,10 @@ def signup_view(request):
     if request.user.is_authenticated:
         return redirect('home')
 
-    next_url = request.GET.get('next') or request.POST.get('next') or 'home'
+    requested_next = request.GET.get('next') or request.POST.get('next') or ''
+    next_url = requested_next if url_has_allowed_host_and_scheme(
+        requested_next, allowed_hosts={request.get_host()}, require_https=request.is_secure()
+    ) else 'home'
 
     if request.method == 'POST':
         u = request.POST.get('username', '').strip()
@@ -472,6 +532,16 @@ def signup_view(request):
 
         if p1 != p2:
             messages.error(request, "Passwords do not match.")
+            return render(request, 'accounts/signup.html', {'next': next_url})
+
+        if not u or len(u) < 3:
+            messages.error(request, "Choose a username with at least three characters.")
+            return render(request, 'accounts/signup.html', {'next': next_url})
+
+        try:
+            validate_email(e)
+        except ValidationError:
+            messages.error(request, "Enter a valid email address.")
             return render(request, 'accounts/signup.html', {'next': next_url})
 
         if User.objects.filter(username=u).exists():
@@ -486,6 +556,7 @@ def signup_view(request):
     return render(request, 'accounts/signup.html', {'next': next_url})
 
 
+@require_POST
 def logout_view(request):
     logout(request)
     messages.info(request, "Session logged out.")

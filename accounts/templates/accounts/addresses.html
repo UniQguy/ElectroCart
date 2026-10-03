@@ -117,22 +117,22 @@
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label for="city" class="field-label">CITY</label>
-                            <input type="text" id="city" name="city" value="{{ profile.city|default:'Ahmedabad' }}" class="address-input" placeholder="City" required />
+                            <input type="text" id="city" name="city" value="{{ profile.city }}" class="address-input" placeholder="City" required />
                         </div>
                         <div>
                             <label for="state" class="field-label">STATE</label>
-                            <input type="text" name="state" value="{{ profile.state|default:'Gujarat' }}" class="address-input" placeholder="State" required />
+                            <input type="text" name="state" value="{{ profile.state }}" class="address-input" placeholder="State" required />
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <label for="pincode" class="field-label">PIN CODE</label>
-                            <input type="text" id="pincode" name="pincode" value="{{ profile.pincode|default:'380009' }}" class="address-input" maxlength="6" pattern="[0-9]{6}" placeholder="380009" required />
+                            <input type="text" id="pincode" name="pincode" value="{{ profile.pincode }}" class="address-input" maxlength="6" pattern="[1-9][0-9]{5}" placeholder="6-digit PIN code" required />
                         </div>
                         <div>
                             <label for="phone" class="field-label">CONTACT PHONE</label>
-                            <input type="tel" id="phone" name="phone" value="{{ profile.phone|default:'9876543210' }}" class="address-input" placeholder="Phone" required />
+                            <input type="tel" id="phone" name="phone" value="{{ profile.phone }}" class="address-input" pattern="[6-9][0-9]{9}" placeholder="10-digit mobile number" required />
                         </div>
                     </div>
 

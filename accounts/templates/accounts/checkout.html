@@ -143,22 +143,22 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="block text-silt uppercase font-bold mb-1.5 text-[10px]">City / Municipality *</label>
-                <input type="text" name="city" value="{% if profile and profile.city %}{{ profile.city }}{% else %}Ahmedabad{% endif %}" required class="w-full p-3 bg-vellum border border-suture rounded-sm outline-none focus:border-solarOxide text-umber font-sans" />
+                <input type="text" name="city" value="{% if profile %}{{ profile.city }}{% endif %}" required class="w-full p-3 bg-vellum border border-suture rounded-sm outline-none focus:border-solarOxide text-umber font-sans" />
               </div>
               <div>
                 <label class="block text-silt uppercase font-bold mb-1.5 text-[10px]">State / Territory *</label>
-                <input type="text" name="state" value="{% if profile and profile.state %}{{ profile.state }}{% else %}Gujarat{% endif %}" required class="w-full p-3 bg-vellum border border-suture rounded-sm outline-none focus:border-solarOxide text-umber font-sans" />
+                <input type="text" name="state" value="{% if profile %}{{ profile.state }}{% endif %}" required class="w-full p-3 bg-vellum border border-suture rounded-sm outline-none focus:border-solarOxide text-umber font-sans" />
               </div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="block text-silt uppercase font-bold mb-1.5 text-[10px]">Postal PIN Code (6 Digits) *</label>
-                <input type="text" name="pincode" value="{% if profile and profile.pincode %}{{ profile.pincode }}{% else %}380009{% endif %}" required pattern="[0-9]{6}" placeholder="380009" class="w-full p-3 bg-vellum border border-suture rounded-sm outline-none focus:border-solarOxide text-umber font-sans" />
+                <input type="text" name="pincode" value="{% if profile %}{{ profile.pincode }}{% endif %}" required pattern="[1-9][0-9]{5}" placeholder="6-digit PIN code" class="w-full p-3 bg-vellum border border-suture rounded-sm outline-none focus:border-solarOxide text-umber font-sans" />
               </div>
               <div>
                 <label class="block text-silt uppercase font-bold mb-1.5 text-[10px]">Contact Mobile (For Delivery OTP) *</label>
-                <input type="tel" name="phone" value="{% if profile and profile.phone %}{{ profile.phone }}{% else %}9876543210{% endif %}" required placeholder="9876543210" class="w-full p-3 bg-vellum border border-suture rounded-sm outline-none focus:border-solarOxide text-umber font-sans" />
+                <input type="tel" name="phone" value="{% if profile %}{{ profile.phone }}{% endif %}" required pattern="[6-9][0-9]{9}" placeholder="10-digit mobile number" class="w-full p-3 bg-vellum border border-suture rounded-sm outline-none focus:border-solarOxide text-umber font-sans" />
               </div>
             </div>
 

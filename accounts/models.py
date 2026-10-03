@@ -36,6 +36,18 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(price__gte=0),
+                name='product_price_non_negative',
+            ),
+            models.CheckConstraint(
+                condition=models.Q(stock__gte=0),
+                name='product_stock_non_negative',
+            ),
+        ]
+
     def __str__(self):
         return f"{self.name} ({self.product_code or 'NO-CODE'})"
 
@@ -95,6 +107,15 @@ class Cart(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+        constraints = [
+            models.CheckConstraint(
+                condition=(
+                    models.Q(user__isnull=False, session_key__isnull=True)
+                    | models.Q(user__isnull=True, session_key__isnull=False)
+                ),
+                name='cart_has_single_owner',
+            ),
+        ]
 
     def __str__(self):
         if self.user:
@@ -118,6 +139,12 @@ class CartItem(models.Model):
 
     class Meta:
         unique_together = ('cart', 'product')
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(quantity__gt=0),
+                name='cart_item_quantity_positive',
+            ),
+        ]
 
     def __str__(self):
         return f"{self.quantity}x {self.product.name}"
@@ -166,6 +193,18 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity}x {self.product_name} (Order #{self.order.order_number})"
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(quantity__gt=0),
+                name='order_item_quantity_positive',
+            ),
+            models.CheckConstraint(
+                condition=models.Q(price__gte=0),
+                name='order_item_price_non_negative',
+            ),
+        ]
 
     @property
     def line_total(self):

@@ -83,7 +83,10 @@
         </div>
 
         <div style="display:flex; gap:18px; align-items:center;">
-            <a href="{% url 'logout' %}" class="back" style="color:var(--silt);">[SEAL SESSION]</a>
+            <form method="post" action="{% url 'logout' %}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="back" style="color:var(--silt); background:none; border:0; cursor:pointer;">[SEAL SESSION]</button>
+            </form>
             <a href="{% url 'home' %}" class="back">← RETURN TO ATELIER</a>
         </div>
     </header>
@@ -133,7 +136,7 @@
                 </div>
                 <div class="info-box">
                     <span class="label">MUNICIPALITY / PIN</span>
-                    <span class="value">{{ profile.city|default:"Ahmedabad" }}, {{ profile.state|default:"Gujarat" }} ({{ profile.pincode|default:"380009" }})</span>
+                    <span class="value">{% if profile.city or profile.state or profile.pincode %}{{ profile.city }}, {{ profile.state }} ({{ profile.pincode }}){% else %}No dispatch coordinates recorded.{% endif %}</span>
                 </div>
             </div>
         </section>
